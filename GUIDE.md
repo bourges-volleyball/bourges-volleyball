@@ -35,11 +35,26 @@ Pas de mot de passe, et les modifications sont réelles.
 
 
 
-1. **Créer un dépôt GitHub** (vide, sans README) et y pousser ce dossier.
-   L'historique local existe déjà, il ne reste qu'à le relier :
+1. **Créer une organisation GitHub au nom du club**, puis le dépôt dedans.
+
+   > **Ne mettez pas le dépôt dans un compte personnel.** Le site
+   > appartiendrait alors à la personne, pas au club : le jour où elle
+   > s'éloigne du bureau, le dépôt part avec elle. C'est le même
+   > raisonnement que pour l'adresse du siège.
+   >
+   > Une organisation est **gratuite** : *github.com → votre photo → Your
+   > organizations → New organization → offre Free*. Nommez-la par exemple
+   > `bourges-volley-ball`, puis **ajoutez un second propriétaire** (le
+   > président, ou un autre bénévole technique) dans *People → Owners*.
+   > Deux propriétaires, c'est ce qui évite de perdre l'accès le jour où
+   > l'un des deux n'est plus joignable.
+
+   Créez ensuite le dépôt **dans l'organisation**, vide, sans README, et
+   poussez ce dossier. L'historique local existe déjà, il ne reste qu'à le
+   relier :
 
    ```bash
-   git remote add origin https://github.com/VOTRE-COMPTE/bourges-volley.git
+   git remote add origin https://github.com/bourges-volley-ball/bourges-volley-ball.git
    git push -u origin main
    ```
 
@@ -112,6 +127,11 @@ de redirection DNS. Il faut aussi changer l'adresse dans **deux fichiers** :
 
 Tout se passe sur **votre-site.fr/admin/**. Se connecter avec le mail et le
 mot de passe reçus par invitation.
+
+**Les bénévoles n'ont pas de compte GitHub et n'en auront jamais besoin.**
+Ils s'identifient avec un mail et un mot de passe ; c'est Git Gateway qui
+écrit dans le dépôt à leur place. GitHub ne concerne que la personne qui a
+mis le site en ligne.
 
 Chaque enregistrement publie le site automatiquement. Comptez une à deux
 minutes avant que la modification soit visible.
