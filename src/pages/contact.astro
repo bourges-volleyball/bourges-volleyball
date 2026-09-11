@@ -58,8 +58,19 @@ import Base from "../layouts/Base.astro";
         <h2>Coordonnées</h2>
         <dl>
           <div>
-            <dt>Adresse</dt>
-            <dd>33 rue du 1er Régiment d&rsquo;Artillerie<br />18000 Bourges</dd>
+            <dt>Où l&rsquo;on joue</dt>
+            <dd>
+              Gymnase Léo Lagrange<br />
+              <span class="rue">33 rue du 1er Régiment d&rsquo;Artillerie, 18000 Bourges</span>
+            </dd>
+          </div>
+          <div>
+            <dt>Deuxième salle</dt>
+            <dd>
+              Gymnase Yves du Manoir<br />
+              <span class="rue">Rue de Turly, 18000 Bourges</span><br />
+              <span class="rue">Section loisir Ufolep, le mardi soir</span>
+            </dd>
           </div>
           <div>
             <dt>Mail</dt>
@@ -70,7 +81,7 @@ import Base from "../layouts/Base.astro";
             <dd><a href="tel:+33666782802">06 66 78 28 02</a></dd>
           </div>
           <div>
-            <dt>Reseaux</dt>
+            <dt>Réseaux</dt>
             <dd>
               <a href="https://www.instagram.com/bourgesvolleyball/" rel="noopener">
                 Instagram @bourgesvolleyball
@@ -114,6 +125,7 @@ import Base from "../layouts/Base.astro";
     margin-bottom: 0.3rem;
   }
   .infos dd { margin: 0; font-size: var(--s2); font-weight: 600; }
+  .infos .rue { font-weight: 400; font-size: var(--s1); color: var(--fg-2); }
   .infos a { color: inherit; }
   .infos a:hover { color: var(--signal); }
 </style>

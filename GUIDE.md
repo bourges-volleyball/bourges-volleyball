@@ -227,12 +227,33 @@ les bénévoles saisiront une information que le site ignorera.
 
 ## 6. Ce qui reste à faire
 
-### À vérifier — deux informations se contredisent
+### L'adresse du site est celle du gymnase — ne pas la « corriger »
 
-- [ ] **L'adresse du club.** Le site affiche *33 rue du 1er Régiment
-  d'Artillerie*, reprise de la fiche YEPS. Mais la page HelloAsso du club
-  indique *20 rue Garibaldi*. Il faut trancher : l'adresse figure dans le pied
-  de page, sur la page Contact et dans les données que lit Google.
+Le site affiche **Gymnase Léo Lagrange, 33 rue du 1er Régiment d'Artillerie**.
+Ce n'est pas une erreur, et c'est délibéré.
+
+Le siège social de l'association — *20 rue Garibaldi*, celui qui figure sur
+HelloAsso et dans les statuts — est **le domicile du président en exercice**.
+Le publier reviendrait à mettre l'adresse personnelle d'un bénévole sur
+Internet, et à devoir la changer à chaque élection du bureau.
+
+Un jour, quelqu'un consultera les statuts ou le registre des associations et
+voudra « remettre la bonne adresse ». C'est à éviter. L'adresse utile au
+visiteur est celle où l'on joue.
+
+Elle apparaît à trois endroits : le pied de page
+(`src/components/Footer.astro`), la page Contact (`src/pages/contact.astro`)
+et les données structurées lues par Google (`src/layouts/Base.astro`).
+
+> **Point à trancher pour les mentions légales.** La loi impose d'y faire
+> figurer le siège social. Beaucoup d'associations domiciliées chez un
+> dirigeant utilisent une adresse de domiciliation — mairie, maison des
+> associations, boîte postale. À voir avec le bureau avant de rédiger la page.
+
+### À vérifier
+
+- [ ] **L'adresse exacte du gymnase Yves du Manoir.** Les annuaires hésitent
+  entre *rue de Turly* et *chemin de Turly*. Le site indique « rue ».
 - [ ] **Les seniors s'entraînent-ils ensemble ?** Le planning affiché sur
   Instagram ne dit que « Séniors FFVB » le lundi et le mercredi, sans
   distinguer les masculins des féminines. Les deux fiches portent donc les
