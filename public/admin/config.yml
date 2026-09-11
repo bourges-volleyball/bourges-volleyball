@@ -138,11 +138,18 @@ collections:
                   "Passeur",
                   "Central",
                   "Pointu",
-                  "Receptionneur-attaquant",
-                  "Libero",
+                  "Réceptionneur-attaquant",
+                  "Libéro",
                 ],
             }
           - { name: "numero", label: "Numéro", widget: "number", value_type: "int", required: false }
+      - {
+          name: "body",
+          label: "Présentation (optionnel)",
+          widget: "markdown",
+          required: false,
+          hint: "Texte libre affiché sur la fiche. Utile quand un groupe aligne plusieurs équipes : listez-les ici.",
+        }
 
   - name: "matchs"
     label: "Matchs"

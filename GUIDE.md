@@ -87,6 +87,11 @@ et en tête de la fiche. Format paysage, 1600 px de large minimum. Le site
 l'assombrit automatiquement pour que le texte reste lisible — comme les photos
 du diaporama d'accueil.
 
+La **présentation** est un texte libre affiché sur la fiche. Elle sert quand
+un groupe ne tient pas dans les champs prévus — par exemple l'Ufolep, qui
+aligne plusieurs équipes sous une seule fiche, avec deux tarifs différents.
+Laissée vide, elle ne s'affiche pas.
+
 L'**effectif** est facultatif. Rempli, il s'affiche sur la fiche de l'équipe
 avec le numéro et le poste de chacun. Laissé vide, la section disparaît
 simplement. Chez les jeunes, on peut ne mettre que les noms.
@@ -279,8 +284,9 @@ et les données structurées lues par Google (`src/layouts/Base.astro`).
   deux créneaux au dispositif de la Ville : séniors en soft volley le mardi
   de 17h à 18h, jeunes le vendredi à la même heure. Une actualité en parle,
   mais ce n'est ni une équipe ni une rubrique.
-- [ ] **La section Ufolep M18** a sa propre adhésion (125 €) et un créneau
-  distinct le vendredi soir. Elle mériterait sa fiche.
+- [ ] **La liste des équipes Ufolep engagées.** Le club en aligne plusieurs
+  en départemental du Cher ; la fiche Ufolep décrit les deux sections mais ne
+  les nomme pas, faute de la liste. À compléter dans le champ Présentation.
 - [ ] Les **buvettes en ligne** HelloAsso (tournois, buvette virtuelle) ne sont
   pas mentionnées sur le site.
 
