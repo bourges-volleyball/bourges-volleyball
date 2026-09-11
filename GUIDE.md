@@ -10,7 +10,14 @@ sécurité à suivre. Le coût annuel se limite au nom de domaine.
 
 ## 1. Mise en ligne (à faire une fois)
 
-1. **Créer un dépôt GitHub** et y pousser ce dossier.
+1. **Créer un dépôt GitHub** (vide, sans README) et y pousser ce dossier.
+   L'historique local existe déjà, il ne reste qu'à le relier :
+
+   ```bash
+   git remote add origin https://github.com/VOTRE-COMPTE/bourges-volley.git
+   git push -u origin master
+   ```
+
 2. Sur **Netlify** : *Add new site → Import an existing project*, choisir le
    dépôt. Netlify lit `netlify.toml` et trouve seul la commande de build.
 3. Une fois le site en ligne, activer **Identity** :
@@ -171,6 +178,18 @@ Structure :
 | `src/lib/donnees.ts` | Tri et filtrage (ce qu'est un match « à venir ») |
 | `src/styles/global.css` | Couleurs, typographies, composants communs |
 | `public/admin/config.yml` | Configuration de l'interface d'administration |
+
+Le projet est suivi par **git**. Après une modification du code, enregistrez-la :
+
+```bash
+git add -A
+git commit -m "ce que vous avez changé"
+git push            # une fois le dépôt GitHub relié
+```
+
+Chaque `push` déclenche une nouvelle publication sur Netlify. Les
+modifications faites par les bénévoles depuis `/admin/` sont enregistrées
+automatiquement, sans rien taper.
 
 **Attention :** `src/content.config.ts` et `public/admin/config.yml` décrivent
 les mêmes données. Un champ ajouté dans l'un doit l'être dans l'autre, sinon
