@@ -38,8 +38,22 @@ const niveaux = [
                   ) : (
                     p.data.nom
                   );
+                  /* Un partenaire dont le site est renseigne devient cliquable.
+                     Il ouvre dans un nouvel onglet : le visiteur ne perd pas
+                     le site du club. La mention entre parenthèses n'est lue
+                     que par les lecteurs d'ecran, qui sans cela n'annoncent
+                     pas le changement de fenetre. */
                   return p.data.lien ? (
-                    <a class="plogo" href={p.data.lien} rel="noopener">{contenu}</a>
+                    <a
+                      class="plogo"
+                      href={p.data.lien}
+                      target="_blank"
+                      rel="noopener"
+                      title={`Site de ${p.data.nom}`}
+                    >
+                      {contenu}
+                      <span class="hors-ecran"> (nouvelle fenêtre)</span>
+                    </a>
                   ) : (
                     <div class="plogo">{contenu}</div>
                   );
@@ -116,6 +130,19 @@ const niveaux = [
   }
   a.plogo:hover {
     background: var(--noir-3);
+  }
+  /* Un partenaire cliquable doit se voir comme tel */
+  a.plogo:hover,
+  a.plogo:focus-visible {
+    color: var(--signal);
+  }
+  .hors-ecran {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
   .tier-row.main .plogo {
     padding-block: 2.4rem;

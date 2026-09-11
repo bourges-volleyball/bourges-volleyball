@@ -5,14 +5,14 @@ ageMin: 18
 ageMax: 99
 niveau: "Régionale"
 creneaux:
-  - jour: "Mardi"
-    horaire: "20h30 – 22h30"
-  - jour: "Vendredi"
+  - jour: "Lundi"
     horaire: "20h00 – 22h00"
-gymnase: "À préciser"
+  - jour: "Mercredi"
+    horaire: "20h00 – 22h00"
+gymnase: "Gymnase Léo Lagrange"
 coach: "À préciser"
 tarif: 145
-photo: "/images/hero/hero-3.jpg"
+photo: "/images/equipes/equipe-3.jpg"
 effectif:
   - nom: "Joueur 1"
     poste: "Passeur"

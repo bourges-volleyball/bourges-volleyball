@@ -15,7 +15,7 @@ sécurité à suivre. Le coût annuel se limite au nom de domaine.
 
    ```bash
    git remote add origin https://github.com/VOTRE-COMPTE/bourges-volley.git
-   git push -u origin master
+   git push -u origin main
    ```
 
 2. Sur **Netlify** : *Add new site → Import an existing project*, choisir le
@@ -120,7 +120,7 @@ fond blanc ou transparent ; sans logo, le nom s'affiche en toutes lettres.
 ## 3. Les photos du diaporama d'accueil
 
 Les trois photos qui défilent derrière le titre sont les fichiers
-`public/images/hero/hero-1.jpg`, `hero-2.jpg` et `hero-3.jpg`.
+`src/images/hero/hero-1.jpg`, `hero-2.jpg` et `hero-3.jpg`.
 
 **Ce sont actuellement des photos libres de droits, à remplacer.**
 Remplacez les fichiers en gardant les mêmes noms : format paysage,
@@ -129,6 +129,12 @@ Remplacez les fichiers en gardant les mêmes noms : format paysage,
 Le site les assombrit automatiquement pour que le texte reste lisible —
 inutile de les retoucher, les gymnases sont toujours trop clairs et
 le traitement s'en charge.
+
+**Ne les compressez pas non plus.** Déposez la photo d'origine, en grand :
+le site fabrique tout seul une version WebP allégée et plusieurs tailles,
+et sert à chaque visiteur celle qui correspond à son écran. Une photo
+réduite à la main avant d'être déposée ne peut plus être agrandie, et
+s'affichera floue sur un grand écran.
 
 ---
 

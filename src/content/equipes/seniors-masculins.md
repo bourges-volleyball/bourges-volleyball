@@ -7,12 +7,12 @@ niveau: "Prénationale"
 creneaux:
   - jour: "Lundi"
     horaire: "20h00 – 22h00"
-  - jour: "Jeudi"
-    horaire: "20h30 – 22h30"
+  - jour: "Mercredi"
+    horaire: "20h00 – 22h00"
 gymnase: "Gymnase Léo Lagrange"
 coach: "À préciser"
 tarif: 145
-photo: "/images/hero/hero-1.jpg"
+photo: "/images/equipes/equipe-1.jpg"
 effectif:
   - nom: "Joueur 1"
     poste: "Passeur"

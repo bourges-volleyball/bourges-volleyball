@@ -5,10 +5,14 @@ ageMin: 18
 ageMax: 99
 niveau: "Mixte · sans championnat fédéral"
 creneaux:
-  - jour: "Mercredi"
-    horaire: "20h30 – 22h30"
-gymnase: "À préciser"
+  - jour: "Mardi"
+    horaire: "20h30 – 22h00"
+  - jour: "Jeudi"
+    horaire: "20h30 – 22h00"
+  - jour: "Vendredi"
+    horaire: "20h00 – 22h00"
+gymnase: "Léo Lagrange et Yves du Manoir"
 coach: "Encadrement bénévole"
-tarif: 125
-photo: "/images/hero/hero-2.jpg"
+tarif: 85
+photo: "/images/equipes/equipe-2.jpg"
 ---

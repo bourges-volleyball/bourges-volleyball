@@ -68,6 +68,33 @@ const autres = (await actus()).filter((a) => a.id !== actu.id).slice(0, 3);
   .corps :global(ul), .corps :global(ol) { padding-left: 1.2rem; }
   .corps :global(li) { margin: 0.4rem 0; }
   .corps :global(img) { width: 100%; }
+  /* Les tableaux (creneaux, tarifs) debordent sur telephone :
+     on les rend defilables plutot que de casser la mise en page. */
+  .corps :global(table) {
+    display: block;
+    overflow-x: auto;
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-size: var(--s1);
+  }
+  .corps :global(th) {
+    text-align: left;
+    font-family: "Barlow Semi Condensed", sans-serif;
+    font-size: var(--s0);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--fg-2);
+    font-weight: 600;
+  }
+  .corps :global(th),
+  .corps :global(td) {
+    border-bottom: 1px solid var(--hair);
+    padding: 0.6rem 1rem 0.6rem 0;
+    vertical-align: top;
+  }
+  .corps :global(tbody tr:hover) { background: var(--noir-2); }
+
   .corps :global(blockquote) {
     margin: 1.5rem 0; padding-left: 1rem;
     border-left: 3px solid var(--signal); color: var(--fg-2);

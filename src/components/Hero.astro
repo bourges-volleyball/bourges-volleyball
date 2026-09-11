@@ -1,17 +1,23 @@
 ---
 /* Diaporama de l'accueil.
-   Pour changer les photos : remplacer les fichiers dans public/images/hero/
+   Pour changer les photos : remplacer les fichiers dans src/images/hero/
    en gardant les mêmes noms. Trois a cinq images, format paysage,
-   1600 px de large minimum. */
+   1600 px de large minimum. Astro s'occupe seul de les convertir en WebP
+   et d'en produire plusieurs tailles selon l'ecran. */
+import { Picture } from "astro:assets";
+import hero1 from "../images/hero/hero-1.jpg";
+import hero2 from "../images/hero/hero-2.jpg";
+import hero3 from "../images/hero/hero-3.jpg";
+
 interface Props {
   actus?: { id: string; data: { titre: string; date: Date } }[];
 }
 const { actus = [] } = Astro.props;
 
 const PHOTOS = [
-  { src: "/images/hero/hero-1.jpg", alt: "Attaque au filet lors d'un match" },
-  { src: "/images/hero/hero-2.jpg", alt: "Joueur en suspension" },
-  { src: "/images/hero/hero-3.jpg", alt: "Phase de jeu collective" },
+  { img: hero1, alt: "Attaque au filet lors d'un match" },
+  { img: hero2, alt: "Joueur en suspension" },
+  { img: hero3, alt: "Phase de jeu collective" },
 ];
 ---
 
@@ -19,12 +25,13 @@ const PHOTOS = [
   <div class="scene">
     {
       PHOTOS.map((p, i) => (
-        <img
+        <Picture
           class:list={["slide", { "is-active": i === 0 }]}
-          src={p.src}
+          src={p.img}
           alt={i === 0 ? p.alt : ""}
-          width="1600"
-          height="900"
+          formats={["webp"]}
+          widths={[640, 960, 1280, 1600]}
+          sizes="100vw"
           loading={i === 0 ? "eager" : "lazy"}
           fetchpriority={i === 0 ? "high" : undefined}
         />

@@ -6,6 +6,12 @@ backend:
   name: git-gateway
   branch: main
 
+# Permet d'essayer l'administration sur son ordinateur, sans deployer.
+# Decap ignore ce reglage des que le site n'est plus sur localhost :
+# en ligne, c'est toujours git-gateway et Netlify Identity qui s'appliquent.
+# Pour l'utiliser : npm run admin (dans un terminal) puis npm run dev.
+local_backend: true
+
 media_folder: "public/images/uploads"
 public_folder: "/images/uploads"
 
@@ -215,7 +221,13 @@ collections:
           required: false,
           hint: "Logo sur fond blanc ou transparent.",
         }
-      - { name: "lien", label: "Site web", widget: "string", required: false }
+      - {
+          name: "lien",
+          label: "Site web",
+          widget: "string",
+          required: false,
+          hint: "L'adresse du site du partenaire, en entier (https://...). Rempli, le logo devient cliquable et ouvre son site dans un nouvel onglet.",
+        }
       - { name: "ordre", label: "Ordre", widget: "number", value_type: "int", default: 10 }
 
   - name: "boutique"

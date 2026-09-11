@@ -7,7 +7,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "maj:ffvb": "node scripts/ffvb.mjs"
+    "maj:ffvb": "node scripts/ffvb.mjs",
+    "admin": "npx -y decap-server"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
