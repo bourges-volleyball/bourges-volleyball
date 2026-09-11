@@ -307,6 +307,12 @@ et les données structurées lues par Google (`src/layouts/Base.astro`).
   avec sa propre adhésion : le loisir semble bien réservé aux adultes, mais
   cela demande confirmation.
 
+> **Le site ne contient plus aucun contenu inventé.** Les faux effectifs, les
+> événements aux dates provisoires et les partenaires sans nom ont été retirés
+> plutôt que laissés en place : mieux vaut une rubrique vide qu'une rubrique
+> fausse. Les sections concernées disparaîtront simplement tant qu'elles ne
+> sont pas remplies, et se réafficheront dès la première saisie.
+
 ### À fournir par le club
 
 - [ ] Remplacer les trois photos du diaporama par des photos du club
