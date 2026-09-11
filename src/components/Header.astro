@@ -1,0 +1,213 @@
+---
+const ici = Astro.url.pathname;
+const actif = (href: string) => (href === "/" ? ici === "/" : ici.startsWith(href));
+
+const liens = [
+  { href: "/le-club/", texte: "Le club" },
+  { href: "/equipes/", texte: "Équipes" },
+  { href: "/agenda/", texte: "Agenda" },
+  { href: "/matchs/", texte: "Matchs" },
+  { href: "/boutique/", texte: "Boutique" },
+  { href: "/actus/", texte: "Actus" },
+  { href: "/partenaires/", texte: "Partenaires" },
+];
+---
+
+<header>
+  <div class="wrap bar">
+    <a class="mark" href="/">
+      <img src="/images/logo-bvb.png" alt="" width="42" height="42" />
+      <span>Bourges<br />Volley-Ball</span>
+    </a>
+
+    <nav class="bureau" aria-label="Navigation principale">
+      {
+        liens.map((l) => (
+          <a href={l.href} aria-current={actif(l.href) ? "page" : undefined}>
+            {l.texte}
+          </a>
+        ))
+      }
+    </nav>
+
+    <a class="cta-head" href="/nous-rejoindre/"><span>Nous rejoindre</span></a>
+
+    <button
+      class="burger"
+      id="burger"
+      type="button"
+      aria-expanded="false"
+      aria-controls="menu-mobile"
+      aria-label="Ouvrir le menu"
+    >
+      <span class="trait" aria-hidden="true"></span>
+      <span class="trait" aria-hidden="true"></span>
+      <span class="trait" aria-hidden="true"></span>
+    </button>
+  </div>
+
+  <nav class="mobile" id="menu-mobile" aria-label="Navigation principale" hidden>
+    {
+      liens.map((l) => (
+        <a href={l.href} aria-current={actif(l.href) ? "page" : undefined}>
+          {l.texte}
+        </a>
+      ))
+    }
+    <a href="/contact/">Contact</a>
+    <a class="mobile-cta" href="/nous-rejoindre/">Nous rejoindre</a>
+  </nav>
+</header>
+
+<style>
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    background: rgba(13, 14, 17, 0.94);
+    border-bottom: 1px solid var(--hair);
+    backdrop-filter: blur(8px);
+  }
+  .bar { display: flex; align-items: center; gap: 1rem; padding-block: 0.6rem; }
+  .mark { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; margin-right: auto; }
+  /* Le logo est noir sur blanc : inversé puis fondu, il devient blanc */
+  .mark img { width: 42px; height: 42px; filter: invert(1); mix-blend-mode: screen; flex: none; }
+  .mark span {
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 800;
+    font-size: 1.3rem;
+    text-transform: uppercase;
+    line-height: 0.95;
+  }
+
+  .bureau { display: flex; gap: 1.25rem; flex-wrap: wrap; }
+  .bureau a {
+    text-decoration: none;
+    font-family: "Barlow Semi Condensed", sans-serif;
+    font-weight: 600;
+    font-size: 0.88rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    padding-block: 0.35rem;
+    border-bottom: 3px solid transparent;
+    transition: border-color 0.12s, color 0.12s;
+    white-space: nowrap;
+  }
+  .bureau a:hover,
+  .bureau a[aria-current="page"] { border-bottom-color: var(--signal); color: var(--signal); }
+
+  /* S'inscrire : l'action que le site existe pour provoquer */
+  .cta-head {
+    text-decoration: none;
+    background: var(--signal);
+    color: var(--sur-signal);
+    font-family: "Barlow Semi Condensed", sans-serif;
+    font-weight: 600;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.5rem 0.9rem;
+    transform: skewX(-10deg);
+    display: inline-block;
+    transition: background 0.12s;
+    flex: none;
+  }
+  .cta-head span { display: inline-block; transform: skewX(10deg); }
+  .cta-head:hover { background: var(--signal-fonce); }
+
+  /* Bouton du menu mobile : 44 px de cote, la cible tactile minimale */
+  .burger {
+    display: none;
+    width: 44px;
+    height: 44px;
+    flex: none;
+    background: transparent;
+    border: 1px solid var(--hair);
+    cursor: pointer;
+    padding: 0;
+    place-content: center;
+    gap: 5px;
+  }
+  .trait {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: var(--fg);
+    transition: transform 0.18s, opacity 0.18s;
+  }
+  .burger[aria-expanded="true"] .trait:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .burger[aria-expanded="true"] .trait:nth-child(2) { opacity: 0; }
+  .burger[aria-expanded="true"] .trait:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  .mobile { display: none; }
+
+  @media (max-width: 1100px) {
+    .bureau { display: none; }
+    .burger { display: grid; }
+    /* Le bouton d'inscription reste visible : c'est la raison d'etre du site */
+    .cta-head { font-size: 0.72rem; padding: 0.45rem 0.7rem; }
+    .mark span { font-size: 1.1rem; }
+
+    .mobile {
+      display: grid;
+      border-top: 1px solid var(--hair);
+      max-height: calc(100vh - 4rem);
+      overflow-y: auto;
+    }
+    .mobile[hidden] { display: none; }
+    .mobile a {
+      text-decoration: none;
+      font-family: "Barlow Condensed", sans-serif;
+      font-weight: 800;
+      text-transform: uppercase;
+      font-size: 1.5rem;
+      padding: 0.85rem var(--pad);
+      border-bottom: 1px solid var(--hair);
+      background: var(--noir-2);
+    }
+    .mobile a[aria-current="page"] { color: var(--signal); }
+    .mobile a:active { background: var(--noir-3); }
+    .mobile-cta {
+      background: var(--signal) !important;
+      color: var(--sur-signal);
+      border-bottom: 0;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .cta-head { display: none; }
+    .mark span { font-size: 1rem; }
+  }
+</style>
+
+<script>
+  const burger = document.getElementById("burger");
+  const menu = document.getElementById("menu-mobile");
+
+  if (burger && menu) {
+    const basculer = (ouvert: boolean) => {
+      burger.setAttribute("aria-expanded", String(ouvert));
+      burger.setAttribute("aria-label", ouvert ? "Fermer le menu" : "Ouvrir le menu");
+      menu.hidden = !ouvert;
+    };
+
+    burger.addEventListener("click", () => {
+      basculer(burger.getAttribute("aria-expanded") !== "true");
+    });
+
+    // Fermer avec Echap, sans quoi le menu piege la navigation au clavier
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && burger.getAttribute("aria-expanded") === "true") {
+        basculer(false);
+        burger.focus();
+      }
+    });
+
+    // Repasser en affichage bureau doit refermer le menu, sinon il reste
+    // ouvert et invisible, et le bouton se desynchronise.
+    const large = matchMedia("(min-width: 1101px)");
+    large.addEventListener("change", (e) => {
+      if (e.matches) basculer(false);
+    });
+  }
+</script>

@@ -1,0 +1,85 @@
+---
+import Base from "../../layouts/Base.astro";
+import { render } from "astro:content";
+import { actus } from "../../lib/donnees";
+
+export async function getStaticPaths() {
+  const liste = await actus();
+  return liste.map((a) => ({ params: { id: a.id }, props: { actu: a } }));
+}
+
+const { actu } = Astro.props;
+const { Content } = await render(actu);
+const d = actu.data.date;
+const autres = (await actus()).filter((a) => a.id !== actu.id).slice(0, 3);
+---
+
+<Base titre={actu.data.titre} description={actu.data.chapo} image={actu.data.image}>
+  <article>
+    <div class="page-head wrap">
+      <p class="eyebrow">
+        <time datetime={d.toISOString().slice(0, 10)}>
+          {d.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric", timeZone: "Europe/Paris" })}
+        </time>
+      </p>
+      <h1>{actu.data.titre}</h1>
+      <p>{actu.data.chapo}</p>
+    </div>
+
+    {
+      actu.data.image && (
+        <figure class="une">
+          <img src={actu.data.image} alt="" width="1600" height="900" />
+        </figure>
+      )
+    }
+
+    <div class="corps wrap"><Content /></div>
+  </article>
+
+  {
+    autres.length > 0 && (
+      <section class="section wrap suite">
+        <div class="section-head">
+          <h2>Autres actualités</h2>
+          <a class="lien" href="/actus/">Toutes les actus</a>
+        </div>
+        <ul class="autres">
+          {autres.map((a) => (
+            <li><a href={`/actus/${a.id}/`}>{a.data.titre}</a></li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+</Base>
+
+<style>
+  .une { margin: 0; }
+  .une img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; display: block; }
+  .corps {
+    padding-block: clamp(1.75rem, 4vw, 2.75rem);
+    max-width: 68ch; font-size: var(--s2);
+  }
+  .corps :global(h2) { font-size: 1.9rem; margin-top: 2rem; }
+  .corps :global(h3) { font-size: 1.5rem; margin-top: 1.5rem; }
+  .corps :global(p) { margin: 1rem 0; }
+  .corps :global(a) { color: var(--signal); }
+  .corps :global(ul), .corps :global(ol) { padding-left: 1.2rem; }
+  .corps :global(li) { margin: 0.4rem 0; }
+  .corps :global(img) { width: 100%; }
+  .corps :global(blockquote) {
+    margin: 1.5rem 0; padding-left: 1rem;
+    border-left: 3px solid var(--signal); color: var(--fg-2);
+  }
+  .suite { border-top: 1px solid var(--hair); }
+  .autres { list-style: none; padding: 0; margin: 0; display: grid; }
+  .autres li { border-top: 1px solid var(--hair); }
+  .autres li:first-child { border-top: 0; }
+  .autres a {
+    display: block; padding: 0.9rem 0; text-decoration: none;
+    font-family: "Barlow Condensed", sans-serif; font-weight: 800;
+    text-transform: uppercase; font-size: 1.4rem; transition: color 0.12s;
+  }
+  .autres a:hover { color: var(--signal); }
+</style>

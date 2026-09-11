@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.astro/
+.DS_Store
+*.log
+
+# Maquettes de travail, conservees en local mais hors du depot
+maquette-accueil.html
+palettes.html

@@ -1,0 +1,404 @@
+{
+  "miseAJour": "2026-09-11T08:17:10.396Z",
+  "saison": "2026/2027",
+  "source": "ffvbbeach.org",
+  "poulesEnEchec": [],
+  "matchs": [
+    {
+      "id": "18MA001",
+      "equipe": "M18 garçons",
+      "competition": "Prénationale M18 garçons",
+      "date": "2026-09-26T16:00:00.000Z",
+      "domicile": true,
+      "adversaire": "SMOC ST-JEAN DE BRAYE",
+      "lieu": "LEO LAGRANGE"
+    },
+    {
+      "id": "PNMA001",
+      "equipe": "Seniors masculins",
+      "competition": "Prénationale masculine",
+      "date": "2026-09-26T18:30:00.000Z",
+      "domicile": true,
+      "adversaire": "SMOC ST-JEAN DE BRAYE",
+      "lieu": "LEO LAGRANGE"
+    },
+    {
+      "id": "18AA008",
+      "equipe": "M18 filles",
+      "competition": "Régionale M18 filles",
+      "date": "2026-10-10T16:00:00.000Z",
+      "domicile": false,
+      "adversaire": "UNION SP VENDOMOISE",
+      "lieu": "MAILLETTES"
+    },
+    {
+      "id": "18MA005",
+      "equipe": "M18 garçons",
+      "competition": "Prénationale M18 garçons",
+      "date": "2026-10-10T16:00:00.000Z",
+      "domicile": true,
+      "adversaire": "CHATEAUDUN VOLLEY-BALL",
+      "lieu": "LEO LAGRANGE"
+    },
+    {
+      "id": "PNMA005",
+      "equipe": "Seniors masculins",
+      "competition": "Prénationale masculine",
+      "date": "2026-10-10T18:30:00.000Z",
+      "domicile": true,
+      "adversaire": "CHATEAUDUN VOLLEY-BALL",
+      "lieu": "LEO LAGRANGE"
+    },
+    {
+      "id": "RFSA034",
+      "equipe": "Seniors féminines",
+      "competition": "Régionale féminine",
+      "date": "2026-10-10T18:30:00.000Z",
+      "domicile": false,
+      "adversaire": "NEUVILLE SPORTS",
+      "lieu": "COMPLEXE SPORTIF"
+    },
+    {
+      "id": "18MA009",
+      "equipe": "M18 garçons",
+      "competition": "Prénationale M18 garçons",
+      "date": "2026-11-07T17:00:00.000Z",
+      "domicile": false,
+      "adversaire": "ETUDIANT CLUB ORLEANAIS",
+      "lieu": "GYMNASE CLAUDE ROBERT"
+    },
+    {
+      "id": "PNMA009",
+      "equipe": "Seniors masculins",
+      "competition": "Prénationale masculine",
+      "date": "2026-11-07T19:30:00.000Z",
+      "domicile": false,
+      "adversaire": "ETUDIANT CLUB ORLEANAIS",
+      "lieu": "GYMNASE CLAUDE ROBERT"
+    },
+    {
+      "id": "RFSA014",
+      "equipe": "Seniors féminines",
+      "competition": "Régionale féminine",
+      "date": "2026-11-07T19:30:00.000Z",
+      "domicile": true,
+      "adversaire": "U.S.ORLEANS VOLLEY-BALL",
+      "lieu": "LEO LAGRANGE"
+    },
+    {
+      "id": "18AA015",
+      "equipe": "M18 filles",
+      "competition": "Régionale M18 filles",
+      "date": "2026-11-21T17:00:00.000Z",
+      "domicile": true,
+      "adversaire": "UNION SPORTIVE CHAMBRAY LES TOURS",
+      "lieu": "LEO LAGRANGE"
+    },
+    {
+      "id": "18MA013",
+      "equipe": "M18 garçons",
+      "competition": "Prénationale M18 garçons",
+      "date": "2026-11-21T17:00:00.000Z",
+      "domicile": false,
+      "adversaire": "TOURS VOLLEY-BALL",
+      "lieu": "SALLE DANTON"
+    },
+    {
+      "id": "PNMA013",
+      "equipe": "Seniors masculins",
+      "competition": "Prénationale masculine",
+      "date": "2026-11-21T19:30:00.000Z",
+      "domicile": false,
+      "adversaire": "TOURS VOLLEY-BALL",
+      "lieu": "SALLE GRENON"
+    },
+    {
+      "id": "RFSA023",
+      "equipe": "Seniors féminines",
+      "competition": "Régionale féminine",
+      "date": "2026-11-21T19:30:00.000Z",
+      "domicile": false,
+      "adversaire": "AS.CASTELNEUVIENNE V.B.",
+      "lieu": "GYMNASE DU LIEVRE D'OR"
+    },
+    {
+      "id": "18AA019",
+      "equipe": "M18 filles",
+      "competition": "Régionale M18 filles",
+      "date": "2026-11-28T17:00:00.000Z",
+      "domicile": true,
+      "adversaire": "CERCLE JULES FERRY FLEURY",
+      "lieu": "LEO LAGRANGE"
+    },
+    {
+      "id": "RFSA027",
+      "equipe": "Seniors féminines",
+      "competition": "Régionale féminine",
+      "date": "2026-11-28T19:30:00.000Z",
+      "domicile": true,
+      "adversaire": "ETUDIANT CLUB ORLEANAIS",
+      "lieu": "LEO LAGRANGE"
+    },
+    {
+      "id": "18AA022",
+      "equipe": "M18 filles",
+      "competition": "Régionale M18 filles",
+      "date": "2026-12-05T17:00:00.000Z",
+      "domicile": false,
+      "adversaire": "VOLLEY BEAUNE CLUB",
+      "lieu": "GYMNASE INTERCOMMUNAL"
+    },
+    {
+      "id": "18MA017",
+      "equipe": "M18 garçons",
+      "competition": "Prénationale M18 garçons",
+      "date": "2026-12-05T17:00:00.000Z",
+      "domicile": false,
+      "adversaire": "AS AMICALE JEUNESSE BLESOISE",
+      "lieu": "GYMNASE RAYMOND ETELIN"
+    },
+    {
+      "id": "PNMA017",
+      "equipe": "Seniors masculins",
+      "competition": "Prénationale masculine",
+      "date": "2026-12-05T19:30:00.000Z",
+      "domicile": false,
+      "adversaire": "AS AMICALE JEUNESSE BLESOISE",
+      "lieu": "GYMNASE RAYMOND ETELIN"
+    },
+    {
+      "id": "RFSA012",
+      "equipe": "Seniors féminines",
+      "competition": "Régionale féminine",
+      "date": "2026-12-05T19:30:00.000Z",
+      "domicile": false,
+      "adversaire": "MONTLOUIS 2",
+      "lieu": "LÉO LAGRANGE (MONTLOUIS)"
+    },
+    {
+      "id": "18AA028",
+      "equipe": "M18 filles",
+      "competition": "Régionale M18 filles",
+      "date": "2026-12-19T17:00:00.000Z",
+      "domicile": true,
+      "adversaire": "ALERTE SPORTIVE MONTLOUIS",
+      "lieu": "LEO LAGRANGE"
+    },
+    {
+      "id": "RFSA040",
+      "equipe": "Seniors féminines",
+      "competition": "Régionale féminine",
+      "date": "2026-12-19T19:30:00.000Z",
+      "domicile": true,
+      "adversaire": "JOUE VOLLEY-BALL",
+      "lieu": "LEO LAGRANGE"
+    },
+    {
+      "id": "18MA021",
+      "equipe": "M18 garçons",
+      "competition": "Prénationale M18 garçons",
+      "date": "2027-01-09T17:00:00.000Z",
+      "domicile": true,
+      "adversaire": "C'CHARTRES VOLLEY",
+      "lieu": "LEO LAGRANGE"
+    },
+    {
+      "id": "PNMA021",
+      "equipe": "Seniors masculins",
+      "competition": "Prénationale masculine",
+      "date": "2027-01-09T19:30:00.000Z",
+      "domicile": true,
+      "adversaire": "C'CHARTRES VOLLEY",
+      "lieu": "LEO LAGRANGE"
+    },
+    {
+      "id": "RFSA045",
+      "equipe": "Seniors féminines",
+      "competition": "Régionale féminine",
+      "date": "2027-01-09T19:30:00.000Z",
+      "domicile": false,
+      "adversaire": "UNION SPORTIVE CHAMBRAY LES TOURS",
+      "lieu": "GYMNASE CAMILLE DANGUILLAUME"
+    },
+    {
+      "id": "18MA025",
+      "equipe": "M18 garçons",
+      "competition": "Prénationale M18 garçons",
+      "date": "2027-01-16T17:00:00.000Z",
+      "domicile": false,
+      "adversaire": "SAINT AVERTIN SPORTS",
+      "lieu": "GYMNASE LEON BRULON"
+    },
+    {
+      "id": "PNMA025",
+      "equipe": "Seniors masculins",
+      "competition": "Prénationale masculine",
+      "date": "2027-01-16T19:30:00.000Z",
+      "domicile": false,
+      "adversaire": "SAINT AVERTIN SPORTS",
+      "lieu": "GYMNASE LEON BRULON"
+    },
+    {
+      "id": "RFSA053",
+      "equipe": "Seniors féminines",
+      "competition": "Régionale féminine",
+      "date": "2027-01-16T19:30:00.000Z",
+      "domicile": true,
+      "adversaire": "CERCLE JULES FERRY FLEURY",
+      "lieu": "LEO LAGRANGE"
+    },
+    {
+      "id": "18MR029",
+      "equipe": "M18 garçons",
+      "competition": "Prénationale M18 garçons",
+      "date": "2027-01-30T17:00:00.000Z",
+      "domicile": false,
+      "adversaire": "SMOC ST-JEAN DE BRAYE",
+      "lieu": "HALLE DES SPORTS"
+    },
+    {
+      "id": "RFSA056",
+      "equipe": "Seniors féminines",
+      "competition": "Régionale féminine",
+      "date": "2027-01-30T19:30:00.000Z",
+      "domicile": false,
+      "adversaire": "VOLLEY BEAUNE CLUB",
+      "lieu": "GYMNASE INTERCOMMUNAL"
+    },
+    {
+      "id": "PNMR029",
+      "equipe": "Seniors masculins",
+      "competition": "Prénationale masculine",
+      "date": "2027-01-31T13:30:00.000Z",
+      "domicile": false,
+      "adversaire": "SMOC ST-JEAN DE BRAYE",
+      "lieu": "HALLE DES SPORTS"
+    },
+    {
+      "id": "18MR033",
+      "equipe": "M18 garçons",
+      "competition": "Prénationale M18 garçons",
+      "date": "2027-02-13T17:00:00.000Z",
+      "domicile": false,
+      "adversaire": "CHATEAUDUN VOLLEY-BALL",
+      "lieu": "GYMNASE PASTEUR"
+    },
+    {
+      "id": "PNMR033",
+      "equipe": "Seniors masculins",
+      "competition": "Prénationale masculine",
+      "date": "2027-02-13T19:30:00.000Z",
+      "domicile": false,
+      "adversaire": "CHATEAUDUN VOLLEY-BALL",
+      "lieu": "GYMNASE PASTEUR"
+    },
+    {
+      "id": "RFSA066",
+      "equipe": "Seniors féminines",
+      "competition": "Régionale féminine",
+      "date": "2027-02-13T19:30:00.000Z",
+      "domicile": true,
+      "adversaire": "MONTLOUIS 1",
+      "lieu": "LEO LAGRANGE"
+    },
+    {
+      "id": "18MR037",
+      "equipe": "M18 garçons",
+      "competition": "Prénationale M18 garçons",
+      "date": "2027-02-20T17:00:00.000Z",
+      "domicile": true,
+      "adversaire": "ETUDIANT CLUB ORLEANAIS",
+      "lieu": "LEO LAGRANGE"
+    },
+    {
+      "id": "PNMR037",
+      "equipe": "Seniors masculins",
+      "competition": "Prénationale masculine",
+      "date": "2027-02-20T19:30:00.000Z",
+      "domicile": true,
+      "adversaire": "ETUDIANT CLUB ORLEANAIS",
+      "lieu": "LEO LAGRANGE"
+    },
+    {
+      "id": "18MR041",
+      "equipe": "M18 garçons",
+      "competition": "Prénationale M18 garçons",
+      "date": "2027-03-20T17:00:00.000Z",
+      "domicile": true,
+      "adversaire": "TOURS VOLLEY-BALL",
+      "lieu": "LEO LAGRANGE"
+    },
+    {
+      "id": "PNMR041",
+      "equipe": "Seniors masculins",
+      "competition": "Prénationale masculine",
+      "date": "2027-03-20T19:30:00.000Z",
+      "domicile": true,
+      "adversaire": "TOURS VOLLEY-BALL",
+      "lieu": "LEO LAGRANGE"
+    },
+    {
+      "id": "18MR045",
+      "equipe": "M18 garçons",
+      "competition": "Prénationale M18 garçons",
+      "date": "2027-04-03T16:00:00.000Z",
+      "domicile": true,
+      "adversaire": "AS AMICALE JEUNESSE BLESOISE",
+      "lieu": "LEO LAGRANGE"
+    },
+    {
+      "id": "PNMR045",
+      "equipe": "Seniors masculins",
+      "competition": "Prénationale masculine",
+      "date": "2027-04-03T18:30:00.000Z",
+      "domicile": true,
+      "adversaire": "AS AMICALE JEUNESSE BLESOISE",
+      "lieu": "LEO LAGRANGE"
+    },
+    {
+      "id": "18MR049",
+      "equipe": "M18 garçons",
+      "competition": "Prénationale M18 garçons",
+      "date": "2027-04-10T16:00:00.000Z",
+      "domicile": false,
+      "adversaire": "C'CHARTRES VOLLEY",
+      "lieu": "ROSSKOPF"
+    },
+    {
+      "id": "PNMR049",
+      "equipe": "Seniors masculins",
+      "competition": "Prénationale masculine",
+      "date": "2027-04-10T18:30:00.000Z",
+      "domicile": false,
+      "adversaire": "C'CHARTRES VOLLEY",
+      "lieu": "ROSSKOPF"
+    },
+    {
+      "id": "18MR053",
+      "equipe": "M18 garçons",
+      "competition": "Prénationale M18 garçons",
+      "date": "2027-04-17T16:00:00.000Z",
+      "domicile": true,
+      "adversaire": "SAINT AVERTIN SPORTS",
+      "lieu": "LEO LAGRANGE"
+    },
+    {
+      "id": "PNMR053",
+      "equipe": "Seniors masculins",
+      "competition": "Prénationale masculine",
+      "date": "2027-04-17T18:30:00.000Z",
+      "domicile": true,
+      "adversaire": "SAINT AVERTIN SPORTS",
+      "lieu": "LEO LAGRANGE"
+    },
+    {
+      "id": "18AA010",
+      "equipe": "M18 filles",
+      "competition": "Régionale M18 filles",
+      "date": "2027-11-07T17:00:00.000Z",
+      "domicile": true,
+      "adversaire": "JOUE VOLLEY-BALL",
+      "lieu": "LEO LAGRANGE"
+    }
+  ]
+}

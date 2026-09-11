@@ -1,0 +1,227 @@
+---
+import { dateLongue, heure, gagne } from "../lib/donnees";
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  prochain: CollectionEntry<"matchs"> | null;
+  resultats: CollectionEntry<"matchs">[];
+}
+const { prochain, resultats } = Astro.props;
+---
+
+<section class="section wrap" id="match">
+  <div class="bande-in">
+    <div>
+      {
+        prochain ? (
+          <>
+            <p class="eyebrow">
+              {prochain.data.domicile ? "Prochaine réception" : "Prochain déplacement"}
+              {" \u00b7 "}
+              {prochain.data.competition}
+            </p>
+            <div class="versus">
+              <span class="team home">Bourges VB</span>
+              <span class="vs">{prochain.data.domicile ? "reçoit" : "se déplace à"}</span>
+              <span class="team">{prochain.data.adversaire}</span>
+            </div>
+            <div class="bande-meta">
+              <span>
+                {dateLongue(prochain.data.date)} &middot; {heure(prochain.data.date)}
+              </span>
+              {prochain.data.lieu && <span>{prochain.data.lieu}</span>}
+              <span>{prochain.data.equipe}</span>
+            </div>
+            <div class="countdown" data-echeance={prochain.data.date.toISOString()}>
+              <div class="unit"><b data-j>--</b><span>Jours</span></div>
+              <div class="unit"><b data-h>--</b><span>Heures</span></div>
+              <div class="unit"><b data-m>--</b><span>Minutes</span></div>
+              <div class="unit"><b data-s>--</b><span>Secondes</span></div>
+            </div>
+          </>
+        ) : (
+          <>
+            <p class="eyebrow">Calendrier</p>
+            <p class="vide">
+              Aucune rencontre programmée pour l'instant. Le calendrier de la
+              prochaine journée est publié dès qu'il est connu.
+            </p>
+          </>
+        )
+      }
+    </div>
+
+    <div>
+      <p class="eyebrow">Derniers résultats</p>
+      {
+        resultats.length ? (
+          <ul class="resultats">
+            {resultats.map((m) => (
+              <li class:list={{ win: gagne(m) }}>
+                <span class="r-team">
+                  {m.data.domicile
+                    ? `Bourges VB \u2014 ${m.data.adversaire}`
+                    : `${m.data.adversaire} \u2014 Bourges VB`}
+                </span>
+                <span class="r-score">
+                  {m.data.domicile
+                    ? `${m.data.scoreNous} \u2014 ${m.data.scoreEux}`
+                    : `${m.data.scoreEux} \u2014 ${m.data.scoreNous}`}
+                </span>
+                {m.data.sets && <span class="r-sets">{m.data.sets}</span>}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p class="vide">Les résultats apparaîtront ici après la première journée.</p>
+        )
+      }
+      <p class="plus"><a class="lien" href="/matchs/">Tout le calendrier</a></p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .bande-in {
+    display: grid;
+    gap: clamp(1.5rem, 4vw, 3rem);
+  }
+  @media (min-width: 940px) {
+    .bande-in {
+      grid-template-columns: 1.25fr 1fr;
+    }
+  }
+  .versus {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.75rem, 2.5vw, 1.5rem);
+    flex-wrap: wrap;
+    margin-top: 0.9rem;
+  }
+  /* En monochrome, c'est l'adversaire qu'on eteint pour distinguer le club */
+  .team {
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 800;
+    font-size: clamp(1.7rem, 4.5vw, 2.6rem);
+    line-height: 0.95;
+    text-transform: uppercase;
+    color: var(--fg-2);
+  }
+  .team.home {
+    color: var(--accent);
+  }
+  .vs {
+    font-family: "Barlow Condensed", sans-serif;
+    font-style: italic;
+    font-weight: 800;
+    font-size: 1.35rem;
+    color: var(--fg-2);
+  }
+  .bande-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 1.25rem;
+    margin-top: 0.85rem;
+    font-family: "Barlow Semi Condensed", sans-serif;
+    font-size: var(--s0);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--fg-2);
+  }
+  .countdown {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    margin-top: 1.2rem;
+  }
+  .unit {
+    background: var(--noir-3);
+    border-bottom: 3px solid var(--signal);
+    padding: 0.5rem 0.75rem;
+    min-width: 70px;
+  }
+  .unit b {
+    display: block;
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 800;
+    font-size: 1.8rem;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .unit span {
+    font-family: "Barlow Semi Condensed", sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--fg-2);
+  }
+  .resultats {
+    list-style: none;
+    padding: 0;
+    margin: 0.9rem 0 0;
+    display: grid;
+  }
+  .resultats li {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.15rem 0.9rem;
+    align-items: baseline;
+    padding: 0.7rem 0;
+    border-top: 1px solid var(--hair);
+  }
+  .resultats li:first-child {
+    border-top: 2px solid var(--accent);
+  }
+  .r-team {
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+  .r-score {
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 800;
+    font-size: 1.4rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--fg-2);
+  }
+  /* Gagner : l'une des deux seules choses en vert */
+  .win .r-score {
+    color: var(--signal);
+  }
+  .r-sets {
+    grid-column: 1 / -1;
+    font-family: "Barlow Semi Condensed", sans-serif;
+    font-size: var(--s0);
+    color: var(--fg-2);
+    font-variant-numeric: tabular-nums;
+  }
+  .vide {
+    color: var(--fg-2);
+    margin: 0.9rem 0 0;
+  }
+  .plus {
+    margin-top: 1.25rem;
+  }
+</style>
+
+<script>
+  const bloc = document.querySelector<HTMLElement>(".countdown");
+  if (bloc?.dataset.echeance) {
+    const echeance = new Date(bloc.dataset.echeance).getTime();
+    const cible = (s: string) => bloc.querySelector<HTMLElement>(`[data-${s}]`)!;
+    const pad = (n: number) => String(n).padStart(2, "0");
+
+    const tick = () => {
+      const restant = Math.floor((echeance - Date.now()) / 1000);
+      if (restant <= 0) {
+        bloc.remove();
+        return;
+      }
+      cible("j").textContent = pad(Math.floor(restant / 86400));
+      cible("h").textContent = pad(Math.floor(restant / 3600) % 24);
+      cible("m").textContent = pad(Math.floor(restant / 60) % 60);
+      cible("s").textContent = pad(restant % 60);
+    };
+    tick();
+    setInterval(tick, 1000);
+  }
+</script>

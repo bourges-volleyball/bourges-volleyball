@@ -1,0 +1,293 @@
+---
+import Base from "../layouts/Base.astro";
+import { boutique, dateLongue, joursRestants } from "../lib/donnees";
+
+const { ouverts, aVenir, termines } = await boutique();
+---
+
+<Base
+  titre="Boutique"
+  description="La boutique du Bourges Volley-Ball : textile Joma aux couleurs du club, en commande groupée."
+>
+  <section class="page-head wrap">
+    <p class="eyebrow">Textile du club</p>
+    <h1>Boutique</h1>
+    <p>
+      Le club ouvre une commande groupée à dates fixes dans la saison.
+      Vous commandez en ligne, le club passe commande à la fermeture,
+      et la livraison se fait à l’entraînement.
+    </p>
+  </section>
+
+  {
+    ouverts.length > 0 && (
+      <section class="section wrap">
+        <div class="section-head"><h2>Commande en cours</h2></div>
+        <div class="campagnes">
+          {ouverts.map((c) => {
+            const jours = joursRestants(c.data.fermetureLe);
+            return (
+              <article class="campagne ouverte">
+                {c.data.image && (
+                  <img class="visuel" src={c.data.image} alt="" loading="lazy" />
+                )}
+                <div class="corps">
+                  <p class="minuteur">
+                    {jours <= 0
+                      ? "Dernier jour"
+                      : jours === 1
+                        ? "Plus qu’un jour"
+                        : `Plus que ${jours} jours`}
+                  </p>
+                  <h3>{c.data.nom}</h3>
+                  <p class="desc">{c.data.description}</p>
+
+                  {c.data.tailles && c.data.tailles.length > 0 && (
+                    <div class="tailles">
+                      <p class="etiquette">Tailles disponibles</p>
+                      <ul>
+                        {c.data.tailles.map((t) => (
+                          <li>{t}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  <dl class="meta">
+                    <div>
+                      <dt>À partir de</dt>
+                      <dd>{c.data.prix} €</dd>
+                    </div>
+                    <div>
+                      <dt>Commandes jusqu’au</dt>
+                      <dd>{dateLongue(c.data.fermetureLe)}</dd>
+                    </div>
+                  </dl>
+
+                  <a class="btn" href={c.data.lienHelloAsso} rel="noopener">
+                    <span>Commander sur HelloAsso</span>
+                  </a>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+    )
+  }
+
+  {
+    ouverts.length === 0 && (
+      <section class="section wrap">
+        <div class="ferme">
+          <p class="etiquette">Boutique fermée</p>
+          <h2>Aucune commande en cours</h2>
+          <p>
+            Le club regroupe les commandes une à deux fois par saison, pour
+            obtenir de meilleurs tarifs et mutualiser les frais de port.
+            {aVenir.length > 0 ? (
+              <>
+                {" "}La prochaine ouvre le <b>{dateLongue(aVenir[0].data.ouvertureLe)}</b>.
+              </>
+            ) : (
+              " La prochaine sera annoncée dans les actualités et sur nos réseaux."
+            )}
+          </p>
+          <a class="btn ghost" href="/contact/"><span>Être prévenu</span></a>
+        </div>
+      </section>
+    )
+  }
+
+  <section class="section wrap">
+    <div class="section-head"><h2>Comment ça marche</h2></div>
+    <ol class="etapes">
+      <li>
+        <h3>Vous commandez en ligne</h3>
+        <p>
+          Paiement sécurisé par HelloAsso. Pensez à indiquer la taille pour
+          chaque vêtement — elle est obligatoire, sauf pour les sacs.
+        </p>
+      </li>
+      <li>
+        <h3>Le club groupe les commandes</h3>
+        <p>
+          À la date de fermeture, une commande unique part chez l’équipementier.
+          C’est ce groupage qui permet la remise sur le prix catalogue.
+        </p>
+      </li>
+      <li>
+        <h3>Livraison à l’entraînement</h3>
+        <p>
+          Les commandes sont distribuées au gymnase quelques semaines plus tard.
+          Aucun frais de port à votre charge.
+        </p>
+      </li>
+    </ol>
+    <p class="note">
+      HelloAsso est gratuit pour les associations et se rémunère par une
+      contribution volontaire ajoutée en fin de commande. Elle est modifiable,
+      et peut être ramenée à zéro.
+    </p>
+  </section>
+
+  {
+    termines.length > 0 && (
+      <section class="section wrap passees">
+        <div class="section-head"><h2>Commandes passées</h2></div>
+        <ul class="archive">
+          {termines.map((c) => (
+            <li>
+              <span>{c.data.nom}</span>
+              <span class="quand">close le {dateLongue(c.data.fermetureLe)}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+</Base>
+
+<style>
+  .campagnes { display: grid; gap: 1.5rem; }
+  .campagne {
+    display: grid;
+    background: var(--noir-2);
+    border: 1px solid var(--hair);
+  }
+  @media (min-width: 820px) {
+    .campagne { grid-template-columns: 0.9fr 1.1fr; align-items: stretch; }
+  }
+  .visuel { width: 100%; height: 100%; object-fit: cover; min-height: 220px; }
+  .corps { padding: clamp(1.25rem, 3.5vw, 2.25rem); display: grid; gap: 0.9rem; align-content: start; }
+
+  /* Le compte a rebours est l information decisive d une commande groupee :
+     passe la date, il n y a plus rien a acheter. */
+  .minuteur {
+    margin: 0;
+    justify-self: start;
+    background: var(--signal);
+    color: var(--sur-signal);
+    font-family: "Barlow Semi Condensed", sans-serif;
+    font-weight: 600;
+    font-size: var(--s0);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.75rem;
+    transform: skewX(-10deg);
+  }
+  .campagne h3 { font-size: clamp(1.8rem, 4.5vw, 2.6rem); }
+  .desc { margin: 0; color: var(--fg-2); }
+
+  .etiquette {
+    margin: 0 0 0.5rem;
+    font-family: "Barlow Semi Condensed", sans-serif;
+    font-weight: 600;
+    font-size: var(--s0);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--fg-2);
+  }
+  .tailles ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+  .tailles li {
+    border: 1px solid var(--hair);
+    padding: 0.25rem 0.6rem;
+    font-family: "Barlow Semi Condensed", sans-serif;
+    font-weight: 600;
+    font-size: 0.82rem;
+    letter-spacing: 0.06em;
+  }
+
+  .meta {
+    margin: 0;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  }
+  .meta dt {
+    font-family: "Barlow Semi Condensed", sans-serif;
+    font-size: var(--s0);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--fg-2);
+    margin-bottom: 0.3rem;
+  }
+  .meta dd {
+    margin: 0;
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 800;
+    font-size: 1.6rem;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+  .campagne .btn { justify-self: start; margin-top: 0.3rem; }
+
+  /* Etat ferme : il doit rester presentable, c est l etat le plus frequent */
+  .ferme {
+    background: var(--noir-2);
+    border: 1px solid var(--hair);
+    border-left: 4px solid var(--signal);
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+    display: grid;
+    gap: 0.8rem;
+    justify-items: start;
+  }
+  .ferme h2 { font-size: clamp(1.8rem, 5vw, 2.6rem); }
+  .ferme p { margin: 0; color: var(--fg-2); max-width: 62ch; }
+  .ferme b { color: var(--fg); }
+
+  .etapes {
+    list-style: none;
+    counter-reset: etape;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 1px;
+    background: var(--hair);
+    border: 1px solid var(--hair);
+  }
+  @media (min-width: 820px) { .etapes { grid-template-columns: repeat(3, 1fr); } }
+  .etapes li {
+    counter-increment: etape;
+    background: var(--noir-2);
+    padding: clamp(1.2rem, 3vw, 1.8rem);
+  }
+  .etapes li::before {
+    content: counter(etape, decimal-leading-zero);
+    font-family: "Barlow Semi Condensed", sans-serif;
+    font-size: var(--s0);
+    letter-spacing: 0.14em;
+    color: var(--signal);
+    display: block;
+    margin-bottom: 0.6rem;
+  }
+  .etapes h3 { font-size: 1.5rem; margin-bottom: 0.4rem; }
+  .etapes p { margin: 0; color: var(--fg-2); font-size: 0.94rem; }
+  .note { margin-top: 1.25rem; color: var(--fg-2); font-size: 0.9rem; max-width: 70ch; }
+
+  .passees { border-top: 1px solid var(--hair); }
+  .archive { list-style: none; padding: 0; margin: 0; display: grid; }
+  .archive li {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.3rem 1rem;
+    padding: 0.8rem 0;
+    border-top: 1px solid var(--hair);
+    color: var(--fg-2);
+  }
+  .archive li:first-child { border-top: 0; }
+  .quand {
+    font-family: "Barlow Semi Condensed", sans-serif;
+    font-size: var(--s0);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+</style>

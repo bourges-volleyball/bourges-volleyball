@@ -1,0 +1,122 @@
+---
+import Base from "../layouts/Base.astro";
+import Hero from "../components/Hero.astro";
+import Portes from "../components/Portes.astro";
+import BandeMatch from "../components/BandeMatch.astro";
+import CarteActu from "../components/CarteActu.astro";
+import BandePartenaires from "../components/BandePartenaires.astro";
+import { matchs, actus, partenaires, agenda, dateLongue, heure } from "../lib/donnees";
+
+const { prochain, joues } = await matchs();
+const dernieresActus = await actus(3);
+const groupes = await partenaires();
+const rendezvous = await agenda(4);
+---
+
+<Base>
+  <Hero actus={dernieresActus} />
+
+
+  <Portes />
+  <BandeMatch prochain={prochain} resultats={joues.slice(0, 3)} />
+
+
+
+{
+    dernieresActus.length > 0 && (
+      <section class="section wrap" id="actus">
+        <div class="section-head">
+          <h2>Actualités</h2>
+          <a class="lien" href="/actus/">Toutes les actus</a>
+        </div>
+        <div class="grille-actus">
+          {dernieresActus.map((a) => <CarteActu actu={a} />)}
+        </div>
+      </section>
+    )
+  }
+
+  {
+    rendezvous.length > 0 && (
+      <section class="section wrap" id="agenda">
+        <div class="section-head">
+          <h2>Prochains rendez-vous</h2>
+          <a class="lien" href="/agenda/">Tout l&rsquo;agenda</a>
+        </div>
+        <ol class="rdv">
+          {rendezvous.map((r) => (
+            <li>
+              <span class="rdv-date">
+                <b>{dateLongue(r.date)}</b>
+                {r.avecHeure && !r.dateFin && <span class="mono">{heure(r.date)}</span>}
+              </span>
+              <span class="rdv-titre">
+                {r.titre}
+                <span class="rdv-cat">{r.categorie}</span>
+              </span>
+              {r.lieu && <span class="rdv-lieu">{r.lieu}</span>}
+            </li>
+          ))}
+        </ol>
+      </section>
+    )
+  }
+
+  <BandePartenaires groupes={groupes} />
+</Base>
+
+<style>
+
+  .grille-actus {
+    display: grid;
+    gap: 1.5rem;
+  }
+  @media (min-width: 760px) {
+    .grille-actus {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .rdv { list-style: none; padding: 0; margin: 0; display: grid; }
+  .rdv li {
+    display: grid;
+    gap: 0.15rem 1.5rem;
+    padding: 0.85rem 0;
+    border-top: 1px solid var(--hair);
+    align-items: baseline;
+  }
+  .rdv li:first-child { border-top: 2px solid var(--accent); }
+  @media (min-width: 760px) {
+    .rdv li { grid-template-columns: 14rem 1fr auto; }
+  }
+  .rdv-date b {
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 1.15rem;
+    margin-right: 0.5rem;
+  }
+  .rdv-date .mono {
+    font-size: var(--s0);
+    letter-spacing: 0.1em;
+    color: var(--fg-2);
+  }
+  .rdv-titre { font-weight: 600; }
+  .rdv-cat {
+    display: block;
+    font-family: "Barlow Semi Condensed", sans-serif;
+    font-weight: 600;
+    font-size: 0.66rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--fg-2);
+    margin-top: 0.15rem;
+  }
+  .rdv-lieu {
+    font-family: "Barlow Semi Condensed", sans-serif;
+    font-size: var(--s0);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg-2);
+  }
+</style>

@@ -1,0 +1,119 @@
+---
+import Base from "../layouts/Base.astro";
+---
+
+<Base
+  titre="Contact"
+  description="Contacter le Bourges Volley-Ball : adresse, téléphone, mail et formulaire."
+>
+  <section class="page-head wrap">
+    <p class="eyebrow">Une question, un essai</p>
+    <h1>Contact</h1>
+    <p>
+      Pour venir essayer, poser une question sur les créneaux
+      ou proposer un partenariat, écrivez-nous. On répond sous quelques jours.
+    </p>
+  </section>
+
+  <section class="section wrap">
+    <div class="deux">
+      <div>
+        <h2>Nous écrire</h2>
+        {/* Formulaire géré par Netlify : aucun serveur à maintenir,
+            les réponses arrivent par mail. */}
+        <form name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+          <input type="hidden" name="form-name" value="contact" />
+          <p class="cache">
+            <label>Ne rien remplir ici <input name="bot-field" /></label>
+          </p>
+
+          <p>
+            <label for="nom">Votre nom</label>
+            <input id="nom" name="nom" type="text" required autocomplete="name" />
+          </p>
+          <p>
+            <label for="email">Votre e-mail</label>
+            <input id="email" name="email" type="email" required autocomplete="email" />
+          </p>
+          <p>
+            <label for="sujet">Sujet</label>
+            <select id="sujet" name="sujet">
+              <option>Venir à une séance d&rsquo;essai</option>
+              <option>Question sur les créneaux ou les tarifs</option>
+              <option>Proposition de partenariat</option>
+              <option>Autre</option>
+            </select>
+          </p>
+          <p>
+            <label for="message">Votre message</label>
+            <textarea id="message" name="message" rows="6" required></textarea>
+          </p>
+          <p>
+            <button class="btn" type="submit"><span>Envoyer</span></button>
+          </p>
+        </form>
+      </div>
+
+      <div class="infos">
+        <h2>Coordonnées</h2>
+        <dl>
+          <div>
+            <dt>Adresse</dt>
+            <dd>33 rue du 1er Régiment d&rsquo;Artillerie<br />18000 Bourges</dd>
+          </div>
+          <div>
+            <dt>Mail</dt>
+            <dd><a href="mailto:bourgesvolley@gmail.com">bourgesvolley@gmail.com</a></dd>
+          </div>
+          <div>
+            <dt>Téléphone</dt>
+            <dd><a href="tel:+33666782802">06 66 78 28 02</a></dd>
+          </div>
+          <div>
+            <dt>Reseaux</dt>
+            <dd>
+              <a href="https://www.instagram.com/bourgesvolleyball/" rel="noopener">
+                Instagram @bourgesvolleyball
+              </a>
+            </dd>
+          </div>
+          <div>
+            <dt>Fédérations</dt>
+            <dd>FFVolley et Ufolep</dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .deux { display: grid; gap: clamp(2rem, 5vw, 3.5rem); }
+  @media (min-width: 900px) { .deux { grid-template-columns: 1.2fr 0.8fr; } }
+  h2 { font-size: clamp(1.6rem, 4vw, 2.2rem); margin-bottom: 1.25rem; }
+  form p { margin: 0 0 1.1rem; }
+  label {
+    display: block; font-family: "Barlow Semi Condensed", sans-serif; font-weight: 600;
+    font-size: var(--s0); letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--fg-2); margin-bottom: 0.4rem;
+  }
+  input, select, textarea {
+    width: 100%; background: var(--noir-2); color: var(--fg);
+    border: 1px solid var(--hair); padding: 0.7rem 0.8rem;
+    font-family: inherit; font-size: var(--s1);
+  }
+  input:focus, select:focus, textarea:focus { border-color: var(--signal); }
+  textarea { resize: vertical; }
+  button.btn { cursor: pointer; font-family: "Barlow Semi Condensed", sans-serif; }
+  /* Piege a robots : invisible pour les humains, rempli par les spammeurs */
+  .cache { position: absolute; left: -9999px; }
+  .infos dl { margin: 0; display: grid; gap: 1.25rem; }
+  .infos dt {
+    font-family: "Barlow Semi Condensed", sans-serif; font-size: var(--s0);
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg-2);
+    margin-bottom: 0.3rem;
+  }
+  .infos dd { margin: 0; font-size: var(--s2); font-weight: 600; }
+  .infos a { color: inherit; }
+  .infos a:hover { color: var(--signal); }
+</style>

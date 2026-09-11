@@ -1,0 +1,282 @@
+---
+import Base from "../layouts/Base.astro";
+import { equipes } from "../lib/donnees";
+
+const liste = await equipes();
+
+/* Les âges proposés sont déduits des équipes, pas fixés à la main :
+   proposer un âge qu'aucun groupe n'accueille ouvrait la page sur un vide.
+   Si le club crée un jour une école de volley, la liste s'étendra seule. */
+const AGE_PLANCHER = Math.min(...liste.map((e) => e.data.ageMin));
+const AGE_ADULTE = 18;
+const AGES = Array.from(
+  { length: Math.max(1, AGE_ADULTE - AGE_PLANCHER + 1) },
+  (_, i) => AGE_PLANCHER + i,
+);
+const defaut = AGE_PLANCHER;
+---
+
+<Base
+  titre="Nous rejoindre"
+  description="Trouvez votre créneau au Bourges Volley-Ball selon votre âge : catégorie, horaires, gymnase et tarif. Deux séances d'essai gratuites."
+>
+  <section class="page-head wrap">
+    <p class="eyebrow">Étape 1 &mdash; trouver son créneau</p>
+    <h1>Nous rejoindre</h1>
+    <p>
+      Donnez un âge, vous avez immédiatement la catégorie, les horaires,
+      le gymnase et le tarif. Deux séances d'essai gratuites, sans licence
+      et sans engagement.
+    </p>
+  </section>
+
+  <section class="section wrap">
+    <div class="picker">
+      <div>
+        <label for="age">Âge du futur licencié</label>
+        <select id="age">
+          {
+            AGES.map((a) => (
+              <option value={a} selected={a === defaut}>
+                {a === 18 ? "18 ans et +" : `${a} ans`}
+              </option>
+            ))
+          }
+        </select>
+      </div>
+      <p class="aide">
+        Le club accueille à partir de {AGE_PLANCHER} ans. Les créneaux se
+        mettent à jour automatiquement.
+      </p>
+    </div>
+
+    <p class="compte" id="compte" hidden></p>
+
+    <div id="resultats" aria-live="polite">
+      {
+        liste.map((e) => (
+          <article class="resultat" data-min={e.data.ageMin} data-max={e.data.ageMax} hidden>
+            <div class="res-top">
+              <h2>{e.data.nom}</h2>
+              <p class="res-sub">{e.data.niveau}</p>
+            </div>
+            <dl class="faits">
+              <div>
+                <dt>Entraînements</dt>
+                <dd>
+                  {e.data.creneaux.map((c) => (
+                    <span class="créneau">{c.jour} <b class="mono">{c.horaire}</b></span>
+                  ))}
+                </dd>
+              </div>
+              <div>
+                <dt>Gymnase</dt>
+                <dd>{e.data.gymnase}</dd>
+              </div>
+              {e.data.coach && (
+                <div>
+                  <dt>Encadrement</dt>
+                  <dd>{e.data.coach}</dd>
+                </div>
+              )}
+              <div>
+                <dt>Saison complète</dt>
+                <dd>{e.data.tarif} &euro;<span class="precision">licence FFVolley comprise</span></dd>
+              </div>
+            </dl>
+            <div class="res-cta">
+              <a class="btn" href="#inscription"><span>S&rsquo;inscrire</span></a>
+              <a class="btn ghost" href="/contact/"><span>Venir essayer</span></a>
+            </div>
+          </article>
+        ))
+      }
+      <p class="aucun" hidden>
+        Aucun créneau ne correspond à cet âge pour le moment.
+        Écrivez-nous, on trouvera une solution.
+      </p>
+    </div>
+  </section>
+
+  <section class="section wrap" id="inscription">
+    <div class="section-head"><h2>Comment s&rsquo;inscrire</h2></div>
+    <ol class="etapes">
+      <li>
+        <h3>Venez essayer</h3>
+        <p>Deux séances gratuites, sans licence. Prévenez-nous avant de venir pour qu&rsquo;un encadrant vous accueille.</p>
+      </li>
+      <li>
+        <h3>Réunissez les pieces</h3>
+        <p>Une photo d&rsquo;identité, le questionnaire de santé ou un certificat médical selon l&rsquo;age, et l&rsquo;autorisation parentale pour les mineurs.</p>
+      </li>
+      <li>
+        <h3>Réglez la cotisation</h3>
+        <p>En ligne, ou sur place. Paiement en trois fois possible. Pass&rsquo;Sport, coupons ANCV et chèques vacances acceptes.</p>
+      </li>
+    </ol>
+    <p class="note">Le lien de paiement en ligne sera ajouté ici des l&rsquo;ouverture de la campagne d&rsquo;adhesion.</p>
+  </section>
+</Base>
+
+<style>
+  .picker {
+    display: flex; flex-wrap: wrap; align-items: end; gap: 1rem 1.5rem;
+    border-top: 2px solid var(--accent); border-bottom: 1px solid var(--hair);
+    padding-block: 1.4rem; margin-bottom: 1.5rem;
+  }
+  label {
+    display: block; font-family: "Barlow Semi Condensed", sans-serif; font-weight: 600;
+    font-size: var(--s0); letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--fg-2); margin-bottom: 0.45rem;
+  }
+  select {
+    font-family: "Barlow Condensed", sans-serif; font-weight: 800; text-transform: uppercase;
+    font-size: clamp(1.8rem, 4.5vw, 2.6rem); line-height: 1;
+    background: transparent; color: var(--fg);
+    border: 0; border-bottom: 3px solid var(--signal);
+    padding: 0.15rem 2rem 0.3rem 0.1rem; cursor: pointer; appearance: none;
+    background-image:
+      linear-gradient(45deg, transparent 50%, currentColor 50%),
+      linear-gradient(135deg, currentColor 50%, transparent 50%);
+    background-position: right 8px center, right 2px center;
+    background-size: 7px 7px, 7px 7px; background-repeat: no-repeat;
+  }
+  select option { background: var(--noir-2); color: var(--fg); }
+  .aide { margin: 0; color: var(--fg-2); font-size: 0.9rem; }
+
+  #resultats { display: grid; gap: 1px; background: var(--hair); }
+  .resultat {
+    background: var(--noir-2); padding: clamp(1.5rem, 4vw, 2.25rem);
+    display: grid; gap: 1.25rem;
+  }
+  /* Indispensable : « display: grid » ci-dessus l'emporte sur la regle
+     du navigateur pour [hidden], et tous les panneaux restaient affiches. */
+  .resultat[hidden],
+  .aucun[hidden],
+  .compte[hidden] {
+    display: none;
+  }
+  .res-top {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.6rem 1.25rem;
+    padding-bottom: 1.1rem; border-bottom: 1px solid var(--hair);
+  }
+  .res-top h2 { font-size: clamp(2.4rem, 7vw, 3.6rem); color: var(--signal); }
+  .res-sub { margin: 0; color: var(--fg-2); font-size: var(--s2); }
+  .faits {
+    margin: 0; display: grid; gap: 1.4rem;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  }
+  dt {
+    font-family: "Barlow Semi Condensed", sans-serif; font-size: var(--s0);
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg-2);
+    margin-bottom: 0.4rem;
+  }
+  dd { margin: 0; font-weight: 600; font-size: var(--s2); line-height: 1.35; }
+  .créneau { display: block; font-weight: 500; }
+  .precision {
+    display: block; font-family: "Barlow Semi Condensed", sans-serif; font-weight: 400;
+    font-size: var(--s1); color: var(--fg-2);
+  }
+  .res-cta {
+    display: flex; flex-wrap: wrap; gap: 0.8rem;
+    padding-top: 1.1rem; border-top: 1px solid var(--hair);
+  }
+  /* Quand plusieurs groupes conviennent, il faut le dire : sinon le
+     visiteur s'arrete au premier panneau et ignore les autres. */
+  .compte {
+    margin: 0 0 1rem;
+    font-family: "Barlow Semi Condensed", sans-serif;
+    font-weight: 600;
+    font-size: var(--s0);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--signal);
+  }
+  .aucun { background: var(--noir-2); padding: 1.5rem; margin: 0; color: var(--fg-2); }
+
+  .etapes {
+    list-style: none; counter-reset: etape; padding: 0; margin: 0;
+    display: grid; gap: 1px; background: var(--hair); border: 1px solid var(--hair);
+  }
+  @media (min-width: 820px) { .etapes { grid-template-columns: repeat(3, 1fr); } }
+  /* Numérotation : ici l'ordre porte une information reelle,
+     ces trois etapes se font dans cet ordre. */
+  .etapes li {
+    counter-increment: etape; background: var(--noir-2);
+    padding: clamp(1.2rem, 3vw, 1.8rem);
+  }
+  .etapes li::before {
+    content: counter(etape, decimal-leading-zero);
+    font-family: "Barlow Semi Condensed", sans-serif; font-size: var(--s0);
+    letter-spacing: 0.14em; color: var(--signal); display: block; margin-bottom: 0.6rem;
+  }
+  .etapes h3 { font-size: 1.5rem; margin-bottom: 0.4rem; }
+  .etapes p { margin: 0; color: var(--fg-2); font-size: 0.94rem; }
+  .note { margin-top: 1.25rem; color: var(--fg-2); font-size: 0.9rem; }
+</style>
+
+<script>
+  const select = document.querySelector("#age");
+  const panneaux = [...document.querySelectorAll(".resultat")];
+  const aucun = document.querySelector(".aucun");
+
+  if (select instanceof HTMLSelectElement && aucun instanceof HTMLElement) {
+    const filtrer = (amener = false) => {
+      const age = Number(select.value);
+      let trouve = 0;
+      for (const p of panneaux) {
+        // Un âge peut correspondre a deux groupes (seniors et loisir) :
+        // on les affiche tous les deux plutot que d'en choisir un.
+        const el = p as HTMLElement;
+        const ok = age >= Number(el.dataset.min) && age <= Number(el.dataset.max);
+        el.hidden = !ok;
+        if (ok) trouve++;
+      }
+      aucun.hidden = trouve > 0;
+
+      /* On centre le panneau correspondant, pas le conteneur : sinon
+         le defilement s'arrete toujours au meme endroit, quel que soit
+         l'age choisi, et on croit que rien n'a change. */
+      const compte = document.querySelector("#compte");
+      if (compte instanceof HTMLElement) {
+        compte.hidden = trouve < 2;
+        // « 3 possibilités » a cote de « Deux possibilités » faisait bancal.
+        const MOTS = ["", "", "Deux", "Trois", "Quatre", "Cinq", "Six"];
+        compte.textContent = trouve > 1 ? `${MOTS[trouve] ?? trouve} possibilités · faites défiler` : "";
+      }
+
+      if (amener) {
+        const visibles = panneaux.filter((p) => !(p as HTMLElement).hidden);
+        const doux = matchMedia("(prefers-reduced-motion: reduce)").matches;
+        const comportement: ScrollBehavior = doux ? "auto" : "smooth";
+
+        if (visibles.length === 0) {
+          aucun.scrollIntoView({ behavior: comportement, block: "center" });
+        } else {
+          const haut = visibles[0].getBoundingClientRect().top;
+          const bas = visibles[visibles.length - 1].getBoundingClientRect().bottom;
+          /* Si tous les groupes proposes tiennent dans l'ecran, on centre
+             l'ensemble. Sinon on cale le premier en haut, pour que les
+             suivants restent visibles dessous plutot que hors cadre. */
+          const tientDansLEcran = bas - haut <= innerHeight - 120;
+          if (tientDansLEcran) {
+            const milieu = haut + (bas - haut) / 2;
+            scrollBy({ top: milieu - innerHeight / 2, behavior: comportement });
+          } else {
+            scrollBy({ top: haut - 90, behavior: comportement });
+          }
+        }
+      }
+    };
+    /* Arrive depuis la fiche d'une equipe (« Essayer cette equipe ») :
+       l'age du groupe est passe dans l'adresse, on le pre-selectionne pour
+       que le visiteur tombe directement sur le bon creneau. */
+    const demande = new URLSearchParams(location.search).get("age");
+    if (demande && [...select.options].some((o) => o.value === demande)) {
+      select.value = demande;
+    }
+
+    select.addEventListener("change", () => filtrer(true));
+    filtrer();
+  }
+</script>

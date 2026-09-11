@@ -1,0 +1,109 @@
+---
+import Base from "../layouts/Base.astro";
+import { agenda, dateLongue, heure, LIBELLE_TYPE } from "../lib/donnees";
+
+const rendezvous = await agenda();
+
+---
+
+<Base
+  titre="Agenda"
+  description="Tous les rendez-vous du Bourges Volley-Ball : matchs, tournois, stages et vie du club."
+>
+  <section class="page-head wrap">
+    <p class="eyebrow">Ce qui arrive</p>
+    <h1>Agenda</h1>
+    <p>
+      Matchs, tournois, stages et rendez-vous du club, réunis dans un seul
+      calendrier et classés par date.
+    </p>
+  </section>
+
+  <section class="section wrap">
+    {
+      rendezvous.length === 0 ? (
+        <p class="vide">
+          Aucun rendez-vous programmé pour le moment. Le calendrier se remplit
+          dès que les dates de la saison sont connues.
+        </p>
+      ) : (
+        <ol class="agenda">
+          {rendezvous.map((r) => (
+            <li class:list={["item", r.type === "match" ? "est-match" : ""]}>
+              <div class="quand">
+                <b>{dateLongue(r.date)}</b>
+                {r.dateFin && <span class="fin">jusqu’au {dateLongue(r.dateFin)}</span>}
+                {r.avecHeure && !r.dateFin && <span class="mono">{heure(r.date)}</span>}
+              </div>
+              <div class="quoi">
+                <p class="genre">{LIBELLE_TYPE[r.type] ?? "Événement"}</p>
+                <h2>{r.titre}</h2>
+                <p class="detail">{r.detail}</p>
+                {r.lieu && <p class="lieu">{r.lieu}</p>}
+              </div>
+              {r.lien && (
+                <a class="lien" href={r.lien}>
+                  {r.type === "match" ? "Le calendrier" : "En savoir plus"}
+                </a>
+              )}
+            </li>
+          ))}
+        </ol>
+      )
+    }
+  </section>
+</Base>
+
+<style>
+  .agenda { list-style: none; padding: 0; margin: 0; display: grid; }
+  .item {
+    display: grid;
+    gap: 0.5rem 1.5rem;
+    padding: 1.25rem 0;
+    border-top: 1px solid var(--hair);
+    align-items: start;
+  }
+  .item:first-child { border-top: 2px solid var(--accent); }
+  @media (min-width: 860px) {
+    .item { grid-template-columns: 15rem 1fr auto; align-items: baseline; }
+  }
+  .quand b {
+    display: block;
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 1.25rem;
+    line-height: 1.1;
+  }
+  .quand .mono,
+  .quand .fin {
+    font-family: "Barlow Semi Condensed", sans-serif;
+    font-size: var(--s0);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--fg-2);
+  }
+  .genre {
+    margin: 0 0 0.25rem;
+    font-family: "Barlow Semi Condensed", sans-serif;
+    font-weight: 600;
+    font-size: 0.66rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--fg-2);
+  }
+  .quoi h2 { font-size: 1.5rem; }
+  .detail { margin: 0.4rem 0 0; color: var(--fg-2); font-size: 0.94rem; max-width: 62ch; }
+  .lieu {
+    margin: 0.35rem 0 0;
+    font-family: "Barlow Semi Condensed", sans-serif;
+    font-size: var(--s0);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg-2);
+  }
+  /* Les matchs portent la marque du club : c est notre calendrier sportif */
+  .est-match .quoi h2 { color: var(--accent); }
+  .item .lien { justify-self: start; white-space: nowrap; }
+  .vide { color: var(--fg-2); }
+</style>

@@ -1,0 +1,99 @@
+---
+/* Les quatre portes d'entree de l'accueil.
+   L'accueil oriente, il n'empile pas : chaque case mène à une page. */
+const PORTES = [
+  {
+    href: "/nous-rejoindre/",
+    titre: "Nous rejoindre",
+    texte: "Votre créneau selon votre âge, les tarifs et les deux séances d'essai.",
+  },
+  {
+    href: "/equipes/",
+    titre: "Les équipes",
+    texte: "Des M13 aux seniors, filles et garçons, plus la section loisir Ufolep.",
+  },
+  {
+    href: "/matchs/",
+    titre: "Matchs & résultats",
+    texte: "Le calendrier de la saison, les scores et les rencontres à venir.",
+  },
+  {
+    href: "/partenaires/",
+    titre: "Partenaires",
+    texte: "Ils soutiennent le club, et comment nous rejoindre en tant qu'entreprise.",
+  },
+];
+---
+
+<nav class="portes" aria-label="Accès rapides">
+  {
+    PORTES.map((p) => (
+      <a class="porte" href={p.href}>
+        <h3>{p.titre}</h3>
+        <p>{p.texte}</p>
+        <span class="fleche" aria-hidden="true">&rarr;</span>
+      </a>
+    ))
+  }
+</nav>
+
+<style>
+  .portes {
+    display: grid;
+    gap: 1px;
+    background: var(--hair);
+    border-bottom: 1px solid var(--hair);
+  }
+  @media (min-width: 640px) {
+    .portes {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1000px) {
+    .portes {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .porte {
+    background: var(--noir-2);
+    padding: clamp(1.2rem, 3vw, 1.9rem);
+    text-decoration: none;
+    display: grid;
+    gap: 0.45rem;
+    align-content: start;
+    transition:
+      background 0.12s,
+      color 0.12s;
+  }
+  .porte h3 {
+    font-size: 1.7rem;
+  }
+  .porte p {
+    margin: 0;
+    color: var(--fg-2);
+    font-size: 0.94rem;
+  }
+  .fleche {
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 800;
+    font-style: italic;
+    font-size: 1.5rem;
+    color: var(--signal);
+    line-height: 1;
+    margin-top: 0.3rem;
+    transition: transform 0.12s;
+  }
+  /* Survol : aplat vert lime, contenu en encre — le lime est trop clair
+     pour porter du texte blanc. */
+  .porte:hover {
+    background: var(--signal);
+    color: var(--sur-signal);
+  }
+  .porte:hover p,
+  .porte:hover .fleche {
+    color: var(--sur-signal);
+  }
+  .porte:hover .fleche {
+    transform: translateX(6px);
+  }
+</style>

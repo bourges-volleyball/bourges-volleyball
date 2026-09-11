@@ -1,0 +1,80 @@
+---
+import Base from "../layouts/Base.astro";
+import BandePartenaires from "../components/BandePartenaires.astro";
+import { partenaires } from "../lib/donnees";
+
+const groupes = await partenaires();
+
+/* Les contreparties sont volontairement décrites sans montant :
+   ils changent chaque saison et se négocient de vive voix. */
+const NIVEAUX = [
+  {
+    nom: "Partenaire principal",
+    texte:
+      "Logo sur les maillots et la banderole du gymnase, présence en tete de la page partenaires, citation dans toutes les communications du club.",
+  },
+  {
+    nom: "Partenaire officiel",
+    texte:
+      "Logo sur le site et les supports de communication, présence au gymnase les jours de match, invitations aux événements du club.",
+  },
+  {
+    nom: "Soutien",
+    texte:
+      "Logo sur le site et remerciements publics. La formule adaptée aux commerces et artisans qui veulent soutenir le club localement.",
+  },
+];
+---
+
+<Base
+  titre="Partenaires"
+  description="Ils soutiennent le Bourges Volley-Ball. Devenez partenaire du club de volley de Bourges."
+>
+  <section class="page-head wrap">
+    <p class="eyebrow">Ils font vivre le club</p>
+    <h1>Partenaires</h1>
+    <p>
+      Un club associatif fonctionne avec des bénévoles et des partenaires.
+      Les seconds financent les deplacements, les équipements et la formation
+      des jeunes.
+    </p>
+  </section>
+
+  <BandePartenaires groupes={groupes} titre="Merci à eux" />
+
+  <section class="section wrap">
+    <div class="section-head"><h2>Devenir partenaire</h2></div>
+    <div class="niveaux">
+      {
+        NIVEAUX.map((n) => (
+          <article class="niveau">
+            <h3>{n.nom}</h3>
+            <p>{n.texte}</p>
+          </article>
+        ))
+      }
+    </div>
+    <div class="appel">
+      <p>
+        Vous etes une entreprise du Cher et le projet vous parle&nbsp;?
+        Écrivez-nous, nous vous envoyons le dossier de partenariat.
+      </p>
+      <a class="btn" href="/contact/"><span>Nous contacter</span></a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .niveaux {
+    display: grid; gap: 1px; background: var(--hair); border: 1px solid var(--hair);
+  }
+  @media (min-width: 820px) { .niveaux { grid-template-columns: repeat(3, 1fr); } }
+  .niveau { background: var(--noir-2); padding: clamp(1.2rem, 3vw, 1.8rem); }
+  .niveau h3 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+  .niveau p { margin: 0; color: var(--fg-2); font-size: 0.94rem; }
+  .appel {
+    margin-top: 2rem; display: flex; flex-wrap: wrap;
+    align-items: center; gap: 1rem 2rem;
+  }
+  .appel p { margin: 0; max-width: 48ch; font-size: var(--s2); }
+</style>

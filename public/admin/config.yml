@@ -1,0 +1,325 @@
+# Interface d'administration du site du Bourges Volley-Ball.
+# Ce fichier doit rester en accord avec src/content.config.ts :
+# un champ ajoute ici sans y etre declare la-bas sera ignore par le site.
+
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "public/images/uploads"
+public_folder: "/images/uploads"
+
+locale: "fr"
+
+# Chaque enregistrement cree une version : rien n'est jamais perdu.
+publish_mode: simple
+
+collections:
+  - name: "actus"
+    label: "Actualites"
+    label_singular: "une actualite"
+    folder: "src/content/actus"
+    create: true
+    slug: "{{slug}}"
+    summary: "{{titre}} - {{date}}"
+    sortable_fields: ["date", "titre"]
+    fields:
+      - { name: "titre", label: "Titre", widget: "string" }
+      - {
+          name: "date",
+          label: "Date de publication",
+          widget: "datetime",
+          date_format: "DD/MM/YYYY",
+          time_format: false,
+          format: "YYYY-MM-DD",
+        }
+      - {
+          name: "chapo",
+          label: "Resume",
+          widget: "text",
+          hint: "Deux lignes maximum. C'est ce qui s'affiche sur la page d'accueil.",
+        }
+      - {
+          name: "image",
+          label: "Photo de une",
+          widget: "image",
+          required: false,
+          hint: "Format paysage, 1200 px de large minimum.",
+        }
+      - {
+          name: "brouillon",
+          label: "Brouillon",
+          widget: "boolean",
+          default: false,
+          hint: "Coche, l'article n'apparait pas sur le site.",
+        }
+      - { name: "body", label: "Texte", widget: "markdown" }
+
+  - name: "equipes"
+    label: "Equipes"
+    label_singular: "une equipe"
+    folder: "src/content/equipes"
+    create: true
+    slug: "{{slug}}"
+    summary: "{{nom}} - {{niveau}}"
+    sortable_fields: ["ordre", "nom"]
+    fields:
+      - { name: "nom", label: "Nom de l'equipe", widget: "string" }
+      - {
+          name: "ordre",
+          label: "Ordre d'affichage",
+          widget: "number",
+          value_type: "int",
+          hint: "1 en premier. Classez du plus jeune au plus age.",
+        }
+      - {
+          name: "ageMin",
+          label: "Age minimum",
+          widget: "number",
+          value_type: "int",
+          hint: "Sert au selecteur d'age de la page Nous rejoindre.",
+        }
+      - {
+          name: "ageMax",
+          label: "Age maximum",
+          widget: "number",
+          value_type: "int",
+          hint: "Mettez 99 s'il n'y a pas de limite haute.",
+        }
+      - {
+          name: "niveau",
+          label: "Niveau",
+          widget: "string",
+          hint: "Exemple : Prenationale, Regionale, Championnat departemental.",
+        }
+      - name: "creneaux"
+        label: "Creneaux d'entrainement"
+        widget: "list"
+        summary: "{{fields.jour}} {{fields.horaire}}"
+        fields:
+          - { name: "jour", label: "Jour", widget: "string" }
+          - { name: "horaire", label: "Horaire", widget: "string" }
+      - { name: "gymnase", label: "Gymnase", widget: "string" }
+      - { name: "coach", label: "Encadrement", widget: "string", required: false }
+      - {
+          name: "tarif",
+          label: "Tarif de la saison (euros)",
+          widget: "number",
+          value_type: "int",
+        }
+      - {
+          name: "photo",
+          label: "Photo d'equipe",
+          widget: "image",
+          required: false,
+          hint: "Format paysage. Elle sert de fond a la carte de l'equipe et en tete de sa fiche.",
+        }
+      - name: "effectif"
+        label: "Effectif"
+        widget: "list"
+        required: false
+        summary: "{{fields.numero}} {{fields.nom}} {{fields.poste}}"
+        hint: "Laissez vide si vous ne souhaitez pas publier la composition."
+        fields:
+          - { name: "nom", label: "Nom", widget: "string" }
+          - {
+              name: "poste",
+              label: "Poste",
+              widget: "select",
+              required: false,
+              options:
+                [
+                  "Passeur",
+                  "Central",
+                  "Pointu",
+                  "Receptionneur-attaquant",
+                  "Libero",
+                ],
+            }
+          - { name: "numero", label: "Numero", widget: "number", value_type: "int", required: false }
+
+  - name: "matchs"
+    label: "Matchs"
+    label_singular: "un match"
+    folder: "src/content/matchs"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{adversaire}}"
+    summary: "{{date}} - {{adversaire}}"
+    sortable_fields: ["date"]
+    fields:
+      - {
+          name: "date",
+          label: "Date et heure",
+          widget: "datetime",
+          date_format: "DD/MM/YYYY",
+          time_format: "HH:mm",
+          picker_utc: false,
+        }
+      - { name: "equipe", label: "Equipe concernee", widget: "string" }
+      - { name: "adversaire", label: "Adversaire", widget: "string" }
+      - {
+          name: "domicile",
+          label: "Match a domicile",
+          widget: "boolean",
+          default: true,
+        }
+      - { name: "competition", label: "Competition", widget: "string" }
+      - { name: "lieu", label: "Lieu", widget: "string", required: false }
+      - {
+          name: "scoreNous",
+          label: "Sets gagnes par Bourges",
+          widget: "number",
+          value_type: "int",
+          required: false,
+          hint: "Laissez vide tant que le match n'est pas joue.",
+        }
+      - {
+          name: "scoreEux",
+          label: "Sets gagnes par l'adversaire",
+          widget: "number",
+          value_type: "int",
+          required: false,
+        }
+      - {
+          name: "sets",
+          label: "Detail des sets",
+          widget: "string",
+          required: false,
+          hint: "Exemple : 25-22 - 21-25 - 25-19 - 25-20",
+        }
+
+  - name: "partenaires"
+    label: "Partenaires"
+    label_singular: "un partenaire"
+    folder: "src/content/partenaires"
+    create: true
+    slug: "{{slug}}"
+    summary: "{{nom}} - {{niveau}}"
+    fields:
+      - { name: "nom", label: "Nom", widget: "string" }
+      - {
+          name: "niveau",
+          label: "Niveau de partenariat",
+          widget: "select",
+          options:
+            [
+              { label: "Partenaire principal", value: "principal" },
+              { label: "Partenaire officiel", value: "officiel" },
+              { label: "Institutionnel", value: "institutionnel" },
+            ],
+        }
+      - {
+          name: "logo",
+          label: "Logo",
+          widget: "image",
+          required: false,
+          hint: "Logo sur fond blanc ou transparent.",
+        }
+      - { name: "lien", label: "Site web", widget: "string", required: false }
+      - { name: "ordre", label: "Ordre", widget: "number", value_type: "int", default: 10 }
+
+  - name: "boutique"
+    label: "Boutique"
+    label_singular: "une commande groupee"
+    folder: "src/content/boutique"
+    create: true
+    slug: "{{slug}}"
+    summary: "{{nom}} - ferme le {{fermetureLe}}"
+    sortable_fields: ["ouvertureLe", "nom"]
+    fields:
+      - { name: "nom", label: "Nom de la commande", widget: "string" }
+      - {
+          name: "description",
+          label: "Description",
+          widget: "text",
+          hint: "Ce qui est vendu, la remise, et les consignes de taille.",
+        }
+      - {
+          name: "prix",
+          label: "Prix a partir de (euros)",
+          widget: "number",
+          value_type: "int",
+        }
+      - { name: "image", label: "Visuel", widget: "image", required: false }
+      - {
+          name: "tailles",
+          label: "Tailles disponibles",
+          widget: "list",
+          required: false,
+          hint: "Une taille par entree. Laissez vide si les articles n'ont pas de taille.",
+        }
+      - {
+          name: "lienHelloAsso",
+          label: "Lien HelloAsso",
+          widget: "string",
+          hint: "L'adresse de la campagne sur HelloAsso.",
+        }
+      - {
+          name: "ouvertureLe",
+          label: "Ouverture des commandes",
+          widget: "datetime",
+          date_format: "DD/MM/YYYY",
+          time_format: false,
+          format: "YYYY-MM-DD",
+        }
+      - {
+          name: "fermetureLe",
+          label: "Fermeture des commandes",
+          widget: "datetime",
+          date_format: "DD/MM/YYYY",
+          time_format: false,
+          format: "YYYY-MM-DD",
+          hint: "Passe cette date, la boutique se ferme toute seule sur le site.",
+        }
+      - { name: "ordre", label: "Ordre", widget: "number", value_type: "int", default: 10 }
+
+  - name: "evenements"
+    label: "Agenda"
+    label_singular: "un evenement"
+    folder: "src/content/evenements"
+    create: true
+    slug: "{{slug}}"
+    summary: "{{date}} - {{titre}}"
+    sortable_fields: ["date", "titre"]
+    fields:
+      - { name: "titre", label: "Titre", widget: "string" }
+      - {
+          name: "date",
+          label: "Date et heure",
+          widget: "datetime",
+          date_format: "DD/MM/YYYY",
+          time_format: "HH:mm",
+          picker_utc: false,
+        }
+      - {
+          name: "dateFin",
+          label: "Date de fin",
+          widget: "datetime",
+          date_format: "DD/MM/YYYY",
+          time_format: false,
+          required: false,
+          hint: "A remplir uniquement si l'evenement dure plusieurs jours.",
+        }
+      - {
+          name: "avecHeure",
+          label: "Afficher l'heure",
+          widget: "boolean",
+          default: true,
+          hint: "Decochez pour un stage ou un week-end, ou l'heure n'a pas de sens.",
+        }
+      - { name: "lieu", label: "Lieu", widget: "string", required: false }
+      - {
+          name: "type",
+          label: "Type",
+          widget: "select",
+          default: "autre",
+          options:
+            [
+              { label: "Tournoi", value: "tournoi" },
+              { label: "Vie du club", value: "vie du club" },
+              { label: "Stage", value: "stage" },
+              { label: "Autre", value: "autre" },
+            ],
+        }
+      - { name: "description", label: "Description", widget: "text" }
+      - { name: "lien", label: "Lien (inscription, infos)", widget: "string", required: false }

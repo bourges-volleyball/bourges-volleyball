@@ -1,0 +1,8 @@
+[build]
+  command = "npm run maj:ffvb && npm run build"
+  publish = "dist"
+
+[[headers]]
+  for = "/admin/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"

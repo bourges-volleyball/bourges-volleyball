@@ -1,0 +1,124 @@
+---
+import Base from "../layouts/Base.astro";
+import { matchs, dateLongue, heure, gagne } from "../lib/donnees";
+
+const { joues, aVenir } = await matchs();
+---
+
+<Base
+  titre="Matchs et résultats"
+  description="Calendrier et résultats des équipes du Bourges Volley-Ball : prénationale masculine, régionale féminine et jeunes."
+>
+  <section class="page-head wrap">
+    <p class="eyebrow">Saison en cours</p>
+    <h1>Matchs &amp; résultats</h1>
+    <p>Toutes les rencontres du club, à venir et jouées, toutes équipes confondues.</p>
+  </section>
+
+  <section class="section wrap">
+    <div class="section-head"><h2>À venir</h2></div>
+    {
+      aVenir.length === 0 ? (
+        <p class="vide">Aucune rencontre programmée pour l&rsquo;instant.</p>
+      ) : (
+        <ul class="liste">
+          {aVenir.map((m) => (
+            <li>
+              <span class="quand">
+                <b>{dateLongue(m.data.date)}</b>
+                <span class="mono">{heure(m.data.date)}</span>
+              </span>
+              <span class="qui">
+                {m.data.domicile
+                  ? `Bourges VB \u2014 ${m.data.adversaire}`
+                  : `${m.data.adversaire} \u2014 Bourges VB`}
+              </span>
+              <span class="ou">
+                {m.data.competition}
+                {m.data.lieu ? ` \u00b7 ${m.data.lieu}` : ""}
+              </span>
+              <span class:list={["etat", m.data.domicile ? "dom" : "ext"]}>
+                {m.data.domicile ? "Domicile" : "Extérieur"}
+              </span>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </section>
+
+  <section class="section wrap">
+    <div class="section-head"><h2>Résultats</h2></div>
+    {
+      joues.length === 0 ? (
+        <p class="vide">Les résultats apparaîtront ici après la première journée.</p>
+      ) : (
+        <ul class="liste resultats">
+          {joues.map((m) => (
+            <li class:list={{ win: gagne(m) }}>
+              <span class="quand">
+                <b>{dateLongue(m.data.date)}</b>
+                <span class="mono">{m.data.equipe}</span>
+              </span>
+              <span class="qui">
+                {m.data.domicile
+                  ? `Bourges VB \u2014 ${m.data.adversaire}`
+                  : `${m.data.adversaire} \u2014 Bourges VB`}
+              </span>
+              <span class="score">
+                {m.data.domicile
+                  ? `${m.data.scoreNous} \u2014 ${m.data.scoreEux}`
+                  : `${m.data.scoreEux} \u2014 ${m.data.scoreNous}`}
+              </span>
+              {m.data.sets && <span class="sets">{m.data.sets}</span>}
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </section>
+</Base>
+
+<style>
+  .liste { list-style: none; padding: 0; margin: 0; display: grid; }
+  .liste li {
+    display: grid; gap: 0.25rem 1.25rem; padding: 1rem 0;
+    border-top: 1px solid var(--hair); align-items: baseline;
+  }
+  .liste li:first-child { border-top: 2px solid var(--accent); }
+  @media (min-width: 820px) {
+    .liste li { grid-template-columns: 15rem 1fr auto; }
+    .resultats li { grid-template-columns: 15rem 1fr auto; }
+  }
+  .quand b {
+    font-family: "Barlow Condensed", sans-serif; font-weight: 800;
+    text-transform: uppercase; font-size: 1.2rem; display: block;
+  }
+  .quand .mono {
+    font-size: var(--s0); letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--fg-2);
+  }
+  .qui { font-weight: 600; }
+  .ou {
+    font-family: "Barlow Semi Condensed", sans-serif; font-size: var(--s0);
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-2);
+  }
+  .etat {
+    font-family: "Barlow Semi Condensed", sans-serif; font-size: 0.66rem;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    border: 1px solid var(--hair); padding: 0.15rem 0.5rem;
+    color: var(--fg-2); justify-self: start;
+  }
+  .score {
+    font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 1.6rem;
+    font-variant-numeric: tabular-nums; color: var(--fg-2);
+  }
+  /* Gagner : l'un des deux seuls emplois du vert */
+  .win .score { color: var(--signal); }
+  .sets {
+    grid-column: 1 / -1;
+    font-family: "Barlow Semi Condensed", sans-serif; font-size: var(--s0);
+    color: var(--fg-2); font-variant-numeric: tabular-nums;
+  }
+  .vide { color: var(--fg-2); }
+</style>

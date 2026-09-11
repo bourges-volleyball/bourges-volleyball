@@ -1,0 +1,61 @@
+---
+import type { CollectionEntry } from "astro:content";
+interface Props { actu: CollectionEntry<"actus"> }
+const { actu } = Astro.props;
+const d = actu.data.date;
+---
+
+<a class="actu" href={`/actus/${actu.id}/`}>
+  {
+    actu.data.image ? (
+      <img class="vignette" src={actu.data.image} alt="" width="1200" height="750" loading="lazy" />
+    ) : (
+      <div class="vignette vide" aria-hidden="true" />
+    )
+  }
+  <time datetime={d.toISOString().slice(0, 10)}>
+    {d.toLocaleDateString("fr-FR", { day: "numeric", month: "long", timeZone: "Europe/Paris" })}
+  </time>
+  <h3>{actu.data.titre}</h3>
+  <p>{actu.data.chapo}</p>
+</a>
+
+<style>
+  .actu {
+    display: grid;
+    gap: 0.55rem;
+    align-content: start;
+    text-decoration: none;
+  }
+  .vignette {
+    aspect-ratio: 16 / 10;
+    width: 100%;
+    object-fit: cover;
+    border: 1px solid var(--hair);
+    transition: border-color 0.12s;
+  }
+  .vignette.vide {
+    background-image:
+      radial-gradient(100% 100% at 70% 20%, rgba(180, 230, 0, 0.16) 0%, transparent 60%),
+      linear-gradient(160deg, #1e222a, #101216);
+  }
+  .actu:hover .vignette {
+    border-color: var(--signal);
+  }
+  time {
+    font-family: "Barlow Semi Condensed", sans-serif;
+    font-size: var(--s0);
+    letter-spacing: 0.1em;
+    color: var(--fg-2);
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  h3 {
+    font-size: 1.4rem;
+  }
+  p {
+    margin: 0;
+    color: var(--fg-2);
+    font-size: 0.92rem;
+  }
+</style>

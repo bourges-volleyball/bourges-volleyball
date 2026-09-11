@@ -1,0 +1,34 @@
+---
+import Base from "../../layouts/Base.astro";
+import CarteActu from "../../components/CarteActu.astro";
+import { actus } from "../../lib/donnees";
+
+const liste = await actus();
+---
+
+<Base
+  titre="Actualités"
+  description="Les actualités du Bourges Volley-Ball : résultats, vie du club, tournois et informations pratiques."
+>
+  <section class="page-head wrap">
+    <p class="eyebrow">Vie du club</p>
+    <h1>Actualités</h1>
+  </section>
+
+  <section class="section wrap">
+    {
+      liste.length === 0 ? (
+        <p class="vide">Aucune actualité publiee pour l&rsquo;instant.</p>
+      ) : (
+        <div class="grille">{liste.map((a) => <CarteActu actu={a} />)}</div>
+      )
+    }
+  </section>
+</Base>
+
+<style>
+  .grille { display: grid; gap: 2rem 1.5rem; }
+  @media (min-width: 640px) { .grille { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1000px) { .grille { grid-template-columns: repeat(3, 1fr); } }
+  .vide { color: var(--fg-2); }
+</style>

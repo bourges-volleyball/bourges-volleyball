@@ -1,0 +1,108 @@
+---
+const annee = new Date().getFullYear();
+---
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <img class="badge" src="/images/logo-bvb.png" alt="" width="64" height="64" />
+        <h3>Bourges Volley-Ball</h3>
+        <p>33 rue du 1er Régiment d'Artillerie<br />18000 Bourges</p>
+      </div>
+
+      <div>
+        <h3>Le club</h3>
+        <ul>
+          <li><a href="/le-club/">Le club</a></li>
+          <li><a href="/nous-rejoindre/">Nous rejoindre</a></li>
+          <li><a href="/agenda/">Agenda</a></li>
+          <li><a href="/boutique/">Boutique</a></li>
+          <li><a href="/equipes/">Les équipes</a></li>
+          <li><a href="/matchs/">Matchs et résultats</a></li>
+          <li><a href="/partenaires/">Devenir partenaire</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h3>Contact</h3>
+        <ul>
+          <li><a href="mailto:bourgesvolley@gmail.com">bourgesvolley@gmail.com</a></li>
+          <li><a href="tel:+33666782802">06 66 78 28 02</a></li>
+          <li>
+            <a href="https://www.instagram.com/bourgesvolleyball/" rel="noopener">
+              Instagram
+            </a>
+          </li>
+          <li><a href="/contact/">Nous écrire</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="foot-note">
+      <span>Association loi 1901</span>
+      <span>Affiliée FFVolley et Ufolep</span>
+      <span>© {annee} Bourges Volley-Ball</span>
+    </div>
+  </div>
+</footer>
+
+<style>
+  footer {
+    background: #08090b;
+    padding-block: clamp(2.25rem, 5vw, 3.5rem);
+    border-top: 1px solid var(--hair);
+  }
+  .foot-grid {
+    display: grid;
+    gap: 2rem;
+  }
+  @media (min-width: 760px) {
+    .foot-grid {
+      grid-template-columns: 1.3fr 1fr 1fr;
+    }
+  }
+  footer h3 {
+    font-size: 1.35rem;
+    margin-bottom: 0.7rem;
+  }
+  footer p {
+    margin: 0;
+    color: var(--fg-2);
+  }
+  footer ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.35rem;
+  }
+  footer a {
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition:
+      border-color 0.12s,
+      color 0.12s;
+  }
+  footer a:hover {
+    border-bottom-color: var(--signal);
+    color: var(--signal);
+  }
+  .badge {
+    width: 64px;
+    filter: invert(1);
+    mix-blend-mode: screen;
+    margin-bottom: 0.9rem;
+  }
+  .foot-note {
+    margin-top: 2rem;
+    padding-top: 1.1rem;
+    border-top: 1px solid var(--hair);
+    font-family: "Barlow Semi Condensed", sans-serif;
+    font-size: var(--s0);
+    color: var(--fg-2);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.5rem;
+  }
+</style>

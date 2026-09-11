@@ -1,0 +1,129 @@
+---
+import Base from "../../layouts/Base.astro";
+import { equipes } from "../../lib/donnees";
+
+const liste = await equipes();
+---
+
+<Base
+  titre="Les équipes"
+  description="Toutes les équipes du Bourges Volley-Ball : créneaux, gymnases, niveaux et effectifs, des M13 aux seniors."
+>
+  <section class="page-head wrap">
+    <p class="eyebrow">Saison en cours</p>
+    <h1>Les équipes</h1>
+    <p>
+      Chaque équipe s’entraîne dans un gymnase et sur des créneaux précis.
+      Deux séances d’essai sont possibles avant de prendre la licence,
+      quel que soit le groupe.
+    </p>
+  </section>
+
+  <section class="section wrap">
+    {
+      liste.length === 0 ? (
+        <p class="vide">Les équipes de la saison seront publiées prochainement.</p>
+      ) : (
+        <div class="grille">
+          {liste.map((e) => (
+            <a class="carte" href={`/equipes/${e.id}/`}>
+              {e.data.photo && (
+                <img class="fond" src={e.data.photo} alt="" loading="lazy" />
+              )}
+              <span class="voile" aria-hidden="true" />
+              <span class="contenu">
+                <span class="niveau">{e.data.niveau}</span>
+                <h2>{e.data.nom}</h2>
+                <span class="infos">
+                  {e.data.creneaux.length}
+                  {e.data.creneaux.length > 1 ? " entraînements" : " entraînement"}
+                  {e.data.effectif?.length ? ` · ${e.data.effectif.length} joueurs` : ""}
+                </span>
+                <span class="fleche" aria-hidden="true">&rarr;</span>
+              </span>
+            </a>
+          ))}
+        </div>
+      )
+    }
+  </section>
+</Base>
+
+<style>
+  .grille { display: grid; gap: 1.25rem; }
+  @media (min-width: 700px) { .grille { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1080px) { .grille { grid-template-columns: repeat(3, 1fr); } }
+
+  .carte {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    min-height: 260px;
+    text-decoration: none;
+    border: 1px solid var(--hair);
+    transition: border-color 0.15s;
+  }
+  .carte:hover { border-color: var(--signal); }
+
+  /* Meme traitement que le hero : la photo est assombrie et desaturee,
+     c'est le degrade qui garantit la lisibilite du texte. */
+  .fond {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.6) contrast(1.05) saturate(0.8);
+    transform: scale(1.02);
+    transition: transform 0.4s ease, filter 0.25s;
+  }
+  .carte:hover .fond { transform: scale(1.07); filter: brightness(0.72) contrast(1.05) saturate(0.9); }
+
+  .voile {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      rgba(9, 10, 13, 0.94) 0%,
+      rgba(9, 10, 13, 0.62) 45%,
+      rgba(9, 10, 13, 0.15) 100%
+    );
+  }
+
+  .contenu {
+    position: relative;
+    display: grid;
+    gap: 0.3rem;
+    align-content: end;
+    min-height: 260px;
+    padding: clamp(1.1rem, 3vw, 1.6rem);
+  }
+  .niveau {
+    font-family: "Barlow Semi Condensed", sans-serif;
+    font-weight: 600;
+    font-size: 0.66rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--signal);
+  }
+  .carte h2 { font-size: clamp(1.9rem, 4.5vw, 2.4rem); }
+  .infos {
+    font-family: "Barlow Semi Condensed", sans-serif;
+    font-size: var(--s0);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg-2);
+  }
+  .fleche {
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 800;
+    font-style: italic;
+    font-size: 1.4rem;
+    color: var(--signal);
+    line-height: 1;
+    margin-top: 0.4rem;
+    transition: transform 0.15s;
+  }
+  .carte:hover .fleche { transform: translateX(6px); }
+  .vide { color: var(--fg-2); }
+</style>

@@ -1,0 +1,321 @@
+---
+/* Diaporama de l'accueil.
+   Pour changer les photos : remplacer les fichiers dans public/images/hero/
+   en gardant les mêmes noms. Trois a cinq images, format paysage,
+   1600 px de large minimum. */
+interface Props {
+  actus?: { id: string; data: { titre: string; date: Date } }[];
+}
+const { actus = [] } = Astro.props;
+
+const PHOTOS = [
+  { src: "/images/hero/hero-1.jpg", alt: "Attaque au filet lors d'un match" },
+  { src: "/images/hero/hero-2.jpg", alt: "Joueur en suspension" },
+  { src: "/images/hero/hero-3.jpg", alt: "Phase de jeu collective" },
+];
+---
+
+<section class="hero">
+  <div class="scene">
+    {
+      PHOTOS.map((p, i) => (
+        <img
+          class:list={["slide", { "is-active": i === 0 }]}
+          src={p.src}
+          alt={i === 0 ? p.alt : ""}
+          width="1600"
+          height="900"
+          loading={i === 0 ? "eager" : "lazy"}
+          fetchpriority={i === 0 ? "high" : undefined}
+        />
+      ))
+    }
+    <div class="filet" aria-hidden="true"></div>
+  </div>
+  <div class="voile" aria-hidden="true"></div>
+
+  <div class="wrap hero-in">
+    <div class="hero-texte">
+    <span class="tag"><span>FFVolley &amp; Ufolep &middot; Bourges</span></span>
+    <h1>Le volley,<br />c’est <span class="slash">ici</span></h1>
+    <p class="hero-lede">
+      <b>Trois touches, trois joueurs : au volley, personne ne joue seul.
+      Notre club se construit pareil.</b>
+      Prénationale masculine, régionale féminine, jeunes de M13 à M18
+      et section loisir Ufolep.
+    </p>
+    <div class="hero-actions">
+      <a class="btn" href="/nous-rejoindre/"><span>Nous rejoindre</span></a>
+      <a class="btn ghost" href="/matchs/"><span>Le prochain match</span></a>
+    </div>
+    </div>
+
+    {
+      actus.length > 0 && (
+        <aside class="fil" aria-label="Dernières actualités">
+          <p class="etiquette"><span>À la une</span></p>
+          <ul>
+            {actus.map((a) => (
+              <li>
+                <a href={`/actus/${a.id}/`}>
+                  <time datetime={a.data.date.toISOString().slice(0, 10)}>
+                    {a.data.date.toLocaleDateString("fr-FR", {
+                      day: "numeric",
+                      month: "short",
+                      timeZone: "Europe/Paris",
+                    })}
+                  </time>
+                  <span class="titre">{a.data.titre}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+          <a class="tout" href="/actus/">Toutes les actus &rarr;</a>
+        </aside>
+      )
+    }
+  </div>
+
+  <div class="dots" id="dots" aria-label="Photos du club"></div>
+
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: clamp(440px, 72vh, 660px);
+    display: grid;
+    align-items: end;
+    overflow: hidden;
+  }
+  .scene {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+  .slide {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transform: scale(1.05);
+    transition:
+      opacity 1.5s ease,
+      transform 8s linear;
+    /* Les gymnases sont clairs, mais on assombrit le moins possible :
+       c'est le voile en dégradé, plus bas, qui protège la lisibilité
+       du texte là où il se trouve réellement. */
+    filter: brightness(0.82) contrast(1.05) saturate(0.85);
+  }
+  .slide.is-active {
+    opacity: 1;
+    transform: scale(1.14);
+  }
+  /* La trame du filet, tiree du logo */
+  .filet {
+    position: absolute;
+    inset: 0;
+    opacity: 0.16;
+    background-image:
+      repeating-linear-gradient(90deg, transparent 0 33px, rgba(255, 255, 255, 0.5) 33px 34px),
+      repeating-linear-gradient(0deg, transparent 0 33px, rgba(255, 255, 255, 0.5) 33px 34px);
+  }
+  .voile {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: linear-gradient(
+      to top,
+      rgba(9, 10, 13, 0.92) 0%,
+      rgba(9, 10, 13, 0.6) 38%,
+      rgba(9, 10, 13, 0.1) 72%,
+      rgba(9, 10, 13, 0.3) 100%
+    );
+  }
+  .hero-in {
+    position: relative;
+    z-index: 3;
+    padding-block: clamp(2.5rem, 7vw, 4.5rem);
+    width: 100%;
+  }
+  .hero h1 {
+    font-size: clamp(3rem, 10vw, 7rem);
+    margin-top: 1rem;
+  }
+  .hero h1 .slash {
+    position: relative;
+    display: inline-block;
+    color: var(--signal);
+    font-style: italic;
+  }
+  .hero h1 .slash::after {
+    content: "";
+    position: absolute;
+    left: -2%;
+    right: -2%;
+    bottom: 0.05em;
+    height: 0.09em;
+    background: var(--signal);
+    transform: skewX(-14deg);
+  }
+  .hero-lede b {
+    color: var(--fg);
+    font-weight: 600;
+    display: block;
+  }
+  .hero-lede {
+    margin: 1rem 0 0;
+    max-width: 48ch;
+    color: #d7dae0;
+    font-size: var(--s2);
+  }
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    margin-top: 1.6rem;
+  }
+  .dots {
+    position: absolute;
+    z-index: 4;
+    right: var(--pad);
+    bottom: 1.4rem;
+    display: flex;
+    gap: 0.45rem;
+  }
+  .dots :global(button) {
+    width: 34px;
+    height: 4px;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.32);
+    transition: background 0.15s;
+  }
+  .dots :global(button[aria-current="true"]) {
+    background: var(--signal);
+  }
+  .dots :global(button:hover) {
+    background: rgba(255, 255, 255, 0.6);
+  }
+
+
+  /* Deux colonnes : le message a gauche, les actualites a droite.
+     En dessous de 900 px la colonne passe dessous, apres les boutons. */
+  .hero-in {
+    display: grid;
+    gap: clamp(1.5rem, 4vw, 3rem);
+    align-items: end;
+  }
+  @media (min-width: 900px) {
+    .hero-in { grid-template-columns: 1.4fr 0.6fr; }
+    /* Le panneau mord legerement dans la marge pour se rapprocher du bord */
+    .fil { margin-right: calc(var(--pad) * -0.45); }
+  }
+
+  .fil {
+    background: rgba(9, 10, 13, 0.42);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    padding: 1rem 1.1rem;
+    display: grid;
+    gap: 0.6rem;
+    align-content: start;
+  }
+  .etiquette {
+    margin: 0;
+    justify-self: start;
+    transform: skewX(-10deg);
+    background: var(--signal);
+    color: var(--sur-signal);
+    padding: 0.2rem 0.65rem;
+  }
+  .etiquette > span {
+    display: inline-block;
+    transform: skewX(10deg);
+    font-family: "Barlow Semi Condensed", sans-serif;
+    font-weight: 600;
+    font-size: 0.64rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .fil ul { list-style: none; padding: 0; margin: 0; display: grid; }
+  .fil li { border-top: 1px solid rgba(255, 255, 255, 0.12); }
+  .fil li:first-child { border-top: 0; }
+  .fil li a {
+    display: grid;
+    gap: 0.15rem;
+    padding: 0.6rem 0;
+    text-decoration: none;
+  }
+  .fil time {
+    font-family: "Barlow Semi Condensed", sans-serif;
+    font-size: 0.64rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    /* Plus clair que --fg-2 : le fond translucide laisse passer la photo */
+    color: #c6cad2;
+  }
+  .fil .titre {
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 1.15rem;
+    line-height: 1.12;
+  }
+  .fil li a:hover .titre { color: var(--signal); }
+  .tout {
+    justify-self: start;
+    text-decoration: none;
+    font-family: "Barlow Semi Condensed", sans-serif;
+    font-weight: 600;
+    font-size: 0.66rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--signal);
+    padding-top: 0.2rem;
+  }
+</style>
+
+<script>
+  const slides = [...document.querySelectorAll<HTMLElement>(".hero .slide")];
+  const dots = document.getElementById("dots");
+  if (slides.length > 1 && dots) {
+    const doux = matchMedia("(prefers-reduced-motion: reduce)");
+    let index = 0;
+    let minuteur: ReturnType<typeof setInterval> | null = null;
+
+    slides.forEach((_, i) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.setAttribute("aria-label", `Photo ${i + 1} sur ${slides.length}`);
+      b.addEventListener("click", () => {
+        afficher(i);
+        relancer();
+      });
+      dots.appendChild(b);
+    });
+
+    function afficher(i: number) {
+      index = (i + slides.length) % slides.length;
+      slides.forEach((s, n) => s.classList.toggle("is-active", n === index));
+      [...dots!.children].forEach((d, n) =>
+        d.setAttribute("aria-current", n === index ? "true" : "false"),
+      );
+    }
+    function relancer() {
+      if (minuteur) clearInterval(minuteur);
+      if (!doux.matches) minuteur = setInterval(() => afficher(index + 1), 5500);
+    }
+
+    afficher(0);
+    relancer();
+    // Ne pas animer dans un onglet qu'on ne regarde pas
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden && minuteur) clearInterval(minuteur);
+      else relancer();
+    });
+  }
+</script>
