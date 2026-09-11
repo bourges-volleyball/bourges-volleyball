@@ -1,9 +1,26 @@
 ---
+/* Un club publie peu, et de maniere irreguliere. Une grille de vignettes
+   suppose un flux nourri : avec trois articles elle laisse deux tiers de
+   page vides. On traite donc la page comme une une de journal — le dernier
+   article en grand, les suivants en liste — ce qui tient aussi bien avec
+   trois articles qu'avec cinquante. */
 import Base from "../../layouts/Base.astro";
-import CarteActu from "../../components/CarteActu.astro";
-import { actus } from "../../lib/donnees";
+import { actus, FUSEAU } from "../../lib/donnees";
 
 const liste = await actus();
+const [une, ...suite] = liste;
+
+/* On n'affiche l'annee que si elle n'est pas l'annee en cours :
+   "8 septembre" suffit pour un article recent, "12 mars 2025" devient
+   necessaire des qu'on remonte dans les archives. */
+const anneeEnCours = new Date().getFullYear();
+const dateArticle = (d: Date) =>
+  d.toLocaleDateString("fr-FR", {
+    day: "numeric",
+    month: "long",
+    year: d.getFullYear() === anneeEnCours ? undefined : "numeric",
+    timeZone: FUSEAU,
+  });
 ---
 
 <Base
@@ -15,20 +32,265 @@ const liste = await actus();
     <h1>Actualités</h1>
   </section>
 
-  <section class="section wrap">
-    {
-      liste.length === 0 ? (
-        <p class="vide">Aucune actualité publiee pour l&rsquo;instant.</p>
-      ) : (
-        <div class="grille">{liste.map((a) => <CarteActu actu={a} niveau={2} />)}</div>
-      )
-    }
-  </section>
+  {
+    liste.length === 0 ? (
+      <section class="section wrap">
+        <p class="vide">
+          Aucune actualité publiée pour l&rsquo;instant. Les nouvelles du club
+          arriveront ici.
+        </p>
+      </section>
+    ) : (
+      <>
+        <section class="section wrap">
+          <article class="une">
+            <a class="une-lien" href={`/actus/${une.id}/`}>
+              {une.data.image && (
+                <img
+                  class="une-photo"
+                  src={une.data.image}
+                  alt=""
+                  width="1600"
+                  height="900"
+                  fetchpriority="high"
+                />
+              )}
+              <div class="une-texte">
+                <div class="une-haut">
+                  <p class="etiquette">
+                    <span>La dernière</span>
+                  </p>
+                  <time datetime={une.data.date.toISOString().slice(0, 10)}>
+                    {dateArticle(une.data.date)}
+                  </time>
+                  <h2>{une.data.titre}</h2>
+                </div>
+                <div class="une-bas">
+                  <p class="chapo">{une.data.chapo}</p>
+                  <span class="lire">Lire l&rsquo;article &rarr;</span>
+                </div>
+              </div>
+            </a>
+          </article>
+        </section>
+
+        {suite.length > 0 && (
+          <section class="section wrap">
+            <div class="section-head">
+              <h2>Précédemment</h2>
+              <span class="compte">
+                {suite.length === 1 ? "1 article" : `${suite.length} articles`}
+              </span>
+            </div>
+            <ol class="suite">
+              {suite.map((a) => (
+                <li>
+                  <a href={`/actus/${a.id}/`}>
+                    <time datetime={a.data.date.toISOString().slice(0, 10)}>
+                      {dateArticle(a.data.date)}
+                    </time>
+                    <span class="corps">
+                      <span class="titre">{a.data.titre}</span>
+                      <span class="chapo">{a.data.chapo}</span>
+                    </span>
+                    {a.data.image && (
+                      <img
+                        class="miniature"
+                        src={a.data.image}
+                        alt=""
+                        width="480"
+                        height="300"
+                        loading="lazy"
+                      />
+                    )}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </section>
+        )}
+      </>
+    )
+  }
 </Base>
 
 <style>
-  .grille { display: grid; gap: 2rem 1.5rem; }
-  @media (min-width: 640px) { .grille { grid-template-columns: repeat(2, 1fr); } }
-  @media (min-width: 1000px) { .grille { grid-template-columns: repeat(3, 1fr); } }
-  .vide { color: var(--fg-2); }
+  .vide {
+    color: var(--fg-2);
+    font-size: var(--s2);
+    max-width: 48ch;
+  }
+
+  /* ---------- La une ---------- */
+
+  .une-lien {
+    display: grid;
+    gap: clamp(1.2rem, 3vw, 2.25rem);
+    text-decoration: none;
+    align-items: center;
+  }
+  /* Avec une photo, deux colonnes ; sans photo, le texte tient la largeur
+     mais reste borne pour ne pas produire de lignes interminables. */
+  @media (min-width: 900px) {
+    .une-lien:has(.une-photo) {
+      grid-template-columns: 1.15fr 1fr;
+    }
+  }
+  .une-photo {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    border: 1px solid var(--hair);
+    transition: border-color 0.15s;
+  }
+  .une-lien:hover .une-photo {
+    border-color: var(--signal);
+  }
+  .une-texte {
+    display: grid;
+    gap: 1.1rem;
+    align-content: start;
+  }
+  .une-haut,
+  .une-bas {
+    display: grid;
+    gap: 0.6rem;
+    justify-items: start;
+    align-content: start;
+  }
+  /* Avec une photo, le texte tient une colonne etroite a cote d'elle.
+     Sans photo, il se deploie en deux colonnes : titre a gauche, resume
+     a droite — sinon la moitie de la page reste vide. */
+  .une-lien:has(.une-photo) .une-texte {
+    max-width: 40ch;
+  }
+  @media (min-width: 900px) {
+    .une-lien:not(:has(.une-photo)) .une-texte {
+      grid-template-columns: 1.25fr 1fr;
+      gap: clamp(1.5rem, 4vw, 3.5rem);
+      align-items: end;
+    }
+    .une-lien:not(:has(.une-photo)) .une-bas {
+      padding-bottom: 0.4rem;
+    }
+  }
+  .etiquette {
+    margin: 0;
+    transform: skewX(-10deg);
+    background: var(--signal);
+    color: var(--sur-signal);
+    padding: 0.2rem 0.7rem;
+  }
+  .etiquette > span {
+    display: inline-block;
+    transform: skewX(10deg);
+    font-family: "Barlow Semi Condensed", sans-serif;
+    font-weight: 600;
+    font-size: 0.66rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .une time,
+  .suite time {
+    font-family: "Barlow Semi Condensed", sans-serif;
+    font-weight: 600;
+    font-size: var(--s0);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--fg-2);
+  }
+  .une h2 {
+    font-size: clamp(2.1rem, 5.5vw, 3.4rem);
+    text-wrap: balance;
+  }
+  .une-lien:hover h2 {
+    color: var(--signal);
+  }
+  .une .chapo {
+    margin: 0;
+    color: var(--fg-2);
+    font-size: var(--s2);
+    max-width: 42ch;
+  }
+  .lire {
+    justify-self: start;
+    font-family: "Barlow Semi Condensed", sans-serif;
+    font-weight: 600;
+    font-size: var(--s0);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--signal);
+    border-bottom: 2px solid var(--signal);
+    padding-bottom: 0.15rem;
+    margin-top: 0.3rem;
+  }
+
+  /* ---------- Les precedentes ---------- */
+
+  .compte {
+    font-family: "Barlow Semi Condensed", sans-serif;
+    font-size: var(--s0);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--fg-2);
+  }
+  .suite {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+  }
+  .suite li {
+    border-top: 1px solid var(--hair);
+  }
+  .suite li:last-child {
+    border-bottom: 1px solid var(--hair);
+  }
+  .suite a {
+    display: grid;
+    gap: 0.35rem 1.75rem;
+    padding: 1.3rem 0;
+    text-decoration: none;
+    align-items: baseline;
+  }
+  /* Rail de date a gauche, comme sur l'agenda : les deux pages se lisent
+     de la meme maniere. */
+  @media (min-width: 780px) {
+    .suite a {
+      grid-template-columns: 11rem 1fr auto;
+    }
+    .miniature {
+      grid-row: 1;
+      grid-column: 3;
+    }
+  }
+  .suite .corps {
+    display: grid;
+    gap: 0.3rem;
+    max-width: 62ch;
+  }
+  .suite .titre {
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: clamp(1.4rem, 3vw, 1.9rem);
+    line-height: 1.04;
+  }
+  .suite a:hover .titre {
+    color: var(--signal);
+  }
+  .suite .chapo {
+    color: var(--fg-2);
+    font-size: var(--s1);
+  }
+  .miniature {
+    width: 160px;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    border: 1px solid var(--hair);
+    align-self: center;
+  }
+  .suite a:hover .miniature {
+    border-color: var(--signal);
+  }
 </style>

@@ -75,7 +75,7 @@ const rendezvous = await agenda();
     border-top: 1px solid var(--hair);
     align-items: start;
   }
-  .item:first-child { border-top: 2px solid var(--accent); }
+  .item:first-child { border-top: 2px solid var(--structure); }
   @media (min-width: 860px) {
     .item { grid-template-columns: 15rem 1fr auto; align-items: baseline; }
   }
@@ -115,7 +115,7 @@ const rendezvous = await agenda();
     color: var(--fg-2);
   }
   /* Les matchs portent la marque du club : c est notre calendrier sportif */
-  .est-match .quoi h2 { color: var(--accent); }
+  .est-match .quoi h2 { color: var(--structure); }
   .item .lien { justify-self: start; white-space: nowrap; }
   .vide { color: var(--fg-2); }
 </style>

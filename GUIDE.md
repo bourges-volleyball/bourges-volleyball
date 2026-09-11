@@ -220,6 +220,8 @@ Sortir le vert ailleurs — sur les dates, les titres, les filets — le
 transformerait en motif décoratif et il cesserait de signaler quoi que ce soit.
 
 Les couleurs sont définies au même endroit, dans `src/styles/global.css`.
+Les deux jetons qui comptent y portent le nom de leur rôle : `--signal`
+pour le vert lime, `--structure` pour le blanc.
 
 Le site est sombre de bout en bout, partenaires compris. Les logos des
 entreprises étant dessinés pour du fond blanc, ils sont ramenés en blanc plein
@@ -240,6 +242,11 @@ npm install     # une fois
 npm run dev     # serveur local sur http://localhost:4321
 npm run build   # vérifie que tout compile avant de pousser
 ```
+
+> **Si une modification de style ne s'affiche pas**, ce n'est probablement pas
+> votre code : le serveur de développement garde en cache la feuille de styles
+> précédente. Arrêtez-le et relancez `npm run dev`. Le site construit, lui,
+> est toujours à jour — `npm run build` fait foi.
 
 Structure :
 

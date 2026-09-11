@@ -36,7 +36,6 @@ const { prochain, resultats } = Astro.props;
               <div class="unit"><b data-j>--</b><span>Jours</span></div>
               <div class="unit"><b data-h>--</b><span>Heures</span></div>
               <div class="unit"><b data-m>--</b><span>Minutes</span></div>
-              <div class="unit"><b data-s>--</b><span>Secondes</span></div>
             </div>
           </>
         ) : (
@@ -108,7 +107,7 @@ const { prochain, resultats } = Astro.props;
     color: var(--fg-2);
   }
   .team.home {
-    color: var(--accent);
+    color: var(--structure);
   }
   .vs {
     font-family: "Barlow Condensed", sans-serif;
@@ -170,7 +169,7 @@ const { prochain, resultats } = Astro.props;
     border-top: 1px solid var(--hair);
   }
   .resultats li:first-child {
-    border-top: 2px solid var(--accent);
+    border-top: 2px solid var(--structure);
   }
   .r-team {
     font-weight: 600;
@@ -219,9 +218,11 @@ const { prochain, resultats } = Astro.props;
       cible("j").textContent = pad(Math.floor(restant / 86400));
       cible("h").textContent = pad(Math.floor(restant / 3600) % 24);
       cible("m").textContent = pad(Math.floor(restant / 60) % 60);
-      cible("s").textContent = pad(restant % 60);
     };
     tick();
-    setInterval(tick, 1000);
+    /* Une fois par minute suffit : sur un decompte de plusieurs jours, le
+       chiffre des secondes etait le seul a bouger, donc le seul a attirer
+       l'oeil — pour l'information la moins utile de la rangee. */
+    setInterval(tick, 30_000);
   }
 </script>

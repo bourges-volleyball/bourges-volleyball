@@ -12,8 +12,8 @@
   --fg:#F4F4F2;
   --fg-2:#9A9FA9;
 
-  --accent:#FFFFFF;      /* structure et identité */
-  --sur-accent:#0D0E11;
+  --structure:#FFFFFF;      /* structure et identité */
+  --sur-structure:#0D0E11;
 
   --signal:#B4E600;      /* agir et gagner */
   --signal-fonce:#96C200;
@@ -60,7 +60,7 @@ img{max-width:100%;height:auto}
 .skip:focus{left:0}
 
 /* L'oblique : le geste sportif, repris partout */
-.tag{display:inline-block;transform:skewX(-10deg);background:var(--accent);color:var(--sur-accent);padding:.28rem .85rem}
+.tag{display:inline-block;transform:skewX(-10deg);background:var(--structure);color:var(--sur-structure);padding:.28rem .85rem}
 .tag > span{
   display:inline-block;transform:skewX(10deg);
   font-family:"Barlow Semi Condensed",sans-serif;font-weight:600;
