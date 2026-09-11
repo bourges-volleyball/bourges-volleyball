@@ -252,8 +252,6 @@ et les données structurées lues par Google (`src/layouts/Base.astro`).
 
 ### À vérifier
 
-- [ ] **L'adresse exacte du gymnase Yves du Manoir.** Les annuaires hésitent
-  entre *rue de Turly* et *chemin de Turly*. Le site indique « rue ».
 - [ ] **Les seniors s'entraînent-ils ensemble ?** Le planning affiché sur
   Instagram ne dit que « Séniors FFVB » le lundi et le mercredi, sans
   distinguer les masculins des féminines. Les deux fiches portent donc les
