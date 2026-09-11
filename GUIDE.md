@@ -93,8 +93,7 @@ lancement.
 
 **Le jour où le contenu est définitif**, deux gestes :
 
-1. Dans `netlify.toml`, supprimer le bloc `X-Robots-Tag` signalé par un
-   commentaire.
+1. Dans `public/_headers`, supprimer la ligne `X-Robots-Tag`.
 2. Dans `public/robots.txt`, remplacer le contenu par les quatre lignes
    conservées en commentaire dans le fichier.
 

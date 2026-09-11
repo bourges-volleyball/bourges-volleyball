@@ -1,0 +1,17 @@
+# En-tetes servis avec chaque page.
+#
+# Ce fichier vit dans public/ et se retrouve donc dans dist/ : il fonctionne
+# aussi bien pour une publication depuis GitHub que pour un dossier depose a
+# la main sur Netlify Drop. netlify.toml, lui, n'est lu que depuis un depot.
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  Content-Security-Policy: frame-ancestors 'self'
+  # A RETIRER LE JOUR DE LA MISE EN LIGNE REELLE, avec la ligne Disallow
+  # de robots.txt. Sans ces deux gestes le site restera invisible sur Google.
+  X-Robots-Tag: noindex, nofollow
+
+/admin/*
+  X-Frame-Options: SAMEORIGIN
