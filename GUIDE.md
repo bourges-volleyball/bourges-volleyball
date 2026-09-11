@@ -48,6 +48,28 @@ mot de passe reçus par invitation.
 Chaque enregistrement publie le site automatiquement. Comptez une à deux
 minutes avant que la modification soit visible.
 
+### Essayer l'administration avant la mise en ligne
+
+L'interface fonctionne aussi sur un simple ordinateur, sans Netlify ni compte.
+Dans **deux terminaux** :
+
+```bash
+npm run admin
+```
+
+```bash
+npm run dev
+```
+
+Puis ouvrir **http://localhost:4321/admin/index.html**. Pas de mot de passe :
+le bouton « Se connecter » suffit. Les modifications sont écrites directement
+dans les fichiers du projet, comme le ferait un bénévole en ligne — pratique
+pour se former, ou pour saisir beaucoup de contenu d'un coup.
+
+C'est le réglage `local_backend` de `public/admin/config.yml`. Il ne s'active
+que sur `localhost` : en ligne, c'est toujours Netlify Identity qui contrôle
+l'accès.
+
 ### Actualités
 Publier un article : titre, date, résumé, photo de une, texte.
 Le **résumé** est ce qui s'affiche sur la page d'accueil : deux lignes suffisent.
@@ -205,23 +227,50 @@ les bénévoles saisiront une information que le site ignorera.
 
 ## 6. Ce qui reste à faire
 
+### À vérifier — deux informations se contredisent
+
+- [ ] **L'adresse du club.** Le site affiche *33 rue du 1er Régiment
+  d'Artillerie*, reprise de la fiche YEPS. Mais la page HelloAsso du club
+  indique *20 rue Garibaldi*. Il faut trancher : l'adresse figure dans le pied
+  de page, sur la page Contact et dans les données que lit Google.
+- [ ] **Les seniors s'entraînent-ils ensemble ?** Le planning affiché sur
+  Instagram ne dit que « Séniors FFVB » le lundi et le mercredi, sans
+  distinguer les masculins des féminines. Les deux fiches portent donc les
+  mêmes créneaux. À corriger si les groupes sont séparés.
+- [ ] **L'âge minimum de la section loisir Ufolep**, fixé à 18 ans par
+  prudence. On sait désormais que le club a une section Ufolep M18 à part,
+  avec sa propre adhésion : le loisir semble bien réservé aux adultes, mais
+  cela demande confirmation.
+
+### À fournir par le club
+
 - [ ] Remplacer les trois photos du diaporama par des photos du club
-- [ ] Compléter les gymnases, les créneaux réels et les noms des encadrants
 - [ ] Remplacer les photos d'équipe et saisir les effectifs réels
-- [ ] Vérifier les tarifs de licence de la saison
-- [ ] **Confirmer l'âge minimum de la section loisir Ufolep** — fixé à 18 ans
-  par prudence, mais l'Ufolep accepte les mineurs et ses compétitions seniors
-  s'ouvrent à 16 ans. À corriger dans la fiche de l'équipe si besoin.
-- [ ] Saisir le calendrier réel des matchs
+- [ ] Renseigner les encadrants de chaque groupe (tous « À préciser »)
 - [ ] Ajouter les vrais partenaires et leurs logos
-- [ ] Vérifier l'adresse et le téléphone du pied de page
-- [ ] Ajouter le lien de paiement en ligne sur la page « Nous rejoindre »
-- [ ] Ouvrir la prochaine commande groupée dans la rubrique Boutique
+- [ ] Ouvrir la prochaine commande groupée dans la rubrique Boutique — la
+  dernière campagne HelloAsso (Joma, –20 % catalogue) date de 2024-2025
 - [ ] Confirmer les dates du tournoi inter-entreprises, de l'AG et du stage
 - [ ] Rédiger les mentions légales
 - [ ] Prendre le nom de domaine et le brancher
 
----
+### Pistes
+
+- [ ] **Les écoles de sport n'apparaissent nulle part.** Le planning réserve
+  deux créneaux au dispositif de la Ville : séniors en soft volley le mardi
+  de 17h à 18h, jeunes le vendredi à la même heure. Une actualité en parle,
+  mais ce n'est ni une équipe ni une rubrique.
+- [ ] **La section Ufolep M18** a sa propre adhésion (125 €) et un créneau
+  distinct le vendredi soir. Elle mériterait sa fiche.
+- [ ] Les **buvettes en ligne** HelloAsso (tournois, buvette virtuelle) ne sont
+  pas mentionnées sur le site.
+
+### Fait
+
+- [x] Créneaux, gymnases et tarifs réels de la saison 2026-2027
+- [x] Trois actualités réelles, tirées de l'Instagram et de HelloAsso
+- [x] Page 404
+- [x] Logos des partenaires institutionnels cliquables vers leur site
 
 ## 7. La récupération automatique FFVolley
 

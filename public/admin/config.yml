@@ -22,8 +22,8 @@ publish_mode: simple
 
 collections:
   - name: "actus"
-    label: "Actualites"
-    label_singular: "une actualite"
+    label: "Actualités"
+    label_singular: "une actualité"
     folder: "src/content/actus"
     create: true
     slug: "{{slug}}"
@@ -41,7 +41,7 @@ collections:
         }
       - {
           name: "chapo",
-          label: "Resume",
+          label: "Résumé",
           widget: "text",
           hint: "Deux lignes maximum. C'est ce qui s'affiche sur la page d'accueil.",
         }
@@ -57,37 +57,37 @@ collections:
           label: "Brouillon",
           widget: "boolean",
           default: false,
-          hint: "Coche, l'article n'apparait pas sur le site.",
+          hint: "Cochée, l'article n'apparaît pas sur le site.",
         }
       - { name: "body", label: "Texte", widget: "markdown" }
 
   - name: "equipes"
-    label: "Equipes"
-    label_singular: "une equipe"
+    label: "Équipes"
+    label_singular: "une équipe"
     folder: "src/content/equipes"
     create: true
     slug: "{{slug}}"
     summary: "{{nom}} - {{niveau}}"
     sortable_fields: ["ordre", "nom"]
     fields:
-      - { name: "nom", label: "Nom de l'equipe", widget: "string" }
+      - { name: "nom", label: "Nom de l'équipe", widget: "string" }
       - {
           name: "ordre",
           label: "Ordre d'affichage",
           widget: "number",
           value_type: "int",
-          hint: "1 en premier. Classez du plus jeune au plus age.",
+          hint: "1 en premier. Classez du plus jeune au plus âgé.",
         }
       - {
           name: "ageMin",
-          label: "Age minimum",
+          label: "Âge minimum",
           widget: "number",
           value_type: "int",
-          hint: "Sert au selecteur d'age de la page Nous rejoindre.",
+          hint: "Sert au sélecteur d'âge de la page Nous rejoindre.",
         }
       - {
           name: "ageMax",
-          label: "Age maximum",
+          label: "Âge maximum",
           widget: "number",
           value_type: "int",
           hint: "Mettez 99 s'il n'y a pas de limite haute.",
@@ -96,10 +96,10 @@ collections:
           name: "niveau",
           label: "Niveau",
           widget: "string",
-          hint: "Exemple : Prenationale, Regionale, Championnat departemental.",
+          hint: "Exemple : Prénationale, Régionale, Championnat départemental.",
         }
       - name: "creneaux"
-        label: "Creneaux d'entrainement"
+        label: "Créneaux d'entraînement"
         widget: "list"
         summary: "{{fields.jour}} {{fields.horaire}}"
         fields:
@@ -115,10 +115,10 @@ collections:
         }
       - {
           name: "photo",
-          label: "Photo d'equipe",
+          label: "Photo d'équipe",
           widget: "image",
           required: false,
-          hint: "Format paysage. Elle sert de fond a la carte de l'equipe et en tete de sa fiche.",
+          hint: "Format paysage. Elle sert de fond à la carte de l'équipe et en tête de sa fiche.",
         }
       - name: "effectif"
         label: "Effectif"
@@ -142,7 +142,7 @@ collections:
                   "Libero",
                 ],
             }
-          - { name: "numero", label: "Numero", widget: "number", value_type: "int", required: false }
+          - { name: "numero", label: "Numéro", widget: "number", value_type: "int", required: false }
 
   - name: "matchs"
     label: "Matchs"
@@ -161,34 +161,34 @@ collections:
           time_format: "HH:mm",
           picker_utc: false,
         }
-      - { name: "equipe", label: "Equipe concernee", widget: "string" }
+      - { name: "equipe", label: "Équipe concernée", widget: "string" }
       - { name: "adversaire", label: "Adversaire", widget: "string" }
       - {
           name: "domicile",
-          label: "Match a domicile",
+          label: "Match à domicile",
           widget: "boolean",
           default: true,
         }
-      - { name: "competition", label: "Competition", widget: "string" }
+      - { name: "competition", label: "Compétition", widget: "string" }
       - { name: "lieu", label: "Lieu", widget: "string", required: false }
       - {
           name: "scoreNous",
-          label: "Sets gagnes par Bourges",
+          label: "Sets gagnés par Bourges",
           widget: "number",
           value_type: "int",
           required: false,
-          hint: "Laissez vide tant que le match n'est pas joue.",
+          hint: "Laissez vide tant que le match n'est pas joué.",
         }
       - {
           name: "scoreEux",
-          label: "Sets gagnes par l'adversaire",
+          label: "Sets gagnés par l'adversaire",
           widget: "number",
           value_type: "int",
           required: false,
         }
       - {
           name: "sets",
-          label: "Detail des sets",
+          label: "Détail des sets",
           widget: "string",
           required: false,
           hint: "Exemple : 25-22 - 21-25 - 25-19 - 25-20",
@@ -287,7 +287,7 @@ collections:
 
   - name: "evenements"
     label: "Agenda"
-    label_singular: "un evenement"
+    label_singular: "un événement"
     folder: "src/content/evenements"
     create: true
     slug: "{{slug}}"
@@ -310,7 +310,7 @@ collections:
           date_format: "DD/MM/YYYY",
           time_format: false,
           required: false,
-          hint: "A remplir uniquement si l'evenement dure plusieurs jours.",
+          hint: "A remplir uniquement si l'événement dure plusieurs jours.",
         }
       - {
           name: "avecHeure",
