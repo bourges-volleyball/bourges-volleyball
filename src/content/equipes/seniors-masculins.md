@@ -10,7 +10,6 @@ creneaux:
   - jour: "Mercredi"
     horaire: "20h00 – 22h00"
 gymnase: "Gymnase Léo Lagrange"
-coach: "À préciser"
 tarif: 145
 photo: "/images/equipes/equipe-1.jpg"
 effectif:

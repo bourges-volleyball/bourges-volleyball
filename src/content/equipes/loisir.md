@@ -12,7 +12,6 @@ creneaux:
   - jour: "Vendredi"
     horaire: "20h00 – 22h00"
 gymnase: "Léo Lagrange et Yves du Manoir"
-coach: "Encadrement bénévole"
 tarif: 85
 photo: "/images/equipes/equipe-2.jpg"
 ---

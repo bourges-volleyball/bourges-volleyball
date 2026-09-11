@@ -49,13 +49,17 @@ const derniers = joues.filter(sien).slice(0, 3);
         <dt>Gymnase</dt>
         <dd>{d.gymnase}</dd>
       </div>
-      <div>
-        <dt>Encadrement</dt>
-        <dd>{d.coach ?? "À préciser"}</dd>
-      </div>
+      {/* Pas d'encadrant renseigne : on masque la ligne plutot que
+          d'afficher un « À préciser » qui fait inacheve. */}
+      {d.coach && (
+        <div>
+          <dt>Encadrement</dt>
+          <dd>{d.coach}</dd>
+        </div>
+      )}
       <div>
         <dt>Saison complète</dt>
-        <dd>{d.tarif} €<span class="precision">licence FFVolley comprise</span></dd>
+        <dd>{d.tarif} €<span class="precision">licence et assurance comprises</span></dd>
       </div>
     </dl>
     <a class="btn" href={`/nous-rejoindre/?age=${d.ageMin}#resultats`}>
