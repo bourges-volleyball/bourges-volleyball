@@ -10,6 +10,31 @@ sécurité à suivre. Le coût annuel se limite au nom de domaine.
 
 ## 1. Mise en ligne (à faire une fois)
 
+### Montrer le site avant de le lancer pour de bon
+
+Deux façons, qui ne montrent pas la même chose.
+
+**Pour faire voir les pages, sans rien installer.** Construisez le site avec
+`npm run build`, puis déposez le dossier **`dist`** (2,4 Mo) sur
+[app.netlify.com/drop](https://app.netlify.com/drop). En trente secondes vous
+avez une adresse partageable. Les 21 pages, le sélecteur d'âge, le formulaire
+de contact et les 44 matchs fonctionnent.
+
+Deux limites : **l'administration ne marchera pas** — elle a besoin du dépôt
+Git pour enregistrer — et le calendrier fédéral reste **figé** au jour de la
+construction, puisque rien ne se reconstruit.
+
+**Pour faire voir l'administration.** Soit le dépôt GitHub est créé (étapes
+ci-dessous, tout fonctionne alors), soit — plus simple pour une réunion —
+vous la montrez **depuis votre ordinateur** : `npm run admin` dans un terminal,
+`npm run dev` dans un autre, et vous ouvrez `localhost:4321/admin/index.html`.
+Pas de mot de passe, et les modifications sont réelles.
+
+> **Le site est actuellement invisible pour Google, volontairement.** Voir la
+> dernière étape du lancement, plus bas.
+
+
+
 1. **Créer un dépôt GitHub** (vide, sans README) et y pousser ce dossier.
    L'historique local existe déjà, il ne reste qu'à le relier :
 
@@ -30,6 +55,22 @@ sécurité à suivre. Le coût annuel se limite au nom de domaine.
    choisissent un mot de passe, et arrivent sur l'administration.
 
 L'administration est ensuite accessible à l'adresse **votre-site.fr/admin/**.
+
+### 7. Rendre le site visible sur Google — la dernière étape
+
+Tant que le contenu est provisoire, le site refuse les moteurs de recherche.
+C'est délibéré : sans cela, Google enregistrerait les photos d'illustration et
+les « Joueur 1 », et ces pages resteraient dans ses résultats bien après le
+lancement.
+
+**Le jour où le contenu est définitif**, deux gestes :
+
+1. Dans `netlify.toml`, supprimer le bloc `X-Robots-Tag` signalé par un
+   commentaire.
+2. Dans `public/robots.txt`, remplacer le contenu par les quatre lignes
+   conservées en commentaire dans le fichier.
+
+Sans ces deux gestes, **le site ne sortira jamais dans Google**.
 
 ### Brancher le nom de domaine
 
