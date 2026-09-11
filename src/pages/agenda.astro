@@ -20,6 +20,10 @@ const rendezvous = await agenda();
   </section>
 
   <section class="section wrap">
+    <div class="section-head">
+      <h2>Les prochaines dates</h2>
+      <a class="lien" href="/matchs/">Tout le calendrier</a>
+    </div>
     {
       rendezvous.length === 0 ? (
         <p class="vide">
@@ -43,7 +47,7 @@ const rendezvous = await agenda();
               </div>
               {r.lien && (
                 <a class="lien" href={r.lien}>
-                  {r.type === "match" ? "Le calendrier" : "En savoir plus"}
+                  En savoir plus<span class="hors-ecran"> sur {r.titre}</span>
                 </a>
               )}
             </li>
@@ -56,6 +60,14 @@ const rendezvous = await agenda();
 
 <style>
   .agenda { list-style: none; padding: 0; margin: 0; display: grid; }
+  .hors-ecran {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
   .item {
     display: grid;
     gap: 0.5rem 1.5rem;

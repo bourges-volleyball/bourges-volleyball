@@ -13,13 +13,9 @@ const d = actu.data.date;
 ---
 
 <a class="actu" href={`/actus/${actu.id}/`}>
-  {
-    actu.data.image ? (
-      <img class="vignette" src={actu.data.image} alt="" width="1200" height="750" loading="lazy" />
-    ) : (
-      <div class="vignette vide" aria-hidden="true" />
-    )
-  }
+  {actu.data.image && (
+    <img class="vignette" src={actu.data.image} alt="" width="1200" height="750" loading="lazy" />
+  )}
   <time datetime={d.toISOString().slice(0, 10)}>
     {d.toLocaleDateString("fr-FR", { day: "numeric", month: "long", timeZone: "Europe/Paris" })}
   </time>
@@ -34,17 +30,22 @@ const d = actu.data.date;
     align-content: start;
     text-decoration: none;
   }
+  /* Sans photo, un filet tient lieu d'accroche : la carte reste ancree
+     en haut, et le survol la signale comme le ferait une image. */
+  .actu:not(:has(.vignette)) {
+    border-top: 2px solid var(--hair);
+    padding-top: 0.9rem;
+    transition: border-color 0.12s;
+  }
+  .actu:not(:has(.vignette)):hover {
+    border-top-color: var(--signal);
+  }
   .vignette {
     aspect-ratio: 16 / 10;
     width: 100%;
     object-fit: cover;
     border: 1px solid var(--hair);
     transition: border-color 0.12s;
-  }
-  .vignette.vide {
-    background-image:
-      radial-gradient(100% 100% at 70% 20%, rgba(180, 230, 0, 0.16) 0%, transparent 60%),
-      linear-gradient(160deg, #1e222a, #101216);
   }
   .actu:hover .vignette {
     border-color: var(--signal);

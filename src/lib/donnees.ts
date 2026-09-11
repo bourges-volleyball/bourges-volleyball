@@ -141,7 +141,10 @@ export async function agenda(limite?: number) {
       : `${m.data.adversaire} — Bourges VB`,
     detail: m.data.competition,
     lieu: m.data.lieu,
-    lien: "/matchs/",
+    /* Pas de lien par ligne : toutes les rencontres menaient a la meme page,
+       ce qui donnait 44 liens identiques sur l'agenda. Le lien vers le
+       calendrier est desormais dans l'en-tete de section. */
+    lien: undefined as string | undefined,
   }));
 
   const depuisEvts = evts

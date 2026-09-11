@@ -26,6 +26,21 @@ const niveaux = [
     </div>
 
     {
+      groupes.principal.length === 0 && (
+        <div class="tier">
+          <h3>Partenaire principal</h3>
+          <a class="libre" href="/partenaires/">
+            <span class="libre-titre">Cet emplacement est libre</span>
+            <span class="libre-detail">
+              Logo sur les maillots et la banderole du gymnase &mdash;
+              devenir partenaire
+            </span>
+          </a>
+        </div>
+      )
+    }
+
+    {
       niveaux.map(
         (n) =>
           n.liste.length > 0 && (
@@ -95,6 +110,41 @@ const niveaux = [
   .tier-row.four {
     grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
   }
+  /* Un emplacement a pourvoir ne doit pas ressembler a un partenaire :
+     trait discontinu, texte en retrait, pas de fond plein. */
+  .libre {
+    display: grid;
+    place-content: center;
+    text-align: center;
+    gap: 0.4rem;
+    padding: 2rem 1rem;
+    margin-top: 0.6rem;
+    border: 1px dashed var(--hair);
+    text-decoration: none;
+    transition: border-color 0.15s;
+  }
+  .libre:hover,
+  .libre:focus-visible {
+    border-color: var(--signal);
+  }
+  .libre-titre {
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: clamp(1.3rem, 3vw, 1.8rem);
+    color: var(--fg-2);
+  }
+  .libre:hover .libre-titre {
+    color: var(--fg);
+  }
+  .libre-detail {
+    font-family: "Barlow Semi Condensed", sans-serif;
+    font-size: var(--s0);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--signal);
+  }
+
   .plogo {
     background: var(--noir-2);
     display: grid;
