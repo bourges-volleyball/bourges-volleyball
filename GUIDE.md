@@ -50,11 +50,39 @@ Pas de mot de passe, et les modifications sont réelles.
 4. Dans *Identity → Registration*, choisir **Invite only**. Sans cela,
    n'importe qui pourrait créer un compte et modifier le site.
 5. Dans *Identity → Services → Git Gateway*, cliquer **Enable Git Gateway**.
-   C'est ce qui autorise le CMS à écrire dans le dépôt.
+   C'est ce qui autorise le CMS à écrire dans le dépôt. **Voir l'encadré
+   ci-dessous : ce service est déprécié.**
 6. Inviter les bénévoles : *Identity → Invite users*. Ils reçoivent un mail,
    choisissent un mot de passe, et arrivent sur l'administration.
 
 L'administration est ensuite accessible à l'adresse **votre-site.fr/admin/**.
+
+### ⚠ Git Gateway est déprécié — à savoir dès maintenant
+
+Netlify a placé **Git Gateway** en fin de vie. Concrètement, en septembre 2026 :
+
+- le service **fonctionne toujours** et peut encore être activé ;
+- Netlify corrigera les **failles de sécurité**, mais **plus les bugs** ;
+- de nouvelles configurations ne sont officiellement « pas recommandées ».
+
+**Pourquoi on l'utilise quand même.** C'est la seule solution qui permet aux
+bénévoles de modifier le site **sans compte GitHub**. Les autres méthodes
+d'identification de Decap passent par GitHub : il faudrait que chaque personne
+du bureau crée un compte de développeur et reçoive un accès au dépôt. C'est
+exactement ce que ce site cherchait à éviter.
+
+**Le jour où ça cassera**, deux portes de sortie, sans refaire le site :
+
+1. **DecapBridge** — service gratuit créé pour remplacer Git Gateway, conçu
+   pour que les rédacteurs n'aient toujours pas besoin de compte GitHub.
+   C'est la migration la plus directe : on change le bloc `backend` de
+   `public/admin/config.yml`, rien d'autre.
+2. **Backend GitHub** de Decap — aucune dépendance tierce, mais chaque
+   bénévole doit avoir un compte GitHub.
+
+Le contenu du site, lui, n'est pas concerné : il vit dans des fichiers Markdown
+du dépôt. Changer de méthode d'identification ne touche pas une ligne de
+contenu.
 
 ### 7. Rendre le site visible sur Google — la dernière étape
 
