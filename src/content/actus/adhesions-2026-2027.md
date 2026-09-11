@@ -7,7 +7,7 @@ chapo: "Licences FFVolley et Ufolep, tarifs réduits pour les étudiants et les 
 L'adhésion à la saison 2026-2027 est ouverte. Elle se prend en ligne, en
 quelques minutes, sur HelloAsso.
 
-### Licence FFVolley
+## Licence FFVolley
 
 | Catégorie | Années de naissance | Tarif |
 |---|---|---|
@@ -19,7 +19,7 @@ quelques minutes, sur HelloAsso.
 
 [Adhérer à la section FFVolley](https://www.helloasso.com/associations/bourges-volley/adhesions/adhesion-bourges-volley-2026-2027-1)
 
-### Licence Ufolep
+## Licence Ufolep
 
 | Catégorie | Tarif |
 |---|---|
@@ -29,7 +29,7 @@ quelques minutes, sur HelloAsso.
 
 [Adhérer à la section Ufolep](https://www.helloasso.com/associations/bourges-volley/adhesions/adhesion-ufolep-2026-2027)
 
-### Et si je veux juste m'entraîner ?
+## Et si je veux juste m'entraîner ?
 
 L'**adhésion simple**, à **40 €**, donne accès à tous les entraînements de sa
 section, sans participer aux championnats officiels.

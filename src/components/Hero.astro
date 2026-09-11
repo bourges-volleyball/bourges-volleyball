@@ -28,7 +28,7 @@ const PHOTOS = [
         <Picture
           class:list={["slide", { "is-active": i === 0 }]}
           src={p.img}
-          alt={i === 0 ? p.alt : ""}
+          alt={p.alt}
           formats={["webp"]}
           widths={[640, 960, 1280, 1600]}
           sizes="100vw"

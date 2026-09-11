@@ -22,7 +22,7 @@ championnat fédéral — sans que la compétition disparaisse pour autant :
 le club a remporté la **Coupe de France Ufolep** en 2000 avec les garçons
 et en 2016 avec les filles.
 
-### Loisir mixte — adultes
+## Loisir mixte — adultes
 
 Équipes mixtes engagées en **départemental loisirs du Cher** et en **coupe
 du Cher**. C'est la porte d'entrée pour reprendre le volley, ou pour en
@@ -31,7 +31,7 @@ faire sans la charge d'un championnat régional.
 **85 €** la saison, **65 €** pour les étudiants et les demandeurs d'emploi,
 sur justificatif.
 
-### M18 filles et garçons
+## M18 filles et garçons
 
 Une section **M18 Ufolep**, féminine et masculine, engagée en départemental
 du Cher. Elle s'adresse aux jeunes nés en 2009, 2010 et 2011, et complète

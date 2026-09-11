@@ -20,7 +20,7 @@ const liste = await actus();
       liste.length === 0 ? (
         <p class="vide">Aucune actualité publiee pour l&rsquo;instant.</p>
       ) : (
-        <div class="grille">{liste.map((a) => <CarteActu actu={a} />)}</div>
+        <div class="grille">{liste.map((a) => <CarteActu actu={a} niveau={2} />)}</div>
       )
     }
   </section>

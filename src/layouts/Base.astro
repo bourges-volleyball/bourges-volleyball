@@ -78,18 +78,31 @@ const jsonLd = {
     <Footer />
 
     <!-- Quand un benevole clique sur son lien d invitation, Netlify le renvoie
-         sur la page d accueil : ce script le conduit a l administration. -->
-    <script is:inline src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+         sur la page d accueil avec un jeton dans l'adresse. Ce script le
+         conduit alors a l'administration.
+
+         Le widget n'est charge QUE dans ce cas. Auparavant il l'etait sur
+         chaque page, pour chaque visiteur : une requete vers un service
+         exterieur, sur toutes les pages, pour un evenement qui concerne
+         une poignee de personnes deux fois par an. -->
     <script is:inline>
-      if (window.netlifyIdentity) {
-        window.netlifyIdentity.on("init", (user) => {
-          if (!user) {
-            window.netlifyIdentity.on("login", () => {
+      (function () {
+        var jeton = /(invite_token|recovery_token|confirmation_token|email_change_token)=/;
+        if (!jeton.test(window.location.hash)) return;
+
+        var s = document.createElement("script");
+        s.src = "https://identity.netlify.com/v1/netlify-identity-widget.js";
+        s.onload = function () {
+          if (!window.netlifyIdentity) return;
+          window.netlifyIdentity.on("init", function (user) {
+            if (user) return;
+            window.netlifyIdentity.on("login", function () {
               document.location.href = "/admin/";
             });
-          }
-        });
-      }
+          });
+        };
+        document.head.appendChild(s);
+      })();
     </script>
   </body>
 </html>

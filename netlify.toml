@@ -23,3 +23,20 @@
   for = "/admin/*"
   [headers.values]
     X-Frame-Options = "SAMEORIGIN"
+
+# En-tetes de securite appliques a tout le site.
+# Volontairement limites a ce qui ne peut rien casser : une politique de
+# contenu (CSP) complete casserait l'administration, qui evalue du code a
+# la volee. Le site n'affiche aucune donnee saisie par un visiteur, ce qui
+# rend ce risque faible.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # Empeche le navigateur de deviner le type d'un fichier servi
+    X-Content-Type-Options = "nosniff"
+    # N'envoie pas l'adresse de la page consultee aux sites tiers
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    # Le site n'a besoin ni de la camera, ni du micro, ni de la position
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), interest-cohort=()"
+    # Interdit d'enfermer le site dans un cadre sur un autre domaine
+    Content-Security-Policy = "frame-ancestors 'self'"

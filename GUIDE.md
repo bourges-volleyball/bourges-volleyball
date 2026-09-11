@@ -338,7 +338,60 @@ et les données structurées lues par Google (`src/layouts/Base.astro`).
 - [x] Page 404
 - [x] Logos des partenaires institutionnels cliquables vers leur site
 
-## 7. La récupération automatique FFVolley
+## 7. Sécurité : ce qui protège le site, et ce qui reste à surveiller
+
+### Le seul verrou qui compte vraiment
+
+Le CMS écrit dans le dépôt au nom de la personne connectée. **Toute personne
+qui obtient un compte Identity peut donc modifier le site.** Il n'y a pas de
+second niveau de permission.
+
+Cela tient entièrement à un réglage : *Identity → Registration →*
+**Invite only**. S'il est laissé sur *Open*, n'importe qui peut créer un compte
+depuis Internet et publier sur le site du club.
+
+> **À vérifier le jour de la mise en ligne, puis une fois par saison.**
+> C'est le seul réglage dont dépend la sécurité du site.
+
+Deuxième règle qui découle de la première : **retirer les accès des bénévoles
+qui quittent le bureau** (*Identity → l'utilisateur → Delete*).
+
+### Ce qui est déjà en place
+
+- **Pas de base de données, pas de serveur.** Le site est un ensemble de
+  fichiers. Il n'y a rien à pirater derrière, et aucune mise à jour de
+  sécurité à suivre — contrairement à un WordPress.
+- **Aucun mot de passe, aucune donnée de visiteur** n'est stocké par le site.
+  Les paiements passent par HelloAsso, l'identification par Netlify.
+- **Aucun traceur, aucun cookie publicitaire.** Pas de Google Analytics, pas de
+  bouton de réseau social espion. C'est aussi ce qui évite d'avoir à afficher
+  une bannière de consentement.
+- **Le fichier de l'interface d'administration est verrouillé par une
+  empreinte** (`integrity` dans `public/admin/index.html`). Il est servi par un
+  hébergeur tiers ; si celui-ci renvoyait un jour un fichier modifié, le
+  navigateur refuserait de l'exécuter. Sans cela, un fichier trafiqué hériterait
+  du droit d'écrire dans tout le site.
+- **En-têtes de sécurité** dans `netlify.toml` : pas de devinette de type de
+  fichier, pas de fuite d'adresse vers les sites tiers, ni caméra ni micro ni
+  position, et interdiction d'enfermer le site dans un cadre sur un autre
+  domaine.
+- **Le widget d'identification ne se charge plus pour les visiteurs.** Il ne
+  s'active que si l'adresse contient un jeton d'invitation.
+
+### Ce qui reste ouvert, en connaissance de cause
+
+- **Pas de politique de contenu (CSP) complète.** Elle empêcherait
+  l'administration de fonctionner. Le risque est faible : le site n'affiche
+  aucune donnée saisie par un visiteur.
+- **Le formulaire de contact n'est protégé que par un piège à robots.** Si le
+  spam devient gênant, Netlify propose d'activer reCAPTCHA en un clic
+  (*Forms → Settings → Spam filters*).
+- **Un numéro de téléphone est publié** en pied de page et sur la page Contact.
+  C'est un choix, pas un oubli — mais il change avec le bureau.
+
+---
+
+## 8. La récupération automatique FFVolley
 
 Le script `scripts/ffvb.mjs` lit les pages de calendrier de la fédération et
 écrit le résultat dans `src/data/ffvb.json`, que le site utilise ensuite.

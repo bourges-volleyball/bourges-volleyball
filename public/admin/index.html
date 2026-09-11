@@ -10,6 +10,23 @@
   <body>
     <!-- Identification des benevoles, geree par Netlify -->
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-    <script src="https://unpkg.com/decap-cms@3.3.3/dist/decap-cms.js"></script>
+
+    <!-- L'interface d'administration elle-meme, servie par unpkg.
+
+         L'attribut integrity est l'empreinte du fichier attendu : si unpkg
+         renvoyait un jour autre chose que la version 3.3.3 d'origine, le
+         navigateur refuserait de l'executer. Ce n'est pas une precaution
+         theorique : ce script a, une fois charge, le droit d'ecrire dans tout
+         le site au nom du benevole connecte.
+
+         EN CAS DE CHANGEMENT DE VERSION, il faut recalculer l'empreinte,
+         sinon l'administration ne s'ouvrira plus du tout :
+           node -e "const{createHash}=require('crypto');fetch('https://unpkg.com/decap-cms@X.Y.Z/dist/decap-cms.js').then(r=>r.arrayBuffer()).then(b=>console.log('sha384-'+createHash('sha384').update(Buffer.from(b)).digest('base64')))"
+    -->
+    <script
+      src="https://unpkg.com/decap-cms@3.3.3/dist/decap-cms.js"
+      integrity="sha384-Ch3bpZcxxjHMuIde+QMTyDdxGqjtafFkpoGgvLjf50nHhptNH7bZyPTyKSkOvEo+"
+      crossorigin="anonymous"
+    ></script>
   </body>
 </html>
