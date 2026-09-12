@@ -1,0 +1,134 @@
+/* Feuille de style de l'apercu, dans le volet droit de l'administration.
+
+   Decap affiche cet apercu dans un cadre isole : il n'herite d'aucun style
+   du site, d'ou le rendu en Times New Roman sur fond blanc par defaut. On
+   lui redonne donc la typographie et les couleurs du club, pour que le
+   benevole voie a peu pres ce que verront les visiteurs.
+
+   "A peu pres" : ce volet montre le contenu, pas la page complete. Ni
+   l'en-tete, ni le pied de page, ni la largeur reelle. Pour juger la vraie
+   page, il faut ouvrir le site apres publication.
+
+   Cette feuille reprend les reglages de src/pages/actus/[id].astro. Si la
+   presentation des articles y change, la repercuter ici. */
+
+@import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,700;1,800&family=Barlow+Semi+Condensed:wght@500;600&family=Barlow:wght@400;500;600;700&display=swap");
+
+:root {
+  --noir: #0d0e11;
+  --noir-2: #15171c;
+  --hair: #282c34;
+  --fg: #f4f4f2;
+  --fg-2: #9a9fa9;
+  --signal: #b4e600;
+  --s0: 0.75rem;
+  --s1: 1rem;
+  --s2: 1.18rem;
+}
+
+body {
+  margin: 0;
+  padding: clamp(1.5rem, 4vw, 2.75rem);
+  background: var(--noir);
+  color: var(--fg);
+  font-family: "Barlow", "Helvetica Neue", Arial, sans-serif;
+  font-size: var(--s2);
+  line-height: 1.55;
+  max-width: 68ch;
+}
+
+h1,
+h2,
+h3 {
+  font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+  font-weight: 800;
+  text-transform: uppercase;
+  line-height: 1.04;
+  margin: 0;
+}
+h1 {
+  font-size: clamp(2.1rem, 5.5vw, 3rem);
+  margin-bottom: 1rem;
+}
+h2 {
+  font-size: 1.9rem;
+  margin-top: 2rem;
+}
+h3 {
+  font-size: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+p {
+  margin: 1rem 0;
+}
+a {
+  color: var(--signal);
+}
+strong {
+  color: var(--fg);
+}
+ul,
+ol {
+  padding-left: 1.2rem;
+}
+li {
+  margin: 0.4rem 0;
+}
+img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+hr {
+  border: 0;
+  border-top: 1px solid var(--hair);
+  margin: 2rem 0;
+}
+
+/* Les tableaux de creneaux et de tarifs : meme traitement que sur le site,
+   defilables plutot que debordants. */
+table {
+  display: block;
+  overflow-x: auto;
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: var(--s1);
+}
+th {
+  text-align: left;
+  font-family: "Barlow Semi Condensed", sans-serif;
+  font-size: var(--s0);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-2);
+  font-weight: 600;
+}
+th,
+td {
+  border-bottom: 1px solid var(--hair);
+  padding: 0.6rem 1rem 0.6rem 0;
+  vertical-align: top;
+}
+
+blockquote {
+  margin: 1.5rem 0;
+  padding-left: 1rem;
+  border-left: 3px solid var(--signal);
+  color: var(--fg-2);
+}
+
+code,
+pre {
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  background: var(--noir-2);
+  font-size: 0.9em;
+}
+code {
+  padding: 0.1em 0.35em;
+}
+pre {
+  padding: 0.9rem;
+  overflow-x: auto;
+}

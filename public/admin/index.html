@@ -11,6 +11,13 @@
     <!-- Identification des benevoles, geree par Netlify -->
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 
+    <!-- Decap s'initialise de lui-meme des que son script est charge. On
+         le retient (CMS_MANUAL_INIT) le temps de lui declarer la feuille
+         de style de l'apercu : declaree apres l'initialisation, elle
+         serait ignoree. CMS.init() est appele plus bas. -->
+    <script>
+      window.CMS_MANUAL_INIT = true;
+    </script>
     <!-- L'interface d'administration elle-meme, servie par unpkg.
 
          L'attribut integrity est l'empreinte du fichier attendu : si unpkg
@@ -28,5 +35,26 @@
       integrity="sha384-Ch3bpZcxxjHMuIde+QMTyDdxGqjtafFkpoGgvLjf50nHhptNH7bZyPTyKSkOvEo+"
       crossorigin="anonymous"
     ></script>
+
+    <!-- Le volet d'apercu, a droite de l'editeur, est un cadre isole : il
+         n'herite d'aucun style du site. Sans cette ligne il affiche le
+         texte en Times New Roman sur fond blanc, ce qui ne ressemble a
+         rien de ce que verront les visiteurs. -->
+    <script>
+      // La feuille est passee en contenu brut, pas en adresse : le volet
+      // d'apercu est un cadre sans adresse propre (about:blank), ou un
+      // <link href="/admin/apercu.css"> n'a aucune racine a laquelle se
+      // rattacher et ne charge rien. On lit donc le fichier avant, puis on
+      // initialise l'interface.
+      fetch("/admin/apercu.css")
+        .then(function (r) {
+          return r.ok ? r.text() : "";
+        })
+        .catch(function () { return ""; })
+        .then(function (css) {
+          if (css) CMS.registerPreviewStyle(css, { raw: true });
+          CMS.init();
+        });
+    </script>
   </body>
 </html>

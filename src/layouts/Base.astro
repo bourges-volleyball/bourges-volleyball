@@ -87,7 +87,7 @@ const jsonLd = {
          une poignee de personnes deux fois par an. -->
     <script is:inline>
       (function () {
-        var jeton = /(invite_token|recovery_token|confirmation_token|email_change_token)=/;
+        var jeton = /(invite_token|recovery_token|confirmation_token|email_change_token|access_token)=/;
         if (!jeton.test(window.location.hash)) return;
 
         var s = document.createElement("script");
