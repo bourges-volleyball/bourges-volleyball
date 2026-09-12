@@ -187,9 +187,18 @@ const PHOTOS = [
   .dots {
     position: absolute;
     z-index: 4;
-    right: var(--pad);
     bottom: 1.4rem;
+    /* Alignees sur le bord droit du contenu du hero, pas sur celui de
+       l'ecran : sinon l'ecart avec le panneau se creuse avec la largeur. */
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(var(--max), 100%);
+    padding-inline: var(--pad);
+    /* Le panneau mord de .45 padding dans la marge : on retire autant a
+       droite, sinon les deux bords droits ne tombent pas au meme endroit. */
+    padding-right: calc(var(--pad) * 0.55);
     display: flex;
+    justify-content: flex-end;
     gap: 0.45rem;
   }
   .dots :global(button) {
@@ -217,7 +226,10 @@ const PHOTOS = [
     align-items: end;
   }
   @media (min-width: 900px) {
-    .hero-in { grid-template-columns: 1.4fr 0.6fr; }
+    /* Largeur bornee pour le panneau, le reste pour le titre : un ratio en
+       fr aurait etire le panneau avec l'ecran, sans que ses titres en
+       profitent. */
+    .hero-in { grid-template-columns: 1fr minmax(300px, 370px); }
     /* Le panneau mord legerement dans la marge pour se rapprocher du bord */
     .fil { margin-right: calc(var(--pad) * -0.45); }
   }

@@ -80,7 +80,7 @@ réponse est non aux deux, c'est du blanc ou du gris.
 
   /* --- Mesures --- */
   --pad: clamp(1.15rem, 4vw, 3.5rem);  /* marge latérale, fluide */
-  --max: 1220px;                        /* largeur maximale du contenu */
+  --max: 1680px;                        /* mesure de la page */
   --texte: 66ch;                        /* largeur de lecture confortable */
 
   /* --- Échelle de texte. Trois tailles suffisent. --- */
@@ -92,6 +92,16 @@ réponse est non aux deux, c'est du blanc ou du gris.
   --oblique: -10deg;
 }
 ```
+
+### Une seule mesure pour toute la page
+
+`--max` s'applique a l'en-tete, au pied et a toutes les sections. **Ne le
+surchargez pas pour un bloc particulier** : la page se retrouverait avec
+plusieurs bords gauches, et un logo qui ne tombe plus au-dessus du titre.
+
+Les paragraphes longs sont bornes separement, en `ch` (`60ch`, `66ch`), et
+non par le conteneur. C'est ce qui permet une mesure de page genereuse sans
+produire de lignes de texte interminables.
 
 ### Pourquoi trois fonds et pas un
 

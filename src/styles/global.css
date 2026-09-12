@@ -26,7 +26,7 @@
   --clair-hair:#DCDCD8;
 
   --pad:clamp(1.15rem,4vw,3.5rem);
-  --max:1220px;
+  --max:1680px;      /* mesure de la page ; les textes longs sont bornes en ch */
   --s0:.75rem;
   --s1:1rem;
   --s2:1.18rem;
