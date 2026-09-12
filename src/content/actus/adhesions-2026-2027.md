@@ -1,7 +1,9 @@
 ---
-titre: "Les adhésions 2026-2027 sont ouvertes"
+titre: Les adhésions 2027-2027 sont ouvertes
 date: 2026-08-24
-chapo: "Licences FFVolley et Ufolep, tarifs réduits pour les étudiants et les demandeurs d'emploi. Tout se règle en ligne sur HelloAsso."
+chapo: Licences FFVolley et Ufolep, tarifs réduits pour les étudiants et les
+  demandeurs d'emploi. Tout se règle en ligne sur HelloAsso.
+brouillon: true
 ---
 
 L'adhésion à la saison 2026-2027 est ouverte. Elle se prend en ligne, en
