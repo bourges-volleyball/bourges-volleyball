@@ -87,19 +87,22 @@ const jsonLd = {
          une poignee de personnes deux fois par an. -->
     <script is:inline>
       (function () {
-        var jeton = /(invite_token|recovery_token|confirmation_token|email_change_token)=/;
+        var jeton = /(invite_token|recovery_token|confirmation_token|email_change_token)=/;
         if (!jeton.test(window.location.hash)) return;
 
         var s = document.createElement("script");
         s.src = "https://identity.netlify.com/v1/netlify-identity-widget.js";
         s.onload = function () {
           if (!window.netlifyIdentity) return;
-          window.netlifyIdentity.on("init", function (user) {
-            if (user) return;
-            window.netlifyIdentity.on("login", function () {
-              document.location.href = "/admin/";
-            });
+          // Des que le mot de passe est choisi, on conduit le benevole a
+          // l'administration : c'est la qu'il avait affaire.
+          window.netlifyIdentity.on("login", function () {
+            document.location.href = "/admin/";
           });
+          // init() doit etre appele explicitement : le widget ne
+          // s'initialise seul que s'il est present au chargement de la
+          // page, ce qui n’est pas le cas ici puisqu’on l’ajoute apres.
+          window.netlifyIdentity.init();
         };
         document.head.appendChild(s);
       })();
