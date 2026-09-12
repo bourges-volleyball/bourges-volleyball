@@ -44,7 +44,7 @@ Pas de mot de passe, et les modifications sont réelles.
    >
    > Une organisation est **gratuite** : *github.com → votre photo → Your
    > organizations → New organization → offre Free*. Nommez-la par exemple
-   > `bourges-volley-ball`, puis **ajoutez un second propriétaire** (le
+   > `bourges-volleyball`, puis **ajoutez un second propriétaire** (le
    > président, ou un autre bénévole technique) dans *People → Owners*.
    > Deux propriétaires, c'est ce qui évite de perdre l'accès le jour où
    > l'un des deux n'est plus joignable.
@@ -54,7 +54,7 @@ Pas de mot de passe, et les modifications sont réelles.
    relier :
 
    ```bash
-   git remote add origin https://github.com/bourges-volley-ball/bourges-volley-ball.git
+   git remote add origin https://github.com/bourges-volleyball/bourges-volleyball.git
    git push -u origin main
    ```
 
