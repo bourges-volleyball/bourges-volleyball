@@ -94,14 +94,38 @@ const jsonLd = {
         s.src = "https://identity.netlify.com/v1/netlify-identity-widget.js";
         s.onload = function () {
           if (!window.netlifyIdentity) return;
-          // Des que le mot de passe est choisi, on conduit le benevole a
-          // l'administration : c'est la qu'il avait affaire.
+
+          // Netlify connecte le benevole sans rien lui dire : il se
+          // retrouve sur la page d accueil sans savoir si ca a marche.
+          // On le lui dit, et on lui donne la porte.
           window.netlifyIdentity.on("login", function () {
-            document.location.href = "/admin/";
+            window.netlifyIdentity.close();
+            var recuperation = /recovery_token=/.test(window.location.hash);
+            var voile = document.createElement("div");
+            voile.setAttribute("role", "status");
+            voile.style.cssText =
+              "position:fixed;inset:0;z-index:9999;display:grid;place-items:center;" +
+              "padding:var(--pad);background:rgba(13,14,17,.985);text-align:center";
+            voile.innerHTML =
+              '<div style="display:grid;gap:1.15rem;justify-items:center;max-width:40ch">' +
+              '<p class="eyebrow">Bourges Volley-Ball</p>' +
+              '<h2 style="font-size:clamp(2rem,6vw,2.8rem)">' +
+              (recuperation
+                ? 'Nouveau mot de passe enregistré'
+                : 'Votre compte est prêt') +
+              '</h2>' +
+              '<p style="color:var(--fg-2);margin:0">Vous êtes connecté. Vous pouvez désormais écrire une actualité ou mettre à jour une page, et revenir quand vous voulez par la même adresse.</p>' +
+              '<a class="btn" href="/admin/"><span>Ouvrir l&rsquo;administration</span></a>' +
+              '<a class="lien" href="/">Retour au site</a>' +
+              '</div>';
+            document.body.appendChild(voile);
+            var porte = voile.querySelector("a.btn");
+            if (porte) porte.focus();
           });
+
           // init() doit etre appele explicitement : le widget ne
-          // s'initialise seul que s'il est present au chargement de la
-          // page, ce qui n’est pas le cas ici puisqu’on l’ajoute apres.
+          // s initialise seul que s il est present au chargement de la
+          // page, ce qui n est pas le cas ici puisqu on l ajoute apres.
           window.netlifyIdentity.init();
         };
         document.head.appendChild(s);
