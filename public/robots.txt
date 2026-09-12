@@ -10,4 +10,4 @@ Disallow: /
 # Allow: /
 # Disallow: /admin/
 #
-# Sitemap: https://bourgesvolleyball.netlify.app/sitemap-index.xml
+# Sitemap: https://bourges-volleyball.netlify.app/sitemap-index.xml
