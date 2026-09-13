@@ -17,6 +17,11 @@ public_folder: "/images/uploads"
 
 locale: "fr"
 
+# Logo sur l'ecran de connexion, et lien "Voir le site" en haut de l'interface.
+# A changer le jour ou le club a son nom de domaine.
+logo_url: "/images/logo-bvb.png"
+site_url: "https://bourges-volleyball.netlify.app"
+
 # Chaque enregistrement cree une version : rien n'est jamais perdu.
 publish_mode: simple
 
