@@ -48,7 +48,7 @@ collections:
           name: "chapo",
           label: "Résumé",
           widget: "text",
-          hint: "Deux lignes maximum. C'est ce qui s'affiche sur la page d'accueil.",
+          hint: "Deux lignes maximum. Il s'affiche sous le titre, sur la page Actualités et en tête de l'article.",
         }
       - {
           name: "image",
@@ -109,6 +109,57 @@ collections:
           default: 10,
           hint: "La photo 1 passe en premier.",
         }
+
+  # Textes fixes : on les modifie, on ne les supprime pas (le site en a besoin).
+  - name: "pages"
+    label: "Textes des pages"
+    delete: false
+    files:
+      - name: "accueil"
+        label: "Accueil : texte du haut"
+        file: "src/content/pages/accueil.md"
+        fields:
+          - { name: "bandeau", label: "Bandeau blanc au-dessus du titre", widget: "string" }
+          - { name: "titre", label: "Titre, 1re ligne", widget: "string", hint: "Court : le titre s'affiche en très grand." }
+          - { name: "titreSuite", label: "Titre, 2e ligne", widget: "string" }
+          - { name: "motFort", label: "Mot en vert, à la fin de la 2e ligne", widget: "string", hint: "Un seul mot, deux au plus." }
+          - { name: "accroche", label: "Phrase en gras sous le titre", widget: "text" }
+          - { name: "texte", label: "Texte sous la phrase en gras", widget: "text" }
+      - name: "le-club"
+        label: "Le club : histoire et palmarès"
+        file: "src/content/pages/le-club.md"
+        fields:
+          - { name: "surtitre", label: "Petit texte au-dessus du titre", widget: "string" }
+          - { name: "intro", label: "Présentation du club", widget: "text" }
+          - name: "chiffres"
+            label: "Chiffres clés"
+            label_singular: "un chiffre"
+            widget: "list"
+            summary: "{{fields.valeur}} {{fields.legende}}"
+            hint: "Quatre chiffres tombent juste sur ordinateur."
+            fields:
+              - { name: "valeur", label: "Chiffre", widget: "string", hint: "Par exemple 162, ou 60+." }
+              - { name: "legende", label: "Légende", widget: "string" }
+          - name: "histoire"
+            label: "Notre histoire"
+            label_singular: "une étape"
+            widget: "list"
+            summary: "{{fields.date}} - {{fields.titre}}"
+            hint: "Dans l'ordre chronologique. On réordonne en faisant glisser les étapes."
+            fields:
+              - { name: "date", label: "Date ou période", widget: "string", hint: "Par exemple 2007, 2021-2022 ou Aujourd'hui." }
+              - { name: "titre", label: "Titre", widget: "string" }
+              - { name: "texte", label: "Texte", widget: "text" }
+          - name: "palmares"
+            label: "Palmarès"
+            label_singular: "un titre"
+            widget: "list"
+            summary: "{{fields.annee}} - {{fields.titre}}"
+            fields:
+              - { name: "annee", label: "Année ou saison", widget: "string" }
+              - { name: "titre", label: "Titre remporté", widget: "string" }
+              - { name: "detail", label: "Précision", widget: "string", hint: "Par exemple : Remportée par les filles." }
+          - { name: "notePalmares", label: "Remarque sous le palmarès", widget: "text", required: false, hint: "Laissée vide, elle ne s'affiche pas." }
 
   - name: "equipes"
     label: "Équipes"

@@ -126,4 +126,32 @@ const diaporama = defineCollection({
     }),
 });
 
-export const collections = { actus, equipes, matchs, partenaires, boutique, evenements, diaporama };
+/* Textes fixes des pages, modifiables dans l'administration (rubrique
+   « Textes des pages »). Un fichier par page, chacun avec ses champs. */
+const pageAccueil = defineCollection({
+  loader: glob({ pattern: "accueil.md", base: "./src/content/pages" }),
+  schema: z.object({
+    bandeau: z.string(),
+    titre: z.string(),
+    titreSuite: z.string(),
+    motFort: z.string(),
+    accroche: z.string(),
+    texte: z.string(),
+  }),
+});
+
+const pageClub = defineCollection({
+  loader: glob({ pattern: "le-club.md", base: "./src/content/pages" }),
+  schema: z.object({
+    surtitre: z.string(),
+    intro: z.string(),
+    chiffres: z.array(z.object({ valeur: z.string(), legende: z.string() })).default([]),
+    histoire: z.array(z.object({ date: z.string(), titre: z.string(), texte: z.string() })).default([]),
+    palmares: z.array(z.object({ annee: z.string(), titre: z.string(), detail: z.string() })).default([]),
+    notePalmares: z.string().optional(),
+  }),
+});
+
+export const collections = {
+  actus, equipes, matchs, partenaires, boutique, evenements, diaporama, pageAccueil, pageClub,
+};

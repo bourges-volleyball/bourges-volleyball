@@ -1,59 +1,10 @@
 ---
 import Base from "../layouts/Base.astro";
+import { getEntry } from "astro:content";
 
-/* Faits verifies sur la page HelloAsso du club. Les dates approximatives
-   sont annoncees comme telles plutot que precisees au hasard. */
-const CHIFFRES = [
-  { valeur: "162", legende: "licenciés en 2021-2022" },
-  { valeur: "60+", legende: "jeunes de M13 à M18" },
-  { valeur: "2", legende: "fédérations : FFVolley et Ufolep" },
-  { valeur: "2007", legende: "naissance du Bourges Volley-Ball" },
-];
-
-const HISTOIRE = [
-  {
-    date: "Avant 2007",
-    titre: "Plus de trente ans d’US Berry Volley-Ball",
-    texte:
-      "Le volley berruyer se joue d’abord sous les couleurs de l’US Berry Volley-Ball, pendant plus de trois décennies.",
-  },
-  {
-    date: "2007",
-    titre: "Le club prend un nouveau départ",
-    texte:
-      "L’US Berry devient le Bourges Volley-Ball. Le club conserve sa double affiliation, FFVolley pour la compétition fédérale et Ufolep pour le jeu départemental et loisir.",
-  },
-  {
-    date: "2021-2022",
-    titre: "162 licenciés et un titre",
-    texte:
-      "Le club atteint 162 licenciés et décroche le titre de champion de prénationale. Plus de soixante jeunes sont licenciés, des M13 aux M18.",
-  },
-  {
-    date: "Aujourd’hui",
-    titre: "Quatre sections",
-    texte:
-      "Seniors masculins en prénationale, seniors féminines en régionale, jeunes de M13 à M18 filles et garçons, et une section loisir Ufolep mixte.",
-  },
-];
-
-const PALMARES = [
-  {
-    annee: "2016",
-    titre: "Coupe de France Ufolep",
-    detail: "Remportée par les filles",
-  },
-  {
-    annee: "2021-2022",
-    titre: "Champion de prénationale",
-    detail: "Seniors masculins",
-  },
-  {
-    annee: "2000",
-    titre: "Coupe de France Ufolep",
-    detail: "Remportée par les garçons",
-  },
-];
+/* Tous les textes de cette page se modifient dans l'administration,
+   rubrique « Textes des pages » : src/content/pages/le-club.md. */
+const { surtitre, intro, chiffres, histoire, palmares, notePalmares } = (await getEntry("pageClub", "le-club"))!.data;
 ---
 
 <Base
@@ -61,21 +12,15 @@ const PALMARES = [
   description="Histoire et palmarès du Bourges Volley-Ball : de l’US Berry Volley-Ball au BVB, deux Coupes de France Ufolep et un titre de champion de prénationale."
 >
   <section class="page-head wrap">
-    <p class="eyebrow">Depuis plus de quarante ans</p>
+    <p class="eyebrow">{surtitre}</p>
     <h1>Le club</h1>
-    <p>
-      Au volley, un point ne se gagne jamais seul : il faut quelqu’un pour
-      recevoir, quelqu’un pour passer, quelqu’un pour conclure. Un club tient
-      exactement de la même manière — joueurs, coachs, arbitres, parents et
-      bénévoles. Le Bourges Volley-Ball fait vivre ce sport dans le Cher
-      depuis plus de quarante ans, en compétition comme en loisir.
-    </p>
+    <p>{intro}</p>
   </section>
 
   <section class="section wrap">
     <ul class="chiffres">
       {
-        CHIFFRES.map((c) => (
+        chiffres.map((c) => (
           <li>
             <b>{c.valeur}</b>
             <span>{c.legende}</span>
@@ -89,7 +34,7 @@ const PALMARES = [
     <div class="section-head"><h2>Notre histoire</h2></div>
     <ol class="frise">
       {
-        HISTOIRE.map((e) => (
+        histoire.map((e) => (
           <li>
             <p class="quand">{e.date}</p>
             <h3>{e.titre}</h3>
@@ -104,7 +49,7 @@ const PALMARES = [
     <div class="section-head"><h2>Palmarès</h2></div>
     <ul class="palmares">
       {
-        PALMARES.map((p) => (
+        palmares.map((p) => (
           <li>
             <span class="annee mono">{p.annee}</span>
             <span class="quoi">
@@ -115,10 +60,7 @@ const PALMARES = [
         ))
       }
     </ul>
-    <p class="note">
-      Ce palmarès est à compléter : les titres départementaux et les montées
-      des équipes jeunes n’y figurent pas encore.
-    </p>
+    {notePalmares && <p class="note">{notePalmares}</p>}
   </section>
 
   <section class="section wrap appel">

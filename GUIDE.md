@@ -160,8 +160,18 @@ l'accès.
 
 ### Actualités
 Publier un article : titre, date, résumé, photo de une, texte.
-Le **résumé** est ce qui s'affiche sur la page d'accueil : deux lignes suffisent.
+Le **résumé** s'affiche sous le titre, sur la page Actualités et en tête de l'article : deux lignes suffisent. L'accueil, lui, ne montre que la date et le titre des trois derniers articles, dans le panneau « À la une ».
 La case **Brouillon** permet de préparer un article sans le publier.
+
+### Textes des pages
+Deux fiches, que l'on modifie mais que l'on ne peut pas supprimer :
+
+- **Accueil : texte du haut** — le bandeau, le grand titre (le dernier mot
+  s'affiche en vert), la phrase en gras et le texte qui la suit. Gardez le
+  titre court : il s'affiche en très grand.
+- **Le club : histoire et palmarès** — la présentation, les chiffres clés,
+  les étapes de l'histoire et les titres. Chaque liste se complète avec
+  « Ajouter », et se réordonne en faisant glisser les éléments.
 
 ### Équipes
 Une fiche par groupe, et **chaque équipe a sa propre page** sur le site. Les champs **Âge minimum** et **Âge maximum** sont

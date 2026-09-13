@@ -3,6 +3,7 @@
    rubrique « Photos de l'accueil » (src/content/diaporama). Astro s'occupe
    seul de les convertir en WebP et d'en produire plusieurs tailles. */
 import { Picture } from "astro:assets";
+import { getEntry } from "astro:content";
 import { diaporama } from "../lib/donnees";
 
 interface Props {
@@ -11,6 +12,8 @@ interface Props {
 const { actus = [] } = Astro.props;
 
 const PHOTOS = (await diaporama()).map((p) => ({ img: p.data.photo, alt: p.data.alt }));
+// Textes du haut de l'accueil : src/content/pages/accueil.md
+const t = (await getEntry("pageAccueil", "accueil"))!.data;
 ---
 
 <section class="hero">
@@ -35,13 +38,11 @@ const PHOTOS = (await diaporama()).map((p) => ({ img: p.data.photo, alt: p.data.
 
   <div class="wrap hero-in">
     <div class="hero-texte">
-    <span class="tag"><span>FFVolley &amp; Ufolep &middot; Bourges</span></span>
-    <h1>Le volley,<br />c’est <span class="slash">ici</span></h1>
+    <span class="tag"><span>{t.bandeau}</span></span>
+    <h1>{t.titre}<br />{t.titreSuite} <span class="slash">{t.motFort}</span></h1>
     <p class="hero-lede">
-      <b>Trois touches, trois joueurs : au volley, personne ne joue seul.
-      Notre club se construit pareil.</b>
-      Prénationale masculine, régionale féminine, jeunes de M13 à M18
-      et section loisir Ufolep.
+      <b>{t.accroche}</b>
+      {t.texte}
     </p>
     <div class="hero-actions">
       <a class="btn" href="/nous-rejoindre/"><span>Nous rejoindre</span></a>
