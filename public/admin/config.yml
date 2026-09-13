@@ -73,6 +73,43 @@ collections:
         }
       - { name: "body", label: "Texte", widget: "markdown" }
 
+  - name: "diaporama"
+    label: "Photos de l'accueil"
+    label_singular: "une photo"
+    description: "Les photos qui défilent en haut de la page d'accueil. Trois à cinq photos, format paysage, 1600 px de large minimum. Le site les assombrit lui-même pour que le texte reste lisible."
+    folder: "src/content/diaporama"
+    create: true
+    identifier_field: "alt"
+    slug: "{{slug}}"
+    summary: "{{ordre}} - {{alt}}"
+    sortable_fields: ["ordre"]
+    # Chemins relatifs au dossier des fiches : les photos vont dans
+    # src/images/diaporama, ou le site peut les optimiser (celles de
+    # public/ sont servies telles quelles, a leur poids d'origine).
+    media_folder: "../../images/diaporama"
+    public_folder: "../../images/diaporama"
+    fields:
+      - {
+          name: "photo",
+          label: "Photo",
+          widget: "image",
+          hint: "Format paysage, cadrage serré sur l'action.",
+        }
+      - {
+          name: "alt",
+          label: "Ce que montre la photo",
+          widget: "string",
+          hint: "Quelques mots, par exemple « Attaque au filet ». Lu aux personnes aveugles, et sert de nom à la photo dans cette liste.",
+        }
+      - {
+          name: "ordre",
+          label: "Ordre",
+          widget: "number",
+          value_type: "int",
+          default: 10,
+          hint: "La photo 1 passe en premier.",
+        }
+
   - name: "equipes"
     label: "Équipes"
     label_singular: "une équipe"

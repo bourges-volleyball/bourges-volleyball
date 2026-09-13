@@ -1,24 +1,16 @@
 ---
-/* Diaporama de l'accueil.
-   Pour changer les photos : remplacer les fichiers dans src/images/hero/
-   en gardant les mêmes noms. Trois a cinq images, format paysage,
-   1600 px de large minimum. Astro s'occupe seul de les convertir en WebP
-   et d'en produire plusieurs tailles selon l'ecran. */
+/* Diaporama de l'accueil. Les photos se gerent dans l'administration,
+   rubrique « Photos de l'accueil » (src/content/diaporama). Astro s'occupe
+   seul de les convertir en WebP et d'en produire plusieurs tailles. */
 import { Picture } from "astro:assets";
-import hero1 from "../images/hero/hero-1.jpg";
-import hero2 from "../images/hero/hero-2.jpg";
-import hero3 from "../images/hero/hero-3.jpg";
+import { diaporama } from "../lib/donnees";
 
 interface Props {
   actus?: { id: string; data: { titre: string; date: Date; image?: string; affiche?: boolean } }[];
 }
 const { actus = [] } = Astro.props;
 
-const PHOTOS = [
-  { img: hero1, alt: "Attaque au filet lors d'un match" },
-  { img: hero2, alt: "Joueur en suspension" },
-  { img: hero3, alt: "Phase de jeu collective" },
-];
+const PHOTOS = (await diaporama()).map((p) => ({ img: p.data.photo, alt: p.data.alt }));
 ---
 
 <section class="hero">

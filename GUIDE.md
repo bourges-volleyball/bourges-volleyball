@@ -234,12 +234,12 @@ fond blanc ou transparent ; sans logo, le nom s'affiche en toutes lettres.
 
 ## 3. Les photos du diaporama d'accueil
 
-Les trois photos qui défilent derrière le titre sont les fichiers
-`src/images/hero/hero-1.jpg`, `hero-2.jpg` et `hero-3.jpg`.
-
-**Ce sont actuellement des photos libres de droits, à remplacer.**
-Remplacez les fichiers en gardant les mêmes noms : format paysage,
+Les photos qui défilent derrière le titre se gèrent dans l'administration,
+rubrique **Photos de l'accueil** : ajouter, supprimer, et régler l'ordre
+de passage avec le champ « Ordre ». Trois à cinq photos, format paysage,
 1600 pixels de large minimum, des cadrages serrés sur l'action.
+
+**Les trois photos actuelles sont libres de droits, à remplacer.**
 
 Le site les assombrit automatiquement pour que le texte reste lisible —
 inutile de les retoucher, les gymnases sont toujours trop clairs et

@@ -65,6 +65,10 @@ export async function actus(limite?: number) {
   return limite ? liste.slice(0, limite) : liste;
 }
 
+export async function diaporama() {
+  return (await getCollection("diaporama")).sort((a, b) => a.data.ordre - b.data.ordre);
+}
+
 export async function partenaires() {
   const liste = await getCollection("partenaires");
   const par = (niveau: string) =>

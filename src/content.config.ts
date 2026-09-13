@@ -113,4 +113,17 @@ const evenements = defineCollection({
   }),
 });
 
-export const collections = { actus, equipes, matchs, partenaires, boutique, evenements };
+/* Photos du diaporama de l'accueil. image() plutot qu'une simple chaine :
+   Astro retrouve le fichier et le convertit en WebP a plusieurs tailles,
+   indispensable pour des photos de telephone de plusieurs Mo. */
+const diaporama = defineCollection({
+  loader: glob({ pattern: "**/*.md", base: "./src/content/diaporama" }),
+  schema: ({ image }) =>
+    z.object({
+      photo: image(),
+      alt: z.string(),
+      ordre: z.number().default(10),
+    }),
+});
+
+export const collections = { actus, equipes, matchs, partenaires, boutique, evenements, diaporama };
