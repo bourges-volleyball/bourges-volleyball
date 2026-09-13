@@ -10,7 +10,7 @@ import hero2 from "../images/hero/hero-2.jpg";
 import hero3 from "../images/hero/hero-3.jpg";
 
 interface Props {
-  actus?: { id: string; data: { titre: string; date: Date } }[];
+  actus?: { id: string; data: { titre: string; date: Date; image?: string } }[];
 }
 const { actus = [] } = Astro.props;
 
@@ -65,6 +65,7 @@ const PHOTOS = [
             {actus.map((a) => (
               <li>
                 <a href={`/actus/${a.id}/`}>
+                  {a.data.image && <img src={a.data.image} alt="" width="64" height="48" />}
                   <time datetime={a.data.date.toISOString().slice(0, 10)}>
                     {a.data.date.toLocaleDateString("fr-FR", {
                       day: "numeric",
@@ -268,6 +269,20 @@ const PHOTOS = [
     gap: 0.15rem;
     padding: 0.6rem 0;
     text-decoration: none;
+  }
+  /* Avec une photo, une vignette a gauche ; la date et le titre passent
+     dans la seconde colonne, l'un sous l'autre. */
+  .fil li a:has(img) {
+    grid-template-columns: 64px 1fr;
+    column-gap: 0.75rem;
+    align-items: center;
+  }
+  .fil li img {
+    grid-row: span 2;
+    width: 64px;
+    height: 48px;
+    object-fit: cover;
+    filter: saturate(0.85);
   }
   .fil time {
     font-family: "Barlow Semi Condensed", sans-serif;
