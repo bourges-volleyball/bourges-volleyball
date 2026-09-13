@@ -10,7 +10,7 @@ import hero2 from "../images/hero/hero-2.jpg";
 import hero3 from "../images/hero/hero-3.jpg";
 
 interface Props {
-  actus?: { id: string; data: { titre: string; date: Date; image?: string } }[];
+  actus?: { id: string; data: { titre: string; date: Date; image?: string; affiche?: boolean } }[];
 }
 const { actus = [] } = Astro.props;
 
@@ -65,7 +65,7 @@ const PHOTOS = [
             {actus.map((a) => (
               <li>
                 <a href={`/actus/${a.id}/`}>
-                  {a.data.image && <img src={a.data.image} alt="" width="64" height="48" />}
+                  {a.data.image && <img class:list={{ affiche: a.data.affiche }} src={a.data.image} alt="" width="64" height="48" />}
                   <time datetime={a.data.date.toISOString().slice(0, 10)}>
                     {a.data.date.toLocaleDateString("fr-FR", {
                       day: "numeric",

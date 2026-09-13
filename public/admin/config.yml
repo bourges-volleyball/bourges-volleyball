@@ -55,7 +55,14 @@ collections:
           label: "Photo de une",
           widget: "image",
           required: false,
-          hint: "Format paysage, 1200 px de large minimum.",
+          hint: "Format paysage, 1200 px de large minimum. Une affiche peut être en portrait ou carrée : cochez alors la case ci-dessous.",
+        }
+      - {
+          name: "affiche",
+          label: "C'est une affiche",
+          widget: "boolean",
+          default: false,
+          hint: "Cochée, l'image n'est jamais recadrée : elle apparaît en entier, et s'ouvre en grand d'un clic dans l'article.",
         }
       - {
           name: "brouillon",

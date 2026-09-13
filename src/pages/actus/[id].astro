@@ -27,9 +27,19 @@ const autres = (await actus()).filter((a) => a.id !== actu.id).slice(0, 3);
     </div>
 
     {
-      actu.data.image && (
+      actu.data.image && !actu.data.affiche && (
         <figure class="une">
           <img src={actu.data.image} alt="" width="1600" height="900" />
+        </figure>
+      )
+    }
+    {
+      actu.data.image && actu.data.affiche && (
+        <figure class="affiche-entiere wrap">
+          <a href={actu.data.image} target="_blank" rel="noopener">
+            <img src={actu.data.image} alt={`Affiche : ${actu.data.titre}`} />
+          </a>
+          <figcaption>Cliquer sur l&rsquo;affiche pour l&rsquo;ouvrir en grand</figcaption>
         </figure>
       )
     }
@@ -57,6 +67,25 @@ const autres = (await actus()).filter((a) => a.id !== actu.id).slice(0, 3);
 <style>
   .une { margin: 0; }
   .une img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; display: block; }
+  /* Une affiche se lit en entier : pas de bandeau recadre, mais l'image
+     a sa taille naturelle, bornee a la hauteur de l'ecran. */
+  .affiche-entiere { margin: 0 auto; display: grid; justify-items: center; gap: 0.6rem; }
+  .affiche-entiere a { display: block; cursor: zoom-in; }
+  .affiche-entiere img {
+    display: block;
+    max-height: 85vh;
+    width: auto;
+    border: 1px solid var(--hair);
+    transition: border-color 0.12s;
+  }
+  .affiche-entiere a:hover img { border-color: var(--signal); }
+  .affiche-entiere figcaption {
+    font-family: "Barlow Semi Condensed", sans-serif;
+    font-size: var(--s0);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--fg-2);
+  }
   .corps {
     padding-block: clamp(1.75rem, 4vw, 2.75rem);
     max-width: 68ch; font-size: var(--s2);

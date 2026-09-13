@@ -14,7 +14,7 @@ const d = actu.data.date;
 
 <a class="actu" href={`/actus/${actu.id}/`}>
   {actu.data.image && (
-    <img class="vignette" src={actu.data.image} alt="" width="1200" height="750" loading="lazy" />
+    <img class:list={["vignette", { affiche: actu.data.affiche }]} src={actu.data.image} alt="" width="1200" height="750" loading="lazy" />
   )}
   <time datetime={d.toISOString().slice(0, 10)}>
     {d.toLocaleDateString("fr-FR", { day: "numeric", month: "long", timeZone: "Europe/Paris" })}

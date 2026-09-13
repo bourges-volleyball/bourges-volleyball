@@ -47,7 +47,7 @@ const dateArticle = (d: Date) =>
             <a class="une-lien" href={`/actus/${une.id}/`}>
               {une.data.image && (
                 <img
-                  class="une-photo"
+                  class:list={["une-photo", { affiche: une.data.affiche }]}
                   src={une.data.image}
                   alt=""
                   width="1600"
@@ -95,7 +95,7 @@ const dateArticle = (d: Date) =>
                     </span>
                     {a.data.image && (
                       <img
-                        class="miniature"
+                        class:list={["miniature", { affiche: a.data.affiche }]}
                         src={a.data.image}
                         alt=""
                         width="480"

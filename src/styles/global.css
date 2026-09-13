@@ -46,6 +46,10 @@ h1,h2,h3{
 }
 a{color:inherit}
 img{max-width:100%;height:auto}
+/* Affiche d'actualite (case « C'est une affiche ») : montree en entiere sur
+   fond sombre, jamais recadree. !important parce que chaque vignette fixe
+   son propre object-fit: cover dans un style de composant, plus specifique. */
+img.affiche{object-fit:contain!important;background:var(--noir-2)}
 :focus-visible{outline:3px solid var(--signal);outline-offset:3px}
 
 .wrap{max-width:var(--max);margin-inline:auto;padding-inline:var(--pad)}

@@ -12,6 +12,8 @@ const actus = defineCollection({
     date: z.coerce.date(),
     chapo: z.string(),
     image: z.string().optional(),
+    // Affiche des reseaux sociaux : jamais recadree, ouvrable en grand
+    affiche: z.boolean().default(false),
     brouillon: z.boolean().default(false),
   }),
 });
