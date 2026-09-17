@@ -1,0 +1,76 @@
+---
+/* Information RGPD (articles 13 et 14). A mettre a jour si le site ajoute
+   un outil de mesure d'audience, une newsletter ou un nouveau formulaire. */
+import Base from "../layouts/Base.astro";
+---
+
+<Base titre="Confidentialité" description="Comment le Bourges Volley-Ball utilise et protège vos données personnelles.">
+  <section class="page-head wrap">
+    <p class="eyebrow">Vos données</p>
+    <h1>Confidentialité</h1>
+    <p>Le club collecte le moins de données possible, et seulement pour vous répondre.</p>
+  </section>
+
+  <section class="section wrap texte-legal">
+    <h2>Qui est responsable</h2>
+    <p>
+      Le Bourges Volley-Ball, représenté par son président.
+      Contact : <a href="mailto:bourgesvolley@gmail.com">bourgesvolley@gmail.com</a>.
+    </p>
+
+    <h2>Le formulaire de contact</h2>
+    <ul>
+      <li><b>Ce qui est collecté :</b> votre nom, votre adresse mail, le sujet et votre message.</li>
+      <li><b>Pourquoi :</b> vous répondre, et rien d&rsquo;autre. Aucune publicité, aucune revente.</li>
+      <li><b>Qui les lit :</b> les bénévoles du bureau du club.</li>
+      <li>
+        <b>Où elles sont stockées :</b> chez Netlify, l&rsquo;hébergeur du site, qui
+        reçoit les messages et les transmet au club. Netlify est une société
+        américaine ; voir sa <a href="https://www.netlify.com/privacy/" rel="noopener">politique de confidentialité</a>.
+      </li>
+      <li><b>Combien de temps :</b> les messages sont supprimés au plus tard un an après le dernier échange.</li>
+    </ul>
+
+    <h2>Cookies et mesure d&rsquo;audience</h2>
+    <p>
+      Ce site ne dépose aucun cookie publicitaire ni de mesure d&rsquo;audience,
+      et n&rsquo;utilise aucun service de suivi. Les polices de caractères sont
+      servies par le site lui-même. Seuls les bénévoles qui se connectent à
+      l&rsquo;administration conservent une session dans leur navigateur.
+    </p>
+
+    <h2>Liens vers d&rsquo;autres sites</h2>
+    <p>
+      Les paiements (boutique, adhésions) se font sur HelloAsso, et certains
+      liens mènent vers Instagram ou les sites des partenaires. Ces sites
+      appliquent leurs propres règles de confidentialité.
+    </p>
+
+    <h2>Photos</h2>
+    <p>
+      Les photos publiées sont prises lors des matchs et des événements du club.
+      Si vous apparaissez sur l&rsquo;une d&rsquo;elles, ou votre enfant, et
+      souhaitez qu&rsquo;elle soit retirée, écrivez-nous : nous la retirons
+      sans avoir à nous justifier.
+    </p>
+
+    <h2>Vos droits</h2>
+    <p>
+      Vous pouvez demander à consulter, corriger ou effacer vos données, ou
+      vous opposer à leur utilisation, en écrivant à
+      <a href="mailto:bourgesvolley@gmail.com">bourgesvolley@gmail.com</a>.
+      Si la réponse ne vous satisfait pas, vous pouvez saisir la
+      <a href="https://www.cnil.fr/fr/plaintes" rel="noopener">CNIL</a>.
+    </p>
+  </section>
+</Base>
+
+<style>
+  .texte-legal > * { max-width: 68ch; }
+  .texte-legal h2 { font-size: 1.6rem; margin: 2rem 0 0.6rem; }
+  .texte-legal h2:first-child { margin-top: 0; }
+  .texte-legal p, .texte-legal li { color: var(--fg-2); }
+  .texte-legal ul { padding-left: 1.2rem; display: grid; gap: 0.5rem; }
+  .texte-legal b { color: var(--fg); }
+  .texte-legal a { color: var(--signal); }
+</style>

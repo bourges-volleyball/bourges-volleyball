@@ -1,4 +1,17 @@
 ---
+/* Polices servies par le site lui-meme, pas par Google : chaque visite
+   transmettait sinon l'adresse IP du visiteur a Google (RGPD). */
+import "@fontsource/barlow/400.css";
+import "@fontsource/barlow/500.css";
+import "@fontsource/barlow/600.css";
+import "@fontsource/barlow/700.css";
+import "@fontsource/barlow-condensed/600.css";
+import "@fontsource/barlow-condensed/700.css";
+import "@fontsource/barlow-condensed/800.css";
+import "@fontsource/barlow-condensed/700-italic.css";
+import "@fontsource/barlow-condensed/800-italic.css";
+import "@fontsource/barlow-semi-condensed/500.css";
+import "@fontsource/barlow-semi-condensed/600.css";
 import "../styles/global.css";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
@@ -62,12 +75,6 @@ const jsonLd = {
     <meta property="og:locale" content="fr_FR" />
     <meta name="twitter:card" content="summary_large_image" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,700;1,800&family=Barlow+Semi+Condensed:wght@500;600&family=Barlow:wght@400;500;600;700&display=swap"
-    />
 
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   </head>
@@ -88,7 +95,9 @@ const jsonLd = {
          chaque page, pour chaque visiteur : une requete vers un service
          exterieur, sur toutes les pages, pour un evenement qui concerne
          une poignee de personnes deux fois par an. -->
-    <script is:inline>
+    <!-- Pas de is:inline : Astro ne calcule l'empreinte CSP que des scripts
+         qu'il traite lui-meme. Un script is:inline serait bloque. -->
+    <script>
       (function () {
         var jeton = /(invite_token|recovery_token|confirmation_token|email_change_token|access_token)=/;
         if (!jeton.test(window.location.hash)) return;
@@ -106,18 +115,18 @@ const jsonLd = {
             var recuperation = /recovery_token=/.test(window.location.hash);
             var voile = document.createElement("div");
             voile.setAttribute("role", "status");
-            voile.style.cssText =
-              "position:fixed;inset:0;z-index:9999;display:grid;place-items:center;" +
-              "padding:var(--pad);background:rgba(13,14,17,.985);text-align:center";
+            // Styles dans global.css (.voile-invit) : la CSP bloque les
+            // attributs style="" ecrits dans du HTML.
+            voile.className = "voile-invit";
             voile.innerHTML =
-              '<div style="display:grid;gap:1.15rem;justify-items:center;max-width:40ch">' +
+              '<div>' +
               '<p class="eyebrow">Bourges Volley-Ball</p>' +
-              '<h2 style="font-size:clamp(2rem,6vw,2.8rem)">' +
+              '<h2>' +
               (recuperation
                 ? 'Nouveau mot de passe enregistré'
                 : 'Votre compte est prêt') +
               '</h2>' +
-              '<p style="color:var(--fg-2);margin:0">Vous êtes connecté. Vous pouvez désormais écrire une actualité ou mettre à jour une page, et revenir quand vous voulez par la même adresse.</p>' +
+              '<p>Vous êtes connecté. Vous pouvez désormais écrire une actualité ou mettre à jour une page, et revenir quand vous voulez par la même adresse.</p>' +
               '<a class="btn" href="/admin/"><span>Ouvrir l&rsquo;administration</span></a>' +
               '<a class="lien" href="/">Retour au site</a>' +
               '</div>';

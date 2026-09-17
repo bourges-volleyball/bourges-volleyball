@@ -333,6 +333,7 @@ collections:
           label: "Site web",
           widget: "string",
           required: false,
+          pattern: ["^https?://", "L'adresse doit commencer par https://"],
           hint: "L'adresse du site du partenaire, en entier (https://...). Rempli, le logo devient cliquable et ouvre son site dans un nouvel onglet.",
         }
       - { name: "ordre", label: "Ordre", widget: "number", value_type: "int", default: 10 }
@@ -371,6 +372,7 @@ collections:
           name: "lienHelloAsso",
           label: "Lien HelloAsso",
           widget: "string",
+          pattern: ["^https?://", "L'adresse doit commencer par https://"],
           hint: "L'adresse de la campagne sur HelloAsso.",
         }
       - {
@@ -441,4 +443,4 @@ collections:
             ],
         }
       - { name: "description", label: "Description", widget: "text" }
-      - { name: "lien", label: "Lien (inscription, infos)", widget: "string", required: false }
+      - { name: "lien", label: "Lien (inscription, infos)", widget: "string", required: false, pattern: ["^https?://", "L'adresse doit commencer par https://"] }

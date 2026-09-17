@@ -10,6 +10,7 @@ const liens = [
   { href: "/boutique/", texte: "Boutique" },
   { href: "/actus/", texte: "Actus" },
   { href: "/partenaires/", texte: "Partenaires" },
+  { href: "/contact/", texte: "Contact" },
 ];
 ---
 
@@ -54,7 +55,6 @@ const liens = [
         </a>
       ))
     }
-    <a href="/contact/">Contact</a>
     <a class="mobile-cta" href="/nous-rejoindre/">Nous rejoindre</a>
   </nav>
 </header>
@@ -141,10 +141,11 @@ const liens = [
 
   .mobile { display: none; }
 
-  /* 980 px : le menu complet demande 836 px (logo + 7 liens + bouton).
+  /* 1100 px : le menu complet demande environ 1050 px (logo + 8 liens + bouton),
+     marges comprises. En dessous, il passait sur deux lignes.
      Au-dessus de 1100 px on affichait un menu burger a des visiteurs
      qui avaient largement la place pour la navigation entiere. */
-  @media (max-width: 980px) {
+  @media (max-width: 1100px) {
     .bureau { display: none; }
     .burger { display: grid; }
     /* Le bouton d'inscription reste visible : c'est la raison d'etre du site */

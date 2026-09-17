@@ -85,8 +85,10 @@ const defaut = AGE_PLANCHER;
               </div>
             </dl>
             <div class="res-cta">
-              <a class="btn" href="#inscription"><span>S&rsquo;inscrire</span></a>
-              <a class="btn ghost" href="/contact/"><span>Venir essayer</span></a>
+              {/* En attendant le lien HelloAsso des adhesions, l'inscription
+                  passe par le formulaire, sujet deja choisi. */}
+              <a class="btn" href="/contact/?sujet=inscription"><span>S&rsquo;inscrire</span></a>
+              <a class="btn ghost" href="/contact/?sujet=essai"><span>Venir essayer</span></a>
             </div>
           </article>
         ))
@@ -106,15 +108,18 @@ const defaut = AGE_PLANCHER;
         <p>Deux séances gratuites, sans licence. Prévenez-nous avant de venir pour qu&rsquo;un encadrant vous accueille.</p>
       </li>
       <li>
-        <h3>Réunissez les pieces</h3>
-        <p>Une photo d&rsquo;identité, le questionnaire de santé ou un certificat médical selon l&rsquo;age, et l&rsquo;autorisation parentale pour les mineurs.</p>
+        <h3>Réunissez les pièces</h3>
+        <p>Une photo d&rsquo;identité, le questionnaire de santé ou un certificat médical selon l&rsquo;âge, et l&rsquo;autorisation parentale pour les mineurs.</p>
       </li>
       <li>
         <h3>Réglez la cotisation</h3>
-        <p>En ligne, ou sur place. Paiement en trois fois possible. Pass&rsquo;Sport, coupons ANCV et chèques vacances acceptes.</p>
+        <p>En ligne, ou sur place. Paiement en trois fois possible. Pass&rsquo;Sport, coupons ANCV et chèques vacances acceptés.</p>
       </li>
     </ol>
-    <p class="note">Le lien de paiement en ligne sera ajouté ici des l&rsquo;ouverture de la campagne d&rsquo;adhesion.</p>
+    <p class="note">
+      Pour vous inscrire, <a class="lien" href="/contact/?sujet=inscription">écrivez-nous</a> :
+      nous vous envoyons le dossier et le lien de paiement en ligne.
+    </p>
   </section>
 </Base>
 

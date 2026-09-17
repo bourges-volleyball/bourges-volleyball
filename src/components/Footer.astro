@@ -48,6 +48,8 @@ const annee = new Date().getFullYear();
       <span>Association loi 1901</span>
       <span>Affiliée FFVolley et Ufolep</span>
       <span>© {annee} Bourges Volley-Ball</span>
+      <a href="/mentions-legales/">Mentions légales</a>
+      <a href="/confidentialite/">Confidentialité</a>
     </div>
   </div>
 </footer>
@@ -114,4 +116,6 @@ const annee = new Date().getFullYear();
     flex-wrap: wrap;
     gap: 0.4rem 1.5rem;
   }
+  .foot-note a { color: inherit; }
+  .foot-note a:hover { color: var(--signal); }
 </style>

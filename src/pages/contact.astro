@@ -21,7 +21,7 @@ import Base from "../layouts/Base.astro";
         <h2>Nous écrire</h2>
         {/* Formulaire géré par Netlify : aucun serveur à maintenir,
             les réponses arrivent par mail. */}
-        <form name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+        <form name="contact" method="POST" action="/merci/" data-netlify="true" netlify-honeypot="bot-field">
           <input type="hidden" name="form-name" value="contact" />
           <p class="cache">
             <label>Ne rien remplir ici <input name="bot-field" /></label>
@@ -38,10 +38,12 @@ import Base from "../layouts/Base.astro";
           <p>
             <label for="sujet">Sujet</label>
             <select id="sujet" name="sujet">
-              <option>Venir à une séance d&rsquo;essai</option>
-              <option>Question sur les créneaux ou les tarifs</option>
-              <option>Proposition de partenariat</option>
-              <option>Autre</option>
+              {/* data-cle : choisi d'avance par /contact/?sujet=... */}
+              <option data-cle="essai">Venir à une séance d&rsquo;essai</option>
+              <option data-cle="inscription">M&rsquo;inscrire au club</option>
+              <option data-cle="creneaux">Question sur les créneaux ou les tarifs</option>
+              <option data-cle="partenariat">Proposition de partenariat</option>
+              <option data-cle="autre">Autre</option>
             </select>
           </p>
           <p>
@@ -50,6 +52,11 @@ import Base from "../layouts/Base.astro";
           </p>
           <p>
             <button class="btn" type="submit"><span>Envoyer</span></button>
+          </p>
+          <p class="rgpd">
+            Vos coordonnées servent uniquement à vous répondre et ne sont
+            jamais transmises à des tiers.
+            <a href="/confidentialite/">En savoir plus sur vos données</a>
           </p>
         </form>
       </div>
@@ -118,6 +125,8 @@ import Base from "../layouts/Base.astro";
   button.btn { cursor: pointer; font-family: "Barlow Semi Condensed", sans-serif; }
   /* Piege a robots : invisible pour les humains, rempli par les spammeurs */
   .cache { position: absolute; left: -9999px; }
+  .rgpd { font-size: 0.85rem; color: var(--fg-2); max-width: 60ch; }
+  .rgpd a { color: inherit; }
   .infos dl { margin: 0; display: grid; gap: 1.25rem; }
   .infos dt {
     font-family: "Barlow Semi Condensed", sans-serif; font-size: var(--s0);
@@ -129,3 +138,9 @@ import Base from "../layouts/Base.astro";
   .infos a { color: inherit; }
   .infos a:hover { color: var(--signal); }
 </style>
+
+<script>
+  const cle = new URLSearchParams(location.search).get("sujet");
+  const option = cle && document.querySelector(`#sujet option[data-cle="${CSS.escape(cle)}"]`);
+  if (option instanceof HTMLOptionElement) option.selected = true;
+</script>

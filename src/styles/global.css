@@ -113,3 +113,9 @@ img.affiche{object-fit:contain!important;background:var(--noir-2)}
   html{scroll-behavior:auto}
   *{transition:none!important;animation:none!important}
 }
+
+/* Voile de confirmation apres un lien d'invitation (Base.astro) */
+.voile-invit{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;padding:var(--pad);background:rgba(13,14,17,.985);text-align:center}
+.voile-invit>div{display:grid;gap:1.15rem;justify-items:center;max-width:40ch}
+.voile-invit h2{font-size:clamp(2rem,6vw,2.8rem)}
+.voile-invit p:not(.eyebrow){color:var(--fg-2);margin:0}

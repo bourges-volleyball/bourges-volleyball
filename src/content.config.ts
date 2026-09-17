@@ -1,6 +1,10 @@
 import { defineCollection, z } from "astro:content";
 import { glob } from "astro/loaders";
 
+/* Adresse web saisie dans l'administration : seules http(s) passent. Un lien
+   « javascript: » executerait du code chez le visiteur qui clique dessus. */
+const lienWeb = z.string().regex(/^https?:\/\//i, "L'adresse doit commencer par https://");
+
 /* Ces schemas sont le contrat entre le site et l'interface d'administration.
    Toute modification ici doit être repercutee dans public/admin/config.yml,
    sinon les bénévoles pourront saisir un champ que le site ignorera. */
@@ -69,7 +73,7 @@ const partenaires = defineCollection({
   schema: z.object({
     nom: z.string(),
     niveau: z.enum(["principal", "officiel", "institutionnel"]),
-    lien: z.string().optional(),
+    lien: lienWeb.optional(),
     logo: z.string().optional(),
     ordre: z.number().default(10),
   }),
@@ -88,7 +92,7 @@ const boutique = defineCollection({
     prix: z.number(),
     image: z.string().optional(),
     tailles: z.array(z.string()).optional(),
-    lienHelloAsso: z.string(),
+    lienHelloAsso: lienWeb,
     ouvertureLe: z.coerce.date(),
     fermetureLe: z.coerce.date(),
     ordre: z.number().default(10),
@@ -109,7 +113,7 @@ const evenements = defineCollection({
     lieu: z.string().optional(),
     type: z.enum(["tournoi", "vie du club", "stage", "autre"]).default("autre"),
     description: z.string(),
-    lien: z.string().optional(),
+    lien: lienWeb.optional(),
   }),
 });
 

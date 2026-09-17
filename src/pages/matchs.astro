@@ -3,6 +3,8 @@ import Base from "../layouts/Base.astro";
 import { matchs, dateLongue, heure, gagne } from "../lib/donnees";
 
 const { joues, aVenir } = await matchs();
+// Equipes presentes dans le calendrier, pour le filtre
+const lesEquipes = [...new Set([...aVenir, ...joues].map((m) => m.data.equipe))].sort();
 ---
 
 <Base
@@ -15,6 +17,19 @@ const { joues, aVenir } = await matchs();
     <p>Toutes les rencontres du club, à venir et jouées, toutes équipes confondues.</p>
   </section>
 
+  {
+    lesEquipes.length > 1 && (
+      <div class="wrap filtre">
+        <label for="equipe">Équipe</label>
+        <select id="equipe">
+          <option value="">Toutes les équipes</option>
+          {lesEquipes.map((e) => <option value={e}>{e}</option>)}
+        </select>
+        <p class="compte" id="compte" aria-live="polite"></p>
+      </div>
+    )
+  }
+
   <section class="section wrap">
     <div class="section-head"><h2>À venir</h2></div>
     {
@@ -23,7 +38,7 @@ const { joues, aVenir } = await matchs();
       ) : (
         <ul class="liste">
           {aVenir.map((m) => (
-            <li>
+            <li data-equipe={m.data.equipe}>
               <span class="quand">
                 <b>{dateLongue(m.data.date)}</b>
                 <span class="mono">{heure(m.data.date)}</span>
@@ -55,7 +70,7 @@ const { joues, aVenir } = await matchs();
       ) : (
         <ul class="liste resultats">
           {joues.map((m) => (
-            <li class:list={{ win: gagne(m) }}>
+            <li class:list={{ win: gagne(m) }} data-equipe={m.data.equipe}>
               <span class="quand">
                 <b>{dateLongue(m.data.date)}</b>
                 <span class="mono">{m.data.equipe}</span>
@@ -98,7 +113,9 @@ const { joues, aVenir } = await matchs();
     font-size: var(--s0); letter-spacing: 0.1em;
     text-transform: uppercase; color: var(--fg-2);
   }
-  .qui { font-weight: 600; }
+  /* Les noms FFVolley arrivent en majuscules : tout passe en capitales
+     pour que « Bourges VB » et l adversaire aient la meme allure. */
+  .qui { font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em; }
   .ou {
     font-family: "Barlow Semi Condensed", sans-serif; font-size: var(--s0);
     letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-2);
@@ -121,4 +138,45 @@ const { joues, aVenir } = await matchs();
     color: var(--fg-2); font-variant-numeric: tabular-nums;
   }
   .vide { color: var(--fg-2); }
+  .liste li[hidden] { display: none; }
+
+  .filtre {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 1rem;
+    padding-top: 1.25rem;
+  }
+  .filtre label {
+    font-family: "Barlow Semi Condensed", sans-serif; font-weight: 600;
+    font-size: var(--s0); letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--fg-2);
+  }
+  .filtre select {
+    background: var(--noir-2); color: var(--fg);
+    border: 1px solid var(--hair); padding: 0.55rem 0.8rem;
+    font: inherit; font-weight: 600; min-height: 44px;
+  }
+  .filtre select:focus { border-color: var(--signal); }
+  .compte { margin: 0; color: var(--fg-2); font-size: 0.9rem; }
 </style>
+
+<script>
+  const choix = document.querySelector("#equipe");
+  const compte = document.querySelector("#compte");
+  if (choix instanceof HTMLSelectElement && compte) {
+    const lignes = [...document.querySelectorAll<HTMLElement>(".liste li[data-equipe]")];
+    const filtrer = () => {
+      const e = choix.value;
+      let n = 0;
+      for (const li of lignes) {
+        li.hidden = e !== "" && li.dataset.equipe !== e;
+        if (!li.hidden) n++;
+      }
+      compte.textContent = e ? `${n} rencontre${n > 1 ? "s" : ""}` : "";
+      // Memorise dans l'adresse : le lien se partage avec le filtre
+      history.replaceState(null, "", e ? `?equipe=${encodeURIComponent(e)}` : location.pathname);
+    };
+    const demande = new URLSearchParams(location.search).get("equipe");
+    if (demande && [...choix.options].some((o) => o.value === demande)) choix.value = demande;
+    choix.addEventListener("change", filtrer);
+    filtrer();
+  }
+</script>

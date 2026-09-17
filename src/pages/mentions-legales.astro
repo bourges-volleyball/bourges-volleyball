@@ -1,0 +1,52 @@
+---
+/* Obligatoire pour tout site edite par une association (loi LCEN, art. 6).
+   A tenir a jour a chaque changement de president ou d'hebergeur. */
+import Base from "../layouts/Base.astro";
+---
+
+<Base titre="Mentions légales" description="Mentions légales du site du Bourges Volley-Ball.">
+  <section class="page-head wrap">
+    <p class="eyebrow">Informations légales</p>
+    <h1>Mentions légales</h1>
+  </section>
+
+  <section class="section wrap texte-legal">
+    <h2>Éditeur du site</h2>
+    <p>
+      Bourges Volley-Ball, association loi 1901 affiliée à la FFVolley et à l&rsquo;Ufolep.<br />
+      {/* Si le siege social declare en prefecture est ailleurs, le mettre ici. */}
+      Adresse : Gymnase Léo Lagrange, 33 rue du 1er Régiment d&rsquo;Artillerie, 18000 Bourges<br />
+      Téléphone : <a href="tel:+33666782802">06 66 78 28 02</a><br />
+      Mail : <a href="mailto:bourgesvolley@gmail.com">bourgesvolley@gmail.com</a>
+    </p>
+
+    <h2>Directeur de la publication</h2>
+    <p>Le président du Bourges Volley-Ball.</p>
+
+    <h2>Hébergement</h2>
+    <p>
+      Netlify, Inc., 101 2nd Street, San Francisco, CA 94105, États-Unis<br />
+      <a href="https://www.netlify.com" rel="noopener">www.netlify.com</a>
+    </p>
+
+    <h2>Propriété des contenus</h2>
+    <p>
+      Les textes, photos et logos de ce site appartiennent au Bourges Volley-Ball
+      ou à leurs auteurs. Les logos des partenaires restent la propriété de ces
+      derniers. Toute reproduction demande l&rsquo;accord préalable du club.
+    </p>
+
+    <h2>Données personnelles</h2>
+    <p>
+      Voir la page <a href="/confidentialite/">Confidentialité</a>.
+    </p>
+  </section>
+</Base>
+
+<style>
+  .texte-legal > * { max-width: 68ch; }
+  .texte-legal h2 { font-size: 1.6rem; margin: 2rem 0 0.6rem; }
+  .texte-legal h2:first-child { margin-top: 0; }
+  .texte-legal p, .texte-legal li { color: var(--fg-2); }
+  .texte-legal a { color: var(--signal); }
+</style>

@@ -27,7 +27,7 @@
     <!-- L'interface d'administration elle-meme, servie par unpkg.
 
          L'attribut integrity est l'empreinte du fichier attendu : si unpkg
-         renvoyait un jour autre chose que la version 3.3.3 d'origine, le
+         renvoyait un jour autre chose que la version 3.16.2 d'origine, le
          navigateur refuserait de l'executer. Ce n'est pas une precaution
          theorique : ce script a, une fois charge, le droit d'ecrire dans tout
          le site au nom du benevole connecte.
@@ -37,8 +37,8 @@
            node -e "const{createHash}=require('crypto');fetch('https://unpkg.com/decap-cms@X.Y.Z/dist/decap-cms.js').then(r=>r.arrayBuffer()).then(b=>console.log('sha384-'+createHash('sha384').update(Buffer.from(b)).digest('base64')))"
     -->
     <script
-      src="https://unpkg.com/decap-cms@3.3.3/dist/decap-cms.js"
-      integrity="sha384-Ch3bpZcxxjHMuIde+QMTyDdxGqjtafFkpoGgvLjf50nHhptNH7bZyPTyKSkOvEo+"
+      src="https://unpkg.com/decap-cms@3.16.2/dist/decap-cms.js"
+      integrity="sha384-tbnFsiSBvMm2vOLu70Mx7HlnMj6kXxR0Tdo0USlY9564mb1AyMnIdCjOZ738PWPr"
       crossorigin="anonymous"
     ></script>
 
