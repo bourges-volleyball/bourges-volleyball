@@ -11,11 +11,13 @@ const lienWeb = z.string().regex(/^https?:\/\//i, "L'adresse doit commencer par 
 
 const actus = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/actus" }),
-  schema: z.object({
+  // image() : Astro convertit la photo en WebP a plusieurs tailles.
+  // Une photo de telephone de 5 Mo etait sinon servie telle quelle.
+  schema: ({ image }) => z.object({
     titre: z.string(),
     date: z.coerce.date(),
     chapo: z.string(),
-    image: z.string().optional(),
+    image: image().optional(),
     // Affiche des reseaux sociaux : jamais recadree, ouvrable en grand
     affiche: z.boolean().default(false),
     brouillon: z.boolean().default(false),

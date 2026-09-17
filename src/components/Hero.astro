@@ -2,12 +2,12 @@
 /* Diaporama de l'accueil. Les photos se gerent dans l'administration,
    rubrique « Photos de l'accueil » (src/content/diaporama). Astro s'occupe
    seul de les convertir en WebP et d'en produire plusieurs tailles. */
-import { Picture } from "astro:assets";
+import { Image, Picture } from "astro:assets";
 import { getEntry } from "astro:content";
 import { diaporama } from "../lib/donnees";
 
 interface Props {
-  actus?: { id: string; data: { titre: string; date: Date; image?: string; affiche?: boolean } }[];
+  actus?: { id: string; data: { titre: string; date: Date; image?: ImageMetadata; affiche?: boolean } }[];
 }
 const { actus = [] } = Astro.props;
 
@@ -25,7 +25,7 @@ const t = (await getEntry("pageAccueil", "accueil"))!.data;
           src={p.img}
           alt={p.alt}
           formats={["webp"]}
-          widths={[640, 960, 1280, 1600]}
+          widths={[640, 960, 1280, 1600, 1920, 2400]}
           sizes="100vw"
           loading={i === 0 ? "eager" : "lazy"}
           fetchpriority={i === 0 ? "high" : undefined}
@@ -58,7 +58,7 @@ const t = (await getEntry("pageAccueil", "accueil"))!.data;
             {actus.map((a) => (
               <li>
                 <a href={`/actus/${a.id}/`}>
-                  {a.data.image && <img class:list={{ affiche: a.data.affiche }} src={a.data.image} alt="" width="64" height="48" />}
+                  {a.data.image && <Image class:list={{ affiche: a.data.affiche }} src={a.data.image} alt="" widths={[64, 128]} sizes="64px" />}
                   <time datetime={a.data.date.toISOString().slice(0, 10)}>
                     {a.data.date.toLocaleDateString("fr-FR", {
                       day: "numeric",

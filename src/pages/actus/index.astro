@@ -5,6 +5,7 @@
    article en grand, les suivants en liste — ce qui tient aussi bien avec
    trois articles qu'avec cinquante. */
 import Base from "../../layouts/Base.astro";
+import { Image } from "astro:assets";
 import { actus, FUSEAU } from "../../lib/donnees";
 
 const liste = await actus();
@@ -46,12 +47,13 @@ const dateArticle = (d: Date) =>
           <article class="une">
             <a class="une-lien" href={`/actus/${une.id}/`}>
               {une.data.image && (
-                <img
+                <Image
                   class:list={["une-photo", { affiche: une.data.affiche }]}
                   src={une.data.image}
                   alt=""
-                  width="1600"
-                  height="900"
+                  widths={[480, 800, 1200, 1600]}
+                  sizes="(min-width: 1200px) 1200px, 100vw"
+                  loading="eager"
                   fetchpriority="high"
                 />
               )}
@@ -94,13 +96,12 @@ const dateArticle = (d: Date) =>
                       <span class="chapo">{a.data.chapo}</span>
                     </span>
                     {a.data.image && (
-                      <img
+                      <Image
                         class:list={["miniature", { affiche: a.data.affiche }]}
                         src={a.data.image}
                         alt=""
-                        width="480"
-                        height="300"
-                        loading="lazy"
+                        widths={[240, 480]}
+                        sizes="240px"
                       />
                     )}
                   </a>

@@ -34,6 +34,10 @@ collections:
     slug: "{{slug}}"
     summary: "{{titre}} - {{date}}"
     sortable_fields: ["date", "titre"]
+    # Comme le diaporama : les images vont dans src/images/actus, ou le site
+    # les optimise (celles de public/ seraient servies a leur poids d'origine).
+    media_folder: "../../images/actus"
+    public_folder: "../../images/actus"
     fields:
       - { name: "titre", label: "Titre", widget: "string" }
       - {
