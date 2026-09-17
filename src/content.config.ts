@@ -26,7 +26,7 @@ const actus = defineCollection({
 
 const equipes = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/equipes" }),
-  schema: z.object({
+  schema: ({ image }) => z.object({
     nom: z.string(),
     ordre: z.number(),
     // Bornes d'age : ce sont elles qui alimentent le sélecteur
@@ -38,7 +38,7 @@ const equipes = defineCollection({
     gymnase: z.string(),
     coach: z.string().optional(),
     tarif: z.number(),
-    photo: z.string().optional(),
+    photo: image().optional(),
     // Composition de l equipe. Le poste et le numero sont facultatifs :
     // toutes les sections ne les suivent pas, notamment chez les jeunes.
     effectif: z
@@ -72,11 +72,11 @@ const matchs = defineCollection({
 
 const partenaires = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/partenaires" }),
-  schema: z.object({
+  schema: ({ image }) => z.object({
     nom: z.string(),
     niveau: z.enum(["principal", "officiel", "institutionnel"]),
     lien: lienWeb.optional(),
-    logo: z.string().optional(),
+    logo: image().optional(),
     ordre: z.number().default(10),
   }),
 });
@@ -88,11 +88,11 @@ const partenaires = defineCollection({
    qu il faudrait penser a decocher. */
 const boutique = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/boutique" }),
-  schema: z.object({
+  schema: ({ image }) => z.object({
     nom: z.string(),
     description: z.string(),
     prix: z.number(),
-    image: z.string().optional(),
+    image: image().optional(),
     tailles: z.array(z.string()).optional(),
     lienHelloAsso: lienWeb,
     ouvertureLe: z.coerce.date(),

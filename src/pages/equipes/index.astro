@@ -1,5 +1,6 @@
 ---
 import Base from "../../layouts/Base.astro";
+import { Image } from "astro:assets";
 import { equipes } from "../../lib/donnees";
 
 const liste = await equipes();
@@ -28,7 +29,7 @@ const liste = await equipes();
           {liste.map((e) => (
             <a class="carte" href={`/equipes/${e.id}/`}>
               {e.data.photo && (
-                <img class="fond" src={e.data.photo} alt="" loading="lazy" />
+                <Image class="fond" src={e.data.photo} alt="" widths={[480, 800, 1200]} sizes="(min-width: 900px) 50vw, 100vw" />
               )}
               <span class="voile" aria-hidden="true" />
               <span class="contenu">

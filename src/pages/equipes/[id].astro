@@ -1,6 +1,7 @@
 ---
 import Base from "../../layouts/Base.astro";
 import { render } from "astro:content";
+import { Image, getImage } from "astro:assets";
 import { equipes, matchs, dateLongue, heure } from "../../lib/donnees";
 
 export async function getStaticPaths() {
@@ -10,6 +11,8 @@ export async function getStaticPaths() {
 
 const { equipe } = Astro.props;
 const d = equipe.data;
+// Partage sur les reseaux : JPEG de 1200 px au plus
+const partage = d.photo && (await getImage({ src: d.photo, width: Math.min(1200, d.photo.width), format: "jpg" }));
 
 /* Texte libre de la fiche. Sert par exemple a detailler les equipes
    engagees quand un groupe en aligne plusieurs. Vide, rien ne s'affiche. */
@@ -27,10 +30,10 @@ const derniers = joues.filter(sien).slice(0, 3);
 <Base
   titre={d.nom}
   description={`${d.nom} du Bourges Volley-Ball : ${d.niveau}, créneaux, gymnase et effectif.`}
-  image={d.photo}
+  image={partage?.src}
 >
   <section class="entete">
-    {d.photo && <img class="fond" src={d.photo} alt="" width="1600" height="900" />}
+    {d.photo && <Image class="fond" src={d.photo} alt="" widths={[640, 960, 1280, 1600, 1920]} sizes="100vw" loading="eager" fetchpriority="high" />}
     <span class="voile" aria-hidden="true"></span>
     <div class="wrap entete-in">
       <p class="niveau">{d.niveau}</p>

@@ -1,5 +1,6 @@
 ---
 import Base from "../layouts/Base.astro";
+import { Image } from "astro:assets";
 import { boutique, dateLongue, joursRestants } from "../lib/donnees";
 
 const { ouverts, aVenir, termines } = await boutique();
@@ -29,7 +30,7 @@ const { ouverts, aVenir, termines } = await boutique();
             return (
               <article class="campagne ouverte">
                 {c.data.image && (
-                  <img class="visuel" src={c.data.image} alt="" loading="lazy" />
+                  <Image class="visuel" src={c.data.image} alt="" widths={[480, 800, 1200]} sizes="(min-width: 900px) 40vw, 100vw" />
                 )}
                 <div class="corps">
                   <p class="minuteur">

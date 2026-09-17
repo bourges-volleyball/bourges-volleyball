@@ -13,7 +13,7 @@ creneaux:
     horaire: "20h00 – 22h00"
 gymnase: "Léo Lagrange et Yves du Manoir"
 tarif: 85
-photo: "/images/equipes/equipe-2.jpg"
+photo: "../../images/equipes/equipe-2.jpg"
 ---
 
 L'Ufolep est la deuxième fédération du club, à côté de la FFVolley. On y

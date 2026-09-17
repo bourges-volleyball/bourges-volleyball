@@ -173,6 +173,9 @@ collections:
     slug: "{{slug}}"
     summary: "{{nom}} - {{niveau}}"
     sortable_fields: ["ordre", "nom"]
+    # Images optimisees par le site : rangees dans src/images/equipes
+    media_folder: "../../images/equipes"
+    public_folder: "../../images/equipes"
     fields:
       - { name: "nom", label: "Nom de l'équipe", widget: "string" }
       - {
@@ -312,6 +315,9 @@ collections:
     create: true
     slug: "{{slug}}"
     summary: "{{nom}} - {{niveau}}"
+    # Images optimisees par le site : rangees dans src/images/partenaires
+    media_folder: "../../images/partenaires"
+    public_folder: "../../images/partenaires"
     fields:
       - { name: "nom", label: "Nom", widget: "string" }
       - {
@@ -350,6 +356,9 @@ collections:
     slug: "{{slug}}"
     summary: "{{nom}} - ferme le {{fermetureLe}}"
     sortable_fields: ["ouvertureLe", "nom"]
+    # Images optimisees par le site : rangees dans src/images/boutique
+    media_folder: "../../images/boutique"
+    public_folder: "../../images/boutique"
     fields:
       - { name: "nom", label: "Nom de la commande", widget: "string" }
       - {

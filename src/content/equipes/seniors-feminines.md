@@ -11,5 +11,5 @@ creneaux:
     horaire: "20h00 – 22h00"
 gymnase: "Gymnase Léo Lagrange"
 tarif: 145
-photo: "/images/equipes/equipe-3.jpg"
+photo: "../../images/equipes/equipe-3.jpg"
 ---

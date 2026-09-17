@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import { Image } from "astro:assets";
 
 interface Props {
   groupes: {
@@ -49,7 +50,7 @@ const niveaux = [
               <div class:list={["tier-row", n.cle === "principal" ? "main" : "four"]}>
                 {n.liste.map((p) => {
                   const contenu = p.data.logo ? (
-                    <img src={p.data.logo} alt={p.data.nom} loading="lazy" />
+                    <Image src={p.data.logo} alt={p.data.nom} height={110} densities={[1, 2]} />
                   ) : (
                     p.data.nom
                   );
