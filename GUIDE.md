@@ -329,6 +329,17 @@ Chaque `push` déclenche une nouvelle publication sur Netlify. Les
 modifications faites par les bénévoles depuis `/admin/` sont enregistrées
 automatiquement, sans rien taper.
 
+**N'écrivez jamais `<script is:inline>`.** Astro ne calcule l'empreinte CSP
+que des scripts qu'il traite lui-même : un script `is:inline` serait bloqué
+en ligne sans message visible. Même chose pour les attributs `style="..."`
+écrits dans du HTML généré par JavaScript : passez par une classe CSS.
+
+**Les images se rangent dans `src/images/<rubrique>`**, jamais dans
+`public/` : seules les premières sont converties en WebP et déclinées en
+plusieurs tailles. L'administration y range déjà les photos des actualités,
+du diaporama, des équipes, des partenaires et de la boutique. Dans les pages,
+on les affiche avec le composant `<Image>` d'`astro:assets`.
+
 **Attention :** `src/content.config.ts` et `public/admin/config.yml` décrivent
 les mêmes données. Un champ ajouté dans l'un doit l'être dans l'autre, sinon
 les bénévoles saisiront une information que le site ignorera.
@@ -355,10 +366,12 @@ Elle apparaît à trois endroits : le pied de page
 (`src/components/Footer.astro`), la page Contact (`src/pages/contact.astro`)
 et les données structurées lues par Google (`src/layouts/Base.astro`).
 
-> **Point à trancher pour les mentions légales.** La loi impose d'y faire
-> figurer le siège social. Beaucoup d'associations domiciliées chez un
-> dirigeant utilisent une adresse de domiciliation — mairie, maison des
-> associations, boîte postale. À voir avec le bureau avant de rédiger la page.
+> **Point à trancher pour les mentions légales.** La page existe
+> (`src/pages/mentions-legales.astro`) et affiche pour l'instant l'adresse du
+> gymnase. La loi demande en principe le siège social. Beaucoup d'associations
+> domiciliées chez un dirigeant utilisent une adresse de domiciliation —
+> mairie, maison des associations, boîte postale. À voir avec le bureau, puis
+> à reporter dans cette page.
 
 ### À vérifier
 
@@ -386,7 +399,8 @@ et les données structurées lues par Google (`src/layouts/Base.astro`).
 - [ ] Ouvrir la prochaine commande groupée dans la rubrique Boutique — la
   dernière campagne HelloAsso (Joma, –20 % catalogue) date de 2024-2025
 - [ ] Confirmer les dates du tournoi inter-entreprises, de l'AG et du stage
-- [ ] Rédiger les mentions légales
+- [ ] Vérifier les mentions légales et la page Confidentialité (adresse,
+  durée de conservation des messages, fixée à un an)
 - [ ] Prendre le nom de domaine et le brancher
 
 ### Pistes
@@ -407,6 +421,10 @@ et les données structurées lues par Google (`src/layouts/Base.astro`).
 - [x] Trois actualités réelles, tirées de l'Instagram et de HelloAsso
 - [x] Page 404
 - [x] Logos des partenaires institutionnels cliquables vers leur site
+- [x] Pages Mentions légales, Confidentialité et « Message envoyé »
+- [x] Filtre par équipe sur la page Matchs
+- [x] Toutes les images optimisées (WebP, plusieurs tailles)
+- [x] Polices servies par le site, plus aucun appel à Google
 
 ## 7. Sécurité : ce qui protège le site, et ce qui reste à surveiller
 
@@ -441,7 +459,7 @@ qui quittent le bureau** (*Identity → l'utilisateur → Delete*).
   hébergeur tiers ; si celui-ci renvoyait un jour un fichier modifié, le
   navigateur refuserait de l'exécuter. Sans cela, un fichier trafiqué hériterait
   du droit d'écrire dans tout le site.
-- **En-têtes de sécurité** dans `netlify.toml` : pas de devinette de type de
+- **En-têtes de sécurité** dans `public/_headers` : pas de devinette de type de
   fichier, pas de fuite d'adresse vers les sites tiers, ni caméra ni micro ni
   position, et interdiction d'enfermer le site dans un cadre sur un autre
   domaine.
@@ -450,9 +468,16 @@ qui quittent le bureau** (*Identity → l'utilisateur → Delete*).
 
 ### Ce qui reste ouvert, en connaissance de cause
 
-- **Pas de politique de contenu (CSP) complète.** Elle empêcherait
-  l'administration de fonctionner. Le risque est faible : le site n'affiche
-  aucune donnée saisie par un visiteur.
+- **La politique de contenu (CSP) verrouille les scripts, pas les styles.**
+  Astro la génère à chaque construction (`security.csp` dans
+  `astro.config.mjs`) : seuls les scripts du site peuvent s'exécuter, si bien
+  qu'un `<script>` glissé dans une actualité depuis un compte piraté serait
+  bloqué. Les styles en ligne restent permis, parce que le widget
+  d'invitation Netlify en a besoin ; un style ne peut pas exécuter de code.
+  L'administration (`/admin/`) n'est pas couverte : Decap ne le supporte pas.
+- **Les liens saisis dans l'administration** (partenaire, agenda, HelloAsso)
+  doivent commencer par `https://`. Un lien `javascript:` est refusé, dans
+  l'administration comme à la construction du site.
 - **Le formulaire de contact n'est protégé que par un piège à robots.** Si le
   spam devient gênant, Netlify propose d'activer reCAPTCHA en un clic
   (*Forms → Settings → Spam filters*).

@@ -1,7 +1,7 @@
 # Tant que le site est provisoire, on n'accepte aucun moteur de recherche.
 # LE JOUR DE LA MISE EN LIGNE : remplacez tout ce fichier par les quatre
-# lignes en commentaire plus bas, et retirez le bloc X-Robots-Tag de
-# netlify.toml. Sans ces deux gestes, le site restera invisible sur Google.
+# lignes en commentaire plus bas, et retirez la ligne X-Robots-Tag de
+# public/_headers. Sans ces deux gestes, le site restera invisible sur Google.
 User-agent: *
 Disallow: /
 

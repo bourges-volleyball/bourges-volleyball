@@ -58,6 +58,8 @@
         })
         .catch(function () { return ""; })
         .then(function (css) {
+          // Adresses des polices rendues absolues (voir apercu.css)
+          css = css.replace(/url\(\//g, "url(" + location.origin + "/");
           if (css) CMS.registerPreviewStyle(css, { raw: true });
           CMS.init();
         });
