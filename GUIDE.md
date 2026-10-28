@@ -309,10 +309,11 @@ formulaires Netlify, comme le formulaire de contact. Pour l'activer :
    Email notification*, formulaire **commande-payee**, et l'adresse du club.
 3. Faire un achat test (le sirop à 1 €) : le mail doit arriver.
 
-> **Avant d'activer, vérifier l'offre Netlify.** Selon l'offre, un envoi de
-> formulaire peut être limité ou consommer des crédits, comme les
-> publications. En période d'adhésions, cela peut faire beaucoup d'envois.
-> Sans la variable, rien n'est envoyé.
+> **À laisser éteint avec l'offre gratuite de Netlify.** Chaque envoi de
+> formulaire coûte 1 crédit sur les 300 du mois : une centaine d'adhésions en
+> septembre, c'est une centaine de crédits, soit sept publications du site
+> en moins. Sans la variable, rien n'est envoyé. Voir « Le budget de l'offre
+> gratuite », section 8.
 
 ### Galerie
 Un **album** par événement : un titre, une date, quelques mots si l'on veut,
@@ -730,3 +731,33 @@ publications, modifications des bénévoles comprises. Une par semaine en
 consomme quatre ou cinq. Le prochain match, lui, avance tout seul dans le
 navigateur des visiteurs, sans publication. Si le club passe à une offre
 payante, il suffit de changer `schedule` dans le fichier (`"@daily"`).
+
+### Le budget de l'offre gratuite Netlify
+
+Le club est sur l'offre **gratuite** : **300 crédits par mois**, qui paient
+tout. Tarifs relevés en octobre 2026 (à revérifier sur netlify.com/pricing) :
+
+| Ce qui consomme | Coût | Pour ce site |
+|---|---|---|
+| Une publication du site | 15 crédits | chaque « Publier » de l'administration, chaque mise à jour du code, chaque lundi |
+| La bande passante | 20 crédits par Go | une page pèse 0,2 à 0,5 Mo, un album de galerie environ 3 Mo |
+| Un envoi de formulaire | 1 crédit | chaque message de contact ; chaque alerte de commande si elle est activée |
+| Les fonctions (boutique) | quelques crédits | négligeable |
+
+**Les publications sont presque tout le budget** : 300 crédits, c'est
+**vingt publications par mois** si rien d'autre ne consomme. Le lundi en
+prend quatre ou cinq. Il en reste une quinzaine pour les bénévoles et les
+évolutions du site.
+
+**Quand les crédits sont épuisés**, Netlify bloque les publications jusqu'au
+mois suivant, et peut mettre le site entier en pause. D'où trois règles :
+
+- **regrouper les modifications** avant de cliquer sur « Publier » (un album
+  complet, une vente complète, pas photo par photo) ;
+- **regarder la jauge** de temps en temps : Netlify, *Team → Usage & billing* ;
+- **laisser l'alerte de commande éteinte**, et ne pas passer la mise à jour
+  FFVolley à tous les jours.
+
+Si le budget devient trop juste : la mise à jour du lundi peut être remplacée
+par une fonction qui lit la FFVolley sans republier le site (quatre ou cinq
+publications gagnées par mois), ou le club peut passer à l'offre Pro.
