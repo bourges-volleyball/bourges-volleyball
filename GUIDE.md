@@ -259,8 +259,9 @@ et paie sans quitter le site ; seul le paiement par carte passe par HelloAsso.
   complet).
 - **Stage à la journée** : un seul article, dont le prix est celui d'une
   journée. Dans **Jours du stage**, ajoutez chaque jour avec sa date : chaque
-  participant coche les jours où il vient, et un jour passé se ferme le soir
-  même. Le **nombre de places** est alors celui d'une journée : le site compte
+  participant coche les jours où il vient. Les réservations s'arrêtent pour
+  tout le stage au « Dernier jour pour commander », à fixer avant le premier
+  jour. Le **nombre de places** est alors celui d'une journée : le site compte
   les places jour par jour et ferme un jour complet. Les **options** (repas du
   midi…) sont des cases à cocher par participant ; **Comptée chaque jour** fait
   payer un repas par jour coché, **Seulement le** réserve une sortie à un jour
@@ -322,6 +323,22 @@ photos » n'apparaît en pied de page qu'à partir du premier album.
 
 Comme pour le diaporama : des photos d'origine, et l'accord des personnes
 photographiées — des parents pour un enfant.
+
+**Ce que pèse une galerie.** Chaque photo est rangée **en entier dans le dépôt
+GitHub**, puis convertie par le site en petites versions (vignette, grand
+format) à chaque publication ; les visiteurs ne téléchargent que ces versions
+allégées (quelques centaines de Ko). Les limites à surveiller sont donc :
+
+- **le dépôt GitHub**, qui devrait rester sous 1 Go (au 28 octobre 2026 :
+  environ 40 Mo). Un album de 30 photos de téléphone en ajoute 60 à 150 ;
+- **les crédits Netlify** : la bande passante des visiteurs s'y ajoute aux
+  publications. À regarder dans *Usage* sur Netlify après les premiers
+  albums ;
+- **la durée de construction**, qui s'allonge avec le nombre de photos.
+
+D'où deux garde-fous dans l'administration : **6 Mo au plus par photo**
+(au-delà, l'envoi est refusé) et **40 photos par album**. Mieux vaut
+choisir les 20 ou 30 meilleures d'un événement que tout verser.
 
 ### Partenaires
 Trois niveaux : principal, officiel, institutionnel. Le partenaire principal

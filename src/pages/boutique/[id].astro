@@ -212,8 +212,8 @@ const vente = {
     const coche = (nom: string) => !!(form.elements.namedItem(nom) as HTMLInputElement | null)?.checked;
     const centimes = (p: number) => Math.round(p * 100);
 
-    // Stage : jours en AAAA-MM-JJ, reservables jusqu'au soir meme
-    const passe = (j: string) => Date.parse(j) + 86400000 <= maintenant;
+    // Stage : jours en AAAA-MM-JJ. Pas de fermeture jour par jour : la vente
+    // entiere se ferme a sa date de fermeture, avant le stage.
     const court = (j: string) => new Date(j).toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", timeZone: "UTC" });
     const joursCoches = (a: Vente["articles"][number], nom: string) => a.jours.filter((_, n) => coche(`${nom}-j${n}`));
     // Places restantes, une fois connues ; pour un stage, une par jour (cleJour dans netlify/lib/boutique.mjs)
@@ -297,9 +297,9 @@ const vente = {
           if (a.jours.length) {
             const cases = a.jours.map((j, n) => {
               const complet = restantes[cleJour(a.nom, j)] === 0;
-              const c = el("input", { type: "checkbox", name: `${nom}-j${n}`, value: j, disabled: passe(j) || complet });
+              const c = el("input", { type: "checkbox", name: `${nom}-j${n}`, value: j, disabled: complet });
               c.checked = !c.disabled && saisi.has(c.name);
-              return el("label", { className: "choix" }, c, court(j) + (passe(j) ? " (passé)" : complet ? " (complet)" : ""));
+              return el("label", { className: "choix" }, c, court(j) + (complet ? " (complet)" : ""));
             });
             bloc.append(el("fieldset", { className: "ouinon" }, el("legend", { textContent: "Jours" }), ...cases));
           }
@@ -357,12 +357,12 @@ const vente = {
             form.querySelector<HTMLButtonElement>(`[data-plus="${i}"]`)!.disabled = oui;
           };
           if (a.jours.length) {
-            const aVenir = a.jours.filter((j) => !passe(j) && restantes[cleJour(a.nom, j)] !== undefined);
-            if (!aVenir.length) return;
+            const connus = a.jours.filter((j) => restantes[cleJour(a.nom, j)] !== undefined);
+            if (!connus.length) return;
             info.hidden = false;
             info.textContent =
-              "Places restantes : " + aVenir.map((j) => `${court(j)} : ${restantes[cleJour(a.nom, j)] || "complet"}`).join(" · ");
-            fermer(aVenir.every((j) => restantes[cleJour(a.nom, j)] === 0));
+              "Places restantes : " + connus.map((j) => `${court(j)} : ${restantes[cleJour(a.nom, j)] || "complet"}`).join(" · ");
+            fermer(connus.every((j) => restantes[cleJour(a.nom, j)] === 0));
             return;
           }
           const reste = restantes[a.nom];
@@ -648,7 +648,7 @@ const vente = {
   .commande :global(.ouinon > legend) { float: left; width: 100%; }
   .commande :global(.choix) { display: inline-flex; align-items: center; gap: 0.45rem; cursor: pointer; }
   .commande :global(.choix input) { accent-color: var(--signal); width: 1.15rem; height: 1.15rem; flex-shrink: 0; }
-  /* Jour passe ou complet, sortie dont le jour n'est pas coche */
+  /* Jour complet, sortie dont le jour n'est pas coche */
   .commande :global(.choix:has(input:disabled)) { opacity: 0.45; cursor: default; }
 
   .payer {

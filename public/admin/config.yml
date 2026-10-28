@@ -525,7 +525,7 @@ collections:
             required: false
             # Deplies : la date se lit et se change sans ouvrir chaque jour
             collapsed: false
-            hint: "Pour un stage à la journée : ajoutez chaque jour du stage. Le prix ci-dessus est alors celui d'une journée, et le nombre de places celui d'une journée. Chaque participant coche ses jours ; un jour passé se ferme tout seul. Laissé vide pour tout le reste."
+            hint: "Pour un stage à la journée : ajoutez chaque jour du stage. Le prix ci-dessus est alors celui d'une journée, et le nombre de places celui d'une journée. Chaque participant coche ses jours. Les réservations s'arrêtent au « Dernier jour pour commander », à fixer avant le premier jour du stage. Laissé vide pour tout le reste."
             field: { name: "jour", label: "Jour", widget: "datetime", date_format: "DD/MM/YYYY", time_format: false, format: "YYYY-MM-DD" }
           - name: "options"
             label: "Options pour chaque participant"
@@ -581,14 +581,17 @@ collections:
       - { name: "titre", label: "Titre de l'album", widget: "string", hint: "Par exemple : Tournoi Octobre rose 2026." }
       - { name: "date", label: "Date", widget: "datetime", date_format: "DD/MM/YYYY", time_format: false, format: "YYYY-MM-DD" }
       - { name: "description", label: "Quelques mots", widget: "text", required: false }
+      # Garde-fous : chaque photo est rangee en entier dans le depot GitHub et
+      # retraitee a chaque publication. 40 photos de 6 Mo au plus par album.
       - name: "photos"
         label: "Photos"
         label_singular: "photo"
         widget: "list"
+        max: 40
         summary: "{{fields.legende}}"
-        hint: "La première sert de couverture. Envoyez les photos d'origine, pas celles passées par WhatsApp. Uniquement des photos dont les personnes (ou leurs parents) ont accepté la diffusion."
+        hint: "40 au plus, la première sert de couverture. Une photo de téléphone d'origine (2 à 5 Mo) convient ; au-delà de 6 Mo, elle est refusée. Pas de photos passées par WhatsApp. Uniquement des photos dont les personnes (ou leurs parents) ont accepté la diffusion."
         fields:
-          - { name: "photo", label: "Photo", widget: "image" }
+          - { name: "photo", label: "Photo", widget: "image", media_library: { config: { max_file_size: 6000000 } } }
           - { name: "legende", label: "Légende", widget: "string", required: false, hint: "Facultative. Elle sert aussi aux personnes aveugles." }
 
   - name: "evenements"

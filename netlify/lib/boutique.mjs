@@ -24,9 +24,9 @@ export function ouverte(c, maintenant = Date.now()) {
 
 const texte = (v, max) => (typeof v === "string" ? v.trim().slice(0, max) : "");
 
-/* Stage : les jours sont des dates (AAAA-MM-JJ). Un jour se reserve
-   jusqu'au soir meme, comme une vente jusqu'au soir de sa fermeture. */
-const jourPasse = (j, maintenant) => Date.parse(j) + JOUR <= maintenant;
+/* Stage : les jours sont des dates (AAAA-MM-JJ). Ils ne se ferment pas un
+   par un : les reservations s'arretent pour tout le stage a la date de
+   fermeture de la vente, fixee avant le premier jour. */
 export const jourEnClair = (j) =>
   new Date(j).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", timeZone: "UTC" });
 /** Cle des places restantes d'un jour de stage, partagee avec la page de la vente. */
@@ -76,8 +76,6 @@ export function verifier(campagne, demande, restantes = {}, maintenant = Date.no
           return { erreur: `Cochez au moins un jour pour « ${article.nom} ».` };
         }
         detail.jours = calendrier.filter((j) => coches.includes(j));
-        const passe = detail.jours.find((j) => jourPasse(j, maintenant));
-        if (passe) return { erreur: `Le ${jourEnClair(passe)} est passé : décochez-le.` };
         jours = detail.jours.length;
       }
       let montant = prix * jours;

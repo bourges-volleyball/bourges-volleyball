@@ -71,9 +71,9 @@ test("stage : jours coches, options par jour, sortie liee a un jour", () => {
   assert.match(un({ ...jeune, jours: ["2099-10-26"], options: ["Piscine"] }), /Option inconnue/);
   assert.match(un({ ...jeune, jours: ["2099-10-27"] }, { "Stage / 2099-10-27": 0 }), /complet/);
   assert.equal(un({ ...jeune, jours: ["2099-10-26"] }, { "Stage / 2099-10-27": 0 }), undefined);
-  const passe = { ...journees, articles: [{ ...journees.articles[0], jours: ["2020-01-06", ...semaine] }] };
-  const vieux = verifier(passe, { payeur, lignes: [{ article: "Stage", quantite: 1, details: [{ ...jeune, jours: ["2020-01-06"] }] }] });
-  assert.match(vieux.erreur, /passé/);
+  // Pas de fermeture jour par jour : seule la date de fermeture de la vente compte
+  const passe = { ...journees, articles: [{ ...journees.articles[0], jours: ["2020-01-06"] }] };
+  assert.equal(verifier(passe, { payeur, lignes: [{ article: "Stage", quantite: 1, details: [{ ...jeune, jours: ["2020-01-06"] }] }] }).erreur, undefined);
 });
 
 test("ouverte jusqu'au soir de la date de fermeture", () => {
