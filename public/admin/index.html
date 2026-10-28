@@ -11,6 +11,33 @@
          le logo retombe simplement a gauche. -->
     <style>
       [class*="CustomIconWrapper"] { text-align: center; }
+
+      /* Decap est prevu pour un ordinateur : son editeur impose 800 px de
+         large, et l'apercu se tient a cote du formulaire. Sur telephone,
+         tout debordait a droite et le bouton Publier sortait de l'ecran.
+         Ces regles s'appuient sur les noms de classes de Decap 3.3.3 ;
+         si une version future les renomme, l'administration revient
+         simplement a son affichage d'origine, sans rien casser. */
+      @media (max-width: 799px) {
+        [class*="EditorContainer"],
+        [class*="ToolbarContainer"] { min-width: 0 !important; }
+
+        /* L'apercu passerait a 180 px de large : on garde le formulaire
+           seul, en pleine largeur. L'apercu reste la sur ordinateur. */
+        .SplitPane .Pane1 { width: 100% !important; }
+        .SplitPane .Pane2,
+        .SplitPane .Resizer { display: none !important; }
+        /* Les deux boutons ronds pilotent cet apercu : sans lui, ils
+           n'ont plus rien a commander. */
+        [class*="EditorContainer"] [class*="ButtonRound"] { display: none !important; }
+
+        /* Place dans la barre du haut pour Publier et Supprimer : on
+           retire le libelle de la collection (la fleche de retour reste),
+           le lien « Voir en direct » et le nom du site. */
+        [class*="ToolbarSectionBackLink"] > div:not([class*="BackArrow"]),
+        [class*="ToolbarSubSectionLast"],
+        [class*="ToolbarSectionMeta"] { display: none !important; }
+      }
     </style>
   </head>
   <body>
