@@ -143,5 +143,22 @@ const jsonLd = {
         document.head.appendChild(s);
       })();
     </script>
+    <script>
+      /* Le site n'est reconstruit qu'une fois par semaine. Entre deux, une
+         rencontre passee disparait des listes « a venir » au moment de la
+         visite : data-jusqua porte l'heure a laquelle elle n'est plus a venir
+         (voir finDuMatch dans src/lib/donnees.ts). Une liste data-max="4"
+         n'en montre ensuite que les quatre premieres. */
+      const maintenant = Date.now();
+      document.querySelectorAll<HTMLElement>("[data-jusqua]").forEach((e) => {
+        if (Date.parse(e.dataset.jusqua!) <= maintenant) e.hidden = true;
+      });
+      document.querySelectorAll<HTMLElement>("[data-max]").forEach((liste) => {
+        [...liste.children]
+          .filter((e) => !(e as HTMLElement).hidden)
+          .slice(Number(liste.dataset.max))
+          .forEach((e) => ((e as HTMLElement).hidden = true));
+      });
+    </script>
   </body>
 </html>

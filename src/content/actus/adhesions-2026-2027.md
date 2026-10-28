@@ -2,12 +2,13 @@
 titre: Les adhésions 2026-2027 sont ouvertes
 date: 2026-08-24
 chapo: Licences FFVolley et Ufolep, tarifs réduits pour les étudiants et les
-  demandeurs d'emploi. Tout se règle en ligne sur HelloAsso.
+  demandeurs d'emploi. Tout se règle en ligne, sur la boutique du site.
 brouillon: false
 ---
 
 L'adhésion à la saison 2026-2027 est ouverte. Elle se prend en ligne, en
-quelques minutes, sur HelloAsso.
+quelques minutes, sur la [boutique du site](/boutique/#adhesion). Le paiement
+par carte est sécurisé par HelloAsso.
 
 ## Licence FFVolley
 
@@ -19,7 +20,7 @@ quelques minutes, sur HelloAsso.
 | M15 | 2012, 2013 | 115 € |
 | M13 | 2014, 2015 | 115 € |
 
-[Adhérer à la section FFVolley](https://www.helloasso.com/associations/bourges-volley/adhesions/adhesion-bourges-volley-2026-2027-1)
+[Adhérer à la section FFVolley](/boutique/adhesion-ffvolley-2026-2027/)
 
 ## Licence Ufolep
 
@@ -29,14 +30,14 @@ quelques minutes, sur HelloAsso.
 | Loisir — étudiants, demandeurs d'emploi | 65 € |
 | M18 filles et garçons | 125 € |
 
-[Adhérer à la section Ufolep](https://www.helloasso.com/associations/bourges-volley/adhesions/adhesion-ufolep-2026-2027)
+[Adhérer à la section Ufolep](/boutique/adhesion-ufolep-2026-2027/)
 
 ## Et si je veux juste m'entraîner ?
 
 L'**adhésion simple**, à **40 €**, donne accès à tous les entraînements de sa
 section, sans participer aux championnats officiels.
 
-[Prendre une adhésion simple](https://www.helloasso.com/associations/bourges-volley/adhesions/adhesion-simple)
+[Prendre une adhésion simple](/boutique/adhesion-simple/)
 
 Le tarif réduit est accordé sur justificatif. Une question sur la catégorie qui
 vous correspond ? [Écrivez-nous](/contact/).

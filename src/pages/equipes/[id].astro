@@ -2,7 +2,7 @@
 import Base from "../../layouts/Base.astro";
 import { render } from "astro:content";
 import { Image, getImage } from "astro:assets";
-import { equipes, matchs, dateLongue, heure } from "../../lib/donnees";
+import { equipes, matchs, dateLongue, heure, finDuMatch } from "../../lib/donnees";
 
 export async function getStaticPaths() {
   const liste = await equipes();
@@ -23,7 +23,7 @@ const aDuTexte = equipe.body !== undefined && equipe.body.trim().length > 0;
    la fiche reste juste sans que personne la mette a jour. */
 const { aVenir, joues } = await matchs();
 const sien = (m: { data: { equipe: string } }) => m.data.equipe === d.nom;
-const prochaines = aVenir.filter(sien).slice(0, 3);
+const prochaines = aVenir.filter(sien).slice(0, 6);
 const derniers = joues.filter(sien).slice(0, 3);
 ---
 
@@ -114,12 +114,12 @@ const derniers = joues.filter(sien).slice(0, 3);
         <div class="deux">
           <div>
             <p class="eyebrow">À venir</p>
-            <ul class="rencontres">
+            <ul class="rencontres" data-max="3">
               {prochaines.length === 0 ? (
                 <li class="rien">Aucune rencontre programmée.</li>
               ) : (
                 prochaines.map((m) => (
-                  <li>
+                  <li data-jusqua={finDuMatch(m.data.date).toISOString()}>
                     <span class="quand">
                       {dateLongue(m.data.date)} <b class="mono">{heure(m.data.date)}</b>
                     </span>

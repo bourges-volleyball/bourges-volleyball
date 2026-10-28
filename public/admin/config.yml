@@ -97,13 +97,46 @@ collections:
           name: "photo",
           label: "Photo",
           widget: "image",
-          hint: "Format paysage, cadrage serré sur l'action.",
+          hint: "Format paysage, 1600 px de large au moins, idéalement 2400. Envoyez la photo d’origine : une photo passée par WhatsApp ou Messenger est réduite et devient floue en grand. L’aperçu à droite prévient si elle est trop petite.",
         }
       - {
           name: "alt",
           label: "Ce que montre la photo",
           widget: "string",
           hint: "Quelques mots, par exemple « Attaque au filet ». Lu aux personnes aveugles, et sert de nom à la photo dans cette liste.",
+        }
+      # Reglages visibles en direct dans l'apercu a droite (public/admin/index.html)
+      - {
+          name: "cadrage",
+          label: "Cadrage",
+          widget: "select",
+          default: "centre",
+          hint: "La partie de la photo à garder quand l'écran la recoupe. Regardez l'aperçu à droite : ordinateur et téléphone ne coupent pas pareil.",
+          options:
+            [
+              { label: "Centre", value: "centre" },
+              { label: "Haut (garder les têtes)", value: "haut" },
+              { label: "Bas", value: "bas" },
+              { label: "Gauche", value: "gauche" },
+              { label: "Droite", value: "droite" },
+              { label: "En haut à gauche", value: "haut-gauche" },
+              { label: "En haut à droite", value: "haut-droite" },
+              { label: "En bas à gauche", value: "bas-gauche" },
+              { label: "En bas à droite", value: "bas-droite" },
+            ],
+        }
+      - {
+          name: "luminosite",
+          label: "Luminosité",
+          widget: "select",
+          default: "normale",
+          hint: "Plus claire pour une photo sombre de gymnase ; plus sombre si le titre se lit mal.",
+          options:
+            [
+              { label: "Plus claire", value: "claire" },
+              { label: "Normale", value: "normale" },
+              { label: "Plus sombre", value: "sombre" },
+            ],
         }
       - {
           name: "ordre",
@@ -348,64 +381,118 @@ collections:
         }
       - { name: "ordre", label: "Ordre", widget: "number", value_type: "int", default: 10 }
 
+  # Une fiche par vente, comme un formulaire HelloAsso. Le site prend la
+  # commande, HelloAsso n'encaisse que le paiement. Les commandes payees se
+  # consultent sur /admin/commandes.html.
   - name: "boutique"
     label: "Boutique"
-    label_singular: "une commande groupee"
+    label_singular: "une vente"
+    description: "Tout ce qui se paie sur le site : équipements, adhésions, stages, tournois, buvette. Les commandes payées se consultent sur la page Commandes (adresse du site suivie de /admin/commandes.html)."
     folder: "src/content/boutique"
     create: true
     slug: "{{slug}}"
-    summary: "{{nom}} - ferme le {{fermetureLe}}"
-    sortable_fields: ["ouvertureLe", "nom"]
+    identifier_field: "nom"
+    summary: "{{categorie}} - {{nom}}"
+    sortable_fields: ["categorie", "nom", "ordre"]
     # Images optimisees par le site : rangees dans src/images/boutique
     media_folder: "../../images/boutique"
     public_folder: "../../images/boutique"
     fields:
-      - { name: "nom", label: "Nom de la commande", widget: "string" }
+      - { name: "nom", label: "Nom de la vente", widget: "string", hint: "Par exemple : Stage jeunes Toussaint 2026." }
       - {
-          name: "description",
-          label: "Description",
-          widget: "text",
-          hint: "Ce qui est vendu, la remise, et les consignes de taille.",
+          name: "categorie",
+          label: "Rayon",
+          widget: "select",
+          options:
+            [
+              { label: "Équipements", value: "equipement" },
+              { label: "Adhésions", value: "adhesion" },
+              { label: "Stages", value: "stage" },
+              { label: "Tournois", value: "tournoi" },
+              { label: "Buvette", value: "buvette" },
+            ],
         }
+      - { name: "description", label: "Description", widget: "text", hint: "Ce qui est vendu, pour qui, et les consignes utiles." }
       - {
-          name: "prix",
-          label: "Prix a partir de (euros)",
-          widget: "number",
-          value_type: "int",
-        }
-      - { name: "image", label: "Visuel", widget: "image", required: false }
-      - {
-          name: "tailles",
-          label: "Tailles disponibles",
-          widget: "list",
+          name: "image",
+          label: "Visuel",
+          widget: "image",
           required: false,
-          hint: "Une taille par entree. Laissez vide si les articles n'ont pas de taille.",
+          hint: "Affiche ou photo de la vente. Sans visuel, la boutique montre la photo du premier article.",
         }
-      - {
-          name: "lienHelloAsso",
-          label: "Lien HelloAsso",
-          widget: "string",
-          pattern: ["^https?://", "L'adresse doit commencer par https://"],
-          hint: "L'adresse de la campagne sur HelloAsso.",
-        }
+      - { name: "quand", label: "Date et horaires", widget: "string", required: false, hint: "Pour un stage ou un tournoi. Par exemple : Du 26 au 30 octobre, de 8h30 à 17h." }
+      - { name: "lieu", label: "Lieu", widget: "string", required: false }
       - {
           name: "ouvertureLe",
-          label: "Ouverture des commandes",
+          label: "Ouverture",
           widget: "datetime",
           date_format: "DD/MM/YYYY",
           time_format: false,
           format: "YYYY-MM-DD",
+          required: false,
+          hint: "Laissée vide, la vente est ouverte tout de suite.",
         }
       - {
           name: "fermetureLe",
-          label: "Fermeture des commandes",
+          label: "Dernier jour pour commander",
           widget: "datetime",
           date_format: "DD/MM/YYYY",
           time_format: false,
           format: "YYYY-MM-DD",
-          hint: "Passe cette date, la boutique se ferme toute seule sur le site.",
+          required: false,
+          hint: "Le soir de cette date, la vente se ferme toute seule. Laissée vide, elle reste ouverte (buvette).",
         }
-      - { name: "ordre", label: "Ordre", widget: "number", value_type: "int", default: 10 }
+      - {
+          name: "nominatif",
+          label: "Demander le nom de chaque participant",
+          widget: "boolean",
+          default: false,
+          hint: "À cocher pour une adhésion, un stage ou un tournoi : chaque place achetée demande le nom et le prénom de la personne, puis les questions ci-dessous.",
+        }
+      - name: "questions"
+        label: "Questions pour chaque participant"
+        label_singular: "une question"
+        widget: "list"
+        required: false
+        summary: "{{fields.libelle}}"
+        hint: "Seulement si la case ci-dessus est cochée. Toutes les réponses sont obligatoires. N'en demandez pas plus que nécessaire."
+        fields:
+          - { name: "libelle", label: "Question", widget: "string", hint: "Par exemple : Téléphone du licencié." }
+          - {
+              name: "type",
+              label: "Réponse",
+              widget: "select",
+              default: "texte",
+              options: [{ label: "Texte libre", value: "texte" }, { label: "Oui ou non", value: "ouinon" }],
+            }
+      - name: "articles"
+        label: "Articles ou tarifs"
+        label_singular: "un article"
+        widget: "list"
+        summary: "{{fields.nom}} - {{fields.prix}} €"
+        hint: "Au moins un. Pour un stage ou une adhésion, un article par tarif."
+        fields:
+          - { name: "nom", label: "Nom", widget: "string" }
+          - { name: "description", label: "Description", widget: "string", required: false }
+          - { name: "prix", label: "Prix (euros)", widget: "number", value_type: "float", step: 0.01, min: 0.5, hint: "Avec un point pour les centimes : 17.99" }
+          - { name: "photo", label: "Photo", widget: "image", required: false, hint: "Format carré de préférence." }
+          - {
+              name: "places",
+              label: "Nombre de places",
+              widget: "number",
+              value_type: "int",
+              min: 0,
+              required: false,
+              hint: "Laissé vide : pas de limite. Rempli, l'article affiche les places restantes et se ferme une fois complet.",
+            }
+          - {
+              name: "tailles",
+              label: "Tailles",
+              widget: "list",
+              required: false,
+              hint: "Une taille par ligne, demandée pour chaque article commandé. Laissez vide pour un sac, une boisson, une place.",
+            }
+      - { name: "ordre", label: "Ordre", widget: "number", value_type: "int", default: 10, hint: "1 en premier dans son rayon." }
 
   - name: "evenements"
     label: "Agenda"

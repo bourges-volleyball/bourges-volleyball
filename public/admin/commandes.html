@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Commandes - Bourges Volley-Ball</title>
+    <link rel="icon" href="/images/logo-bvb.png" />
+    <!-- Les commandes payees de la boutique. Meme connexion que
+         l'administration (Netlify Identity) : la fonction qui fournit la
+         liste verifie le jeton aupres de Netlify avant de repondre. -->
+    <style>
+      :root {
+        --noir: #0d0e11; --noir-2: #15171c; --noir-3: #1d2027; --hair: #282c34;
+        --fg: #f4f4f2; --fg-2: #9a9fa9; --signal: #b4e600; --sur-signal: #101114;
+        color-scheme: dark;
+      }
+      * { box-sizing: border-box; }
+      body { margin: 0; background: var(--noir); color: var(--fg); font: 16px/1.5 system-ui, sans-serif; }
+      header, main { max-width: 1100px; margin: 0 auto; padding: 1rem; }
+      header { display: flex; flex-wrap: wrap; gap: 0.75rem 1.5rem; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--hair); }
+      h1 { font-size: 1.5rem; margin: 0; }
+      h2 { font-size: 1.2rem; margin: 2rem 0 0.75rem; }
+      a { color: var(--signal); }
+      button, select { font: inherit; background: var(--noir-3); color: var(--fg); border: 1px solid var(--hair); padding: 0.55rem 0.9rem; cursor: pointer; }
+      button.principal { background: var(--signal); color: var(--sur-signal); border-color: var(--signal); font-weight: 700; }
+      .barre { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; margin-top: 1.25rem; }
+      .barre select { flex: 1 1 260px; max-width: 100%; }
+      .info { color: var(--fg-2); }
+      .resume { display: grid; gap: 1px; background: var(--hair); border: 1px solid var(--hair); }
+      .resume div { background: var(--noir-2); padding: 0.6rem 0.9rem; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.25rem 1rem; }
+      .resume b { color: var(--signal); }
+      .commande { background: var(--noir-2); border: 1px solid var(--hair); padding: 0.9rem 1rem; margin-bottom: 0.75rem; }
+      .commande.remis { opacity: 0.55; }
+      .tete { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.25rem 1rem; }
+      .tete .qui { font-weight: 700; }
+      .commande ul { margin: 0.5rem 0; padding-left: 1.1rem; }
+      .commande li span { color: var(--fg-2); }
+      .pied { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem 1rem; align-items: center; color: var(--fg-2); font-size: 0.9rem; }
+      label.remis { display: inline-flex; gap: 0.4rem; align-items: center; color: var(--fg); cursor: pointer; }
+      input[type="checkbox"] { width: 1.2rem; height: 1.2rem; accent-color: var(--signal); }
+      [hidden] { display: none !important; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Commandes de la boutique</h1>
+      <nav><a href="/admin/">Administration</a> · <a href="/boutique/">Boutique</a></nav>
+    </header>
+    <main>
+      <p class="info" id="essai" hidden>Essai sur l'ordinateur : commandes d'exemple, rien n'est enregistré. En ligne, cette page montre les vraies commandes.</p>
+      <p class="info" id="etat">Chargement…</p>
+      <p id="connexion" hidden><button class="principal" type="button" id="seConnecter">Se connecter</button></p>
+
+      <div id="contenu" hidden>
+        <div class="barre">
+          <select id="vente" aria-label="Vente"></select>
+          <button type="button" id="export">Exporter (Excel)</button>
+        </div>
+        <h2>À commander ou à préparer</h2>
+        <div class="resume" id="resume"></div>
+        <h2 id="titreListe">Commandes</h2>
+        <div id="liste"></div>
+      </div>
+    </main>
+
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    <script>
+      var identite = window.netlifyIdentity;
+      var commandes = [];
+      var etat = document.getElementById("etat");
+      var choix = document.getElementById("vente");
+      var euros = new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" });
+
+      function el(tag, texte, classe) {
+        var e = document.createElement(tag);
+        if (texte != null) e.textContent = texte;
+        if (classe) e.className = classe;
+        return e;
+      }
+
+      // Une ligne par article commande : taille, participant, reponses
+      function unites(c) {
+        var r = [];
+        c.lignes.forEach(function (l) {
+          l.details.forEach(function (d) {
+            r.push({ c: c, article: l.article, prix: l.prix, taille: d.taille || "", participant: d.participant || "", reponses: d.reponses || {} });
+          });
+          if (!l.details.length) for (var i = 0; i < l.quantite; i++) r.push({ c: c, article: l.article, prix: l.prix, taille: "", participant: "", reponses: {} });
+        });
+        return r;
+      }
+
+      function selection() {
+        return commandes.filter(function (c) { return c.campagne === choix.value; });
+      }
+
+      function afficher() {
+        var liste = selection();
+        // Le resume sert a passer la commande groupee : combien de chaque article, par taille
+        var compte = {};
+        liste.forEach(function (c) {
+          unites(c).forEach(function (u) {
+            var cle = u.article + (u.taille ? " - " + u.taille : "");
+            compte[cle] = (compte[cle] || 0) + 1;
+          });
+        });
+        var resume = document.getElementById("resume");
+        resume.replaceChildren.apply(resume, Object.keys(compte).sort().map(function (k) {
+          var d = el("div"); d.append(el("span", k), el("b", String(compte[k]))); return d;
+        }));
+        if (!liste.length) resume.append(el("div", "Aucune commande payée pour cette vente."));
+
+        var total = liste.reduce(function (s, c) { return s + c.total; }, 0);
+        document.getElementById("titreListe").textContent = liste.length + " commande" + (liste.length > 1 ? "s" : "") + " payée" + (liste.length > 1 ? "s" : "") + " · " + euros.format(total / 100);
+
+        var zone = document.getElementById("liste");
+        zone.replaceChildren.apply(zone, liste.map(function (c) {
+          var bloc = el("article", null, "commande" + (c.remis ? " remis" : ""));
+          var tete = el("div", null, "tete");
+          tete.append(el("span", c.payeur.prenom + " " + c.payeur.nom, "qui"), el("a", c.payeur.email));
+          tete.lastChild.href = "mailto:" + c.payeur.email;
+          var ul = el("ul");
+          unites(c).forEach(function (u) {
+            var li = el("li", u.article);
+            var precisions = [u.taille, u.participant].concat(Object.keys(u.reponses).map(function (q) { return q + " : " + u.reponses[q]; })).filter(Boolean);
+            if (precisions.length) li.append(el("span", " - " + precisions.join(" - ")));
+            ul.append(li);
+          });
+          var pied = el("div", null, "pied");
+          var remis = el("label", null, "remis");
+          var caseRemis = el("input"); caseRemis.type = "checkbox"; caseRemis.checked = !!c.remis;
+          caseRemis.addEventListener("change", function () { marquer(c, caseRemis, bloc); });
+          remis.append(caseRemis, " Remis");
+          pied.append(el("span", new Date(c.payeeLe || c.creeLe).toLocaleString("fr-FR", { dateStyle: "short", timeStyle: "short" }) + " · " + euros.format(c.total / 100) + " · n° " + c.id.slice(0, 8).toUpperCase()), remis);
+          bloc.append(tete, ul, pied);
+          return bloc;
+        }));
+      }
+
+      /* Essai sur l'ordinateur (npm run dev) : il n'y a ni connexion Netlify
+         ni fonctions. On montre des commandes d'exemple pour voir la page. */
+      var essai = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+      var EXEMPLES = [
+        { cle: "textile-heroic-2026-2027/ex1", id: "e1a2b3c4", campagne: "textile-heroic-2026-2027", campagneNom: "Boutique textile Héroïc 2026-2027", payeeLe: "2026-10-27T18:12:00Z", statut: "payée", remis: false, total: 4598,
+          payeur: { prenom: "Camille", nom: "Exemple", email: "camille@exemple.fr" },
+          lignes: [{ article: "T-shirt homme", prix: 1799, quantite: 1, details: [{ taille: "M" }] }, { article: "Jogging", prix: 2799, quantite: 1, details: [{ taille: "L" }] }] },
+        { cle: "textile-heroic-2026-2027/ex2", id: "e5f6a7b8", campagne: "textile-heroic-2026-2027", campagneNom: "Boutique textile Héroïc 2026-2027", payeeLe: "2026-10-26T09:40:00Z", statut: "payée", remis: true, total: 6397,
+          payeur: { prenom: "Sam", nom: "Essai", email: "sam@exemple.fr" },
+          lignes: [{ article: "T-shirt homme", prix: 1799, quantite: 2, details: [{ taille: "M" }, { taille: "S" }] }, { article: "Sac à dos", prix: 2799, quantite: 1, details: [{}] }] },
+        { cle: "stage-jeunes-toussaint-2026/ex3", id: "e9c0d1e2", campagne: "stage-jeunes-toussaint-2026", campagneNom: "Stage jeunes Toussaint 2026", payeeLe: "2026-10-20T20:05:00Z", statut: "payée", remis: false, total: 3150,
+          payeur: { prenom: "Alex", nom: "Parent", email: "alex@exemple.fr" },
+          lignes: [{ article: "2 jours, hors sortie laser game", prix: 2600, quantite: 1, details: [{ participant: "Léo Parent" }] }, { article: "1 formule repas", prix: 550, quantite: 1, details: [{ participant: "Léo Parent" }] }] },
+      ];
+
+      function appel(methode, corps) {
+        if (essai) return Promise.resolve(new Response(JSON.stringify(methode === "GET" ? EXEMPLES : { ok: true })));
+        return identite.currentUser().jwt().then(function (jeton) {
+          return fetch("/.netlify/functions/commandes", {
+            method: methode,
+            headers: { authorization: "Bearer " + jeton, "content-type": "application/json" },
+            body: corps ? JSON.stringify(corps) : undefined,
+          });
+        });
+      }
+
+      function marquer(c, caseRemis, bloc) {
+        appel("POST", { cle: c.cle, remis: caseRemis.checked }).then(function (r) {
+          if (!r.ok) throw new Error();
+          c.remis = caseRemis.checked;
+          bloc.classList.toggle("remis", c.remis);
+        }).catch(function () {
+          caseRemis.checked = !caseRemis.checked;
+          alert("Enregistrement impossible. Réessayez.");
+        });
+      }
+
+      function charger() {
+        etat.textContent = "Chargement…";
+        appel("GET").then(function (r) {
+          if (r.status === 401) throw new Error("Session expirée : reconnectez-vous.");
+          if (!r.ok) throw new Error("La liste n'a pas pu être chargée (" + r.status + ").");
+          return r.json();
+        }).then(function (liste) {
+          commandes = liste;
+          // Une entree par vente, la plus recente en premier
+          var ventes = {};
+          liste.forEach(function (c) { if (!ventes[c.campagne]) ventes[c.campagne] = c.campagneNom; });
+          var avant = choix.value;
+          choix.replaceChildren.apply(choix, Object.keys(ventes).map(function (id) {
+            var o = el("option", ventes[id]); o.value = id; return o;
+          }));
+          if (ventes[avant]) choix.value = avant;
+          etat.hidden = !!liste.length;
+          etat.textContent = "Aucune commande payée pour le moment.";
+          document.getElementById("contenu").hidden = !liste.length;
+          afficher();
+        }).catch(function (e) {
+          etat.hidden = false;
+          etat.textContent = e.message;
+        });
+      }
+
+      // Export CSV : une ligne par article, lisible par Excel (point-virgule, BOM)
+      document.getElementById("export").addEventListener("click", function () {
+        var liste = selection();
+        var questions = [];
+        liste.forEach(function (c) { unites(c).forEach(function (u) { Object.keys(u.reponses).forEach(function (q) { if (questions.indexOf(q) < 0) questions.push(q); }); }); });
+        var lignes = [["Date", "Commande", "Prénom", "Nom", "Mail", "Article", "Prix", "Taille", "Participant"].concat(questions, ["Remis"])];
+        liste.forEach(function (c) {
+          unites(c).forEach(function (u) {
+            lignes.push([
+              new Date(c.payeeLe || c.creeLe).toLocaleString("fr-FR"), c.id.slice(0, 8).toUpperCase(),
+              c.payeur.prenom, c.payeur.nom, c.payeur.email, u.article, (u.prix / 100).toFixed(2).replace(".", ","),
+              u.taille, u.participant,
+            ].concat(questions.map(function (q) { return u.reponses[q] || ""; }), [c.remis ? "oui" : "non"]));
+          });
+        });
+        // Une cellule qui commence par = + - @ serait executee comme une formule par Excel
+        var csv = lignes.map(function (l) {
+          return l.map(function (v) {
+            v = String(v);
+            if (/^[=+\-@]/.test(v)) v = "'" + v;
+            return '"' + v.replace(/"/g, '""') + '"';
+          }).join(";");
+        }).join("\r\n");
+        var a = el("a");
+        a.href = URL.createObjectURL(new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8" }));
+        a.download = "commandes-" + choix.value + ".csv";
+        a.click();
+        URL.revokeObjectURL(a.href);
+      });
+
+      choix.addEventListener("change", afficher);
+      document.getElementById("seConnecter").addEventListener("click", function () { identite.open("login"); });
+
+      if (essai) {
+        document.getElementById("essai").hidden = false;
+        charger();
+      } else identite.on("init", function (user) {
+        if (user) return charger();
+        etat.textContent = "Connectez-vous avec votre compte de l'administration.";
+        document.getElementById("connexion").hidden = false;
+      });
+      identite.on("login", function () {
+        identite.close();
+        document.getElementById("connexion").hidden = true;
+        charger();
+      });
+      // Pas d'init() ici : charge par une balise <script> de la page, le
+      // widget s'initialise seul, apres que ces ecouteurs sont poses.
+    </script>
+  </body>
+</html>

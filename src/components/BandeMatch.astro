@@ -1,53 +1,55 @@
 ---
-import { dateLongue, heure, gagne } from "../lib/donnees";
+import { dateLongue, heure, gagne, finDuMatch } from "../lib/donnees";
 import type { CollectionEntry } from "astro:content";
 
 interface Props {
-  prochain: CollectionEntry<"matchs"> | null;
+  aVenir: CollectionEntry<"matchs">[];
   resultats: CollectionEntry<"matchs">[];
 }
-const { prochain, resultats } = Astro.props;
+const { aVenir, resultats } = Astro.props;
 ---
 
 <section class="section wrap" id="match">
   <div class="bande-in">
     <div>
+      {/* Toutes les rencontres a venir sont dans la page ; le script montre la
+          premiere qui n'est pas passee. Le « prochain match » avance donc
+          tout seul, sans attendre une nouvelle publication du site. */}
       {
-        prochain ? (
-          <>
+        aVenir.map((m, i) => (
+          <div class="prochain" data-jusqua={finDuMatch(m.data.date).toISOString()} hidden={i > 0}>
             <p class="eyebrow">
-              {prochain.data.domicile ? "Prochaine réception" : "Prochain déplacement"}
-              {" \u00b7 "}
-              {prochain.data.competition}
+              {m.data.domicile ? "Prochaine réception" : "Prochain déplacement"}
+              {" · "}
+              {m.data.competition}
             </p>
             <div class="versus">
               <span class="team home">Bourges VB</span>
-              <span class="vs">{prochain.data.domicile ? "reçoit" : "se déplace à"}</span>
-              <span class="team">{prochain.data.adversaire}</span>
+              <span class="vs">{m.data.domicile ? "reçoit" : "se déplace à"}</span>
+              <span class="team">{m.data.adversaire}</span>
             </div>
             <div class="bande-meta">
               <span>
-                {dateLongue(prochain.data.date)} &middot; {heure(prochain.data.date)}
+                {dateLongue(m.data.date)} &middot; {heure(m.data.date)}
               </span>
-              {prochain.data.lieu && <span>{prochain.data.lieu}</span>}
-              <span>{prochain.data.equipe}</span>
+              {m.data.lieu && <span>{m.data.lieu}</span>}
+              <span>{m.data.equipe}</span>
             </div>
-            <div class="countdown" data-echeance={prochain.data.date.toISOString()}>
+            <div class="countdown" data-echeance={m.data.date.toISOString()}>
               <div class="unit"><b data-j>--</b><span>Jours</span></div>
               <div class="unit"><b data-h>--</b><span>Heures</span></div>
               <div class="unit"><b data-m>--</b><span>Minutes</span></div>
             </div>
-          </>
-        ) : (
-          <>
-            <p class="eyebrow">Calendrier</p>
-            <p class="vide">
-              Aucune rencontre programmée pour l'instant. Le calendrier de la
-              prochaine journée est publié dès qu'il est connu.
-            </p>
-          </>
-        )
+          </div>
+        ))
       }
+      <div class="sans-match" hidden={aVenir.length > 0}>
+        <p class="eyebrow">Calendrier</p>
+        <p class="vide">
+          Aucune rencontre programmée pour l'instant. Le calendrier de la
+          prochaine journée est publié dès qu'il est connu.
+        </p>
+      </div>
     </div>
 
     <div>
@@ -204,7 +206,12 @@ const { prochain, resultats } = Astro.props;
 </style>
 
 <script>
-  const bloc = document.querySelector<HTMLElement>(".countdown");
+  const rencontres = [...document.querySelectorAll<HTMLElement>("#match .prochain")];
+  const actuelle = rencontres.find((r) => Date.parse(r.dataset.jusqua!) > Date.now());
+  rencontres.forEach((r) => (r.hidden = r !== actuelle));
+  document.querySelector<HTMLElement>("#match .sans-match")!.hidden = !!actuelle;
+
+  const bloc = actuelle?.querySelector<HTMLElement>(".countdown");
   if (bloc?.dataset.echeance) {
     const echeance = new Date(bloc.dataset.echeance).getTime();
     const cible = (s: string) => bloc.querySelector<HTMLElement>(`[data-${s}]`)!;

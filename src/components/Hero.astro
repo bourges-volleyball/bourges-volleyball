@@ -11,7 +11,12 @@ interface Props {
 }
 const { actus = [] } = Astro.props;
 
-const PHOTOS = (await diaporama()).map((p) => ({ img: p.data.photo, alt: p.data.alt }));
+const PHOTOS = (await diaporama()).map((p) => ({
+  img: p.data.photo,
+  alt: p.data.alt,
+  // Reglages choisis dans l'administration, avec l'apercu (public/admin/index.html)
+  classes: [`cadrage-${p.data.cadrage}`, `lum-${p.data.luminosite}`],
+}));
 // Textes du haut de l'accueil : src/content/pages/accueil.md
 const t = (await getEntry("pageAccueil", "accueil"))!.data;
 ---
@@ -21,10 +26,11 @@ const t = (await getEntry("pageAccueil", "accueil"))!.data;
     {
       PHOTOS.map((p, i) => (
         <Picture
-          class:list={["slide", { "is-active": i === 0 }]}
+          class:list={["slide", ...p.classes, { "is-active": i === 0 }]}
           src={p.img}
           alt={p.alt}
           formats={["webp"]}
+          quality={85}
           widths={[640, 960, 1280, 1600, 1920, 2400]}
           sizes="100vw"
           loading={i === 0 ? "eager" : "lazy"}
@@ -101,7 +107,7 @@ const t = (await getEntry("pageAccueil", "accueil"))!.data;
     height: 100%;
     object-fit: cover;
     opacity: 0;
-    transform: scale(1.05);
+    transform: scale(1);
     transition:
       opacity 1.5s ease,
       transform 8s linear;
@@ -110,10 +116,24 @@ const t = (await getEntry("pageAccueil", "accueil"))!.data;
        du texte là où il se trouve réellement. */
     filter: brightness(0.82) contrast(1.05) saturate(0.85);
   }
+  /* Zoom lent limite a 6 % : au-dela, la photo est agrandie au point de
+     perdre en nettete, surtout si elle est un peu petite. */
   .slide.is-active {
     opacity: 1;
-    transform: scale(1.14);
+    transform: scale(1.06);
   }
+  /* Cadrage : la partie de la photo gardee quand l'ecran la recoupe. Le zoom
+     part du meme point, pour ne pas couper ce qu'on a voulu garder. */
+  .cadrage-haut { object-position: 50% 0%; transform-origin: 50% 0%; }
+  .cadrage-bas { object-position: 50% 100%; transform-origin: 50% 100%; }
+  .cadrage-gauche { object-position: 0% 50%; transform-origin: 0% 50%; }
+  .cadrage-droite { object-position: 100% 50%; transform-origin: 100% 50%; }
+  .cadrage-haut-gauche { object-position: 0% 0%; transform-origin: 0% 0%; }
+  .cadrage-haut-droite { object-position: 100% 0%; transform-origin: 100% 0%; }
+  .cadrage-bas-gauche { object-position: 0% 100%; transform-origin: 0% 100%; }
+  .cadrage-bas-droite { object-position: 100% 100%; transform-origin: 100% 100%; }
+  .lum-claire { filter: brightness(0.95) contrast(1.05) saturate(0.9); }
+  .lum-sombre { filter: brightness(0.68) contrast(1.05) saturate(0.85); }
   /* La trame du filet, tiree du logo */
   .filet {
     position: absolute;

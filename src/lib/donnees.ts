@@ -21,6 +21,12 @@ export async function equipes() {
   return liste.sort((a, b) => a.data.ordre - b.data.ordre);
 }
 
+/* Le site n'est reconstruit qu'une fois par semaine (netlify/functions/
+   reconstruire.mjs) : entre deux, c'est le navigateur qui retire ce qui est
+   passe, grace a l'attribut data-jusqua (script dans Base.astro).
+   Un match quitte « a venir » deux heures apres son debut, un evenement le lendemain. */
+export const finDuMatch = (d: Date) => new Date(d.getTime() + 2 * 3600000);
+
 /** Un match est « joué » des lors qu'il porte un score. */
 function estJoue(m: { data: { scoreNous?: number; scoreEux?: number } }) {
   return m.data.scoreNous !== undefined && m.data.scoreEux !== undefined;
@@ -104,27 +110,37 @@ export function gagne(m: { data: { scoreNous?: number; scoreEux?: number } }) {
   return scoreNous !== undefined && scoreEux !== undefined && scoreNous > scoreEux;
 }
 
-/* Boutique : une campagne est ouverte si aujourd hui tombe entre ses deux
-   dates. On ne se fie pas a une case a cocher, que personne ne pense a
-   decocher une fois la commande close. */
-export async function boutique() {
-  const tous = await getCollection("boutique");
-  const maintenant = Date.now();
-  const ouverts = tous
-    .filter((a) => a.data.ouvertureLe.getTime() <= maintenant && a.data.fermetureLe.getTime() >= maintenant)
-    .sort((a, b) => a.data.ordre - b.data.ordre);
-  const aVenir = tous
-    .filter((a) => a.data.ouvertureLe.getTime() > maintenant)
-    .sort((a, b) => a.data.ouvertureLe.getTime() - b.data.ouvertureLe.getTime());
-  const termines = tous
-    .filter((a) => a.data.fermetureLe.getTime() < maintenant)
-    .sort((a, b) => b.data.fermetureLe.getTime() - a.data.fermetureLe.getTime());
-  return { ouverts, aVenir, termines };
+/* Boutique : les rayons, dans l'ordre de la page. */
+export const RAYONS = [
+  { id: "equipement", titre: "Équipements", action: "Commander" },
+  { id: "adhesion", titre: "Adhésions", action: "Adhérer" },
+  { id: "stage", titre: "Stages", action: "S’inscrire" },
+  { id: "tournoi", titre: "Tournois", action: "S’inscrire" },
+  { id: "buvette", titre: "Buvette", action: "Commander" },
+] as const;
+
+/* Une vente est ouverte jusqu'au soir de sa date de fermeture ; sans date,
+   elle reste ouverte. Meme regle que ouverte() dans netlify/lib/boutique.mjs,
+   qui refuse les commandes : les deux doivent rester d'accord. */
+export function venteOuverte(d: { ouvertureLe?: Date; fermetureLe?: Date }, maintenant = Date.now()) {
+  return (
+    (!d.ouvertureLe || d.ouvertureLe.getTime() <= maintenant) &&
+    (!d.fermetureLe || d.fermetureLe.getTime() + 86400000 > maintenant)
+  );
 }
 
-/** Nombre de jours entiers restants avant une date. */
-export function joursRestants(d: Date) {
-  return Math.ceil((d.getTime() - Date.now()) / 86400000);
+export async function boutique() {
+  const tous = (await getCollection("boutique")).sort((a, b) => a.data.ordre - b.data.ordre);
+  const maintenant = Date.now();
+  return {
+    ouverts: tous.filter((c) => venteOuverte(c.data, maintenant)),
+    aVenir: tous.filter((c) => c.data.ouvertureLe && c.data.ouvertureLe.getTime() > maintenant),
+  };
+}
+
+/** 17.99 -> « 17,99 € » ; 13 -> « 13 € » */
+export function euros(n: number) {
+  return n.toLocaleString("fr-FR", { minimumFractionDigits: Number.isInteger(n) ? 0 : 2, maximumFractionDigits: 2 }) + " €";
 }
 
 /* Agenda : matchs a venir et evenements fusionnes, par ordre chronologique.
@@ -138,6 +154,7 @@ export async function agenda(limite?: number) {
     type: "match" as const,
     categorie: m.data.equipe,
     date: m.data.date,
+    jusqua: finDuMatch(m.data.date),
     dateFin: undefined as Date | undefined,
     avecHeure: true,
     titre: m.data.domicile
@@ -157,6 +174,7 @@ export async function agenda(limite?: number) {
       type: e.data.type,
       categorie: LIBELLE_TYPE[e.data.type] ?? "Événement",
       date: e.data.date,
+      jusqua: new Date((e.data.dateFin ?? e.data.date).getTime() + 86400000),
       dateFin: e.data.dateFin,
       avecHeure: e.data.avecHeure,
       titre: e.data.titre,

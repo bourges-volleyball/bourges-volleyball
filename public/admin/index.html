@@ -69,6 +69,60 @@
       crossorigin="anonymous"
     ></script>
 
+    <!-- Apercu des photos de l'accueil : la photo telle qu'elle apparaitra,
+         sur ordinateur et sur telephone, avec le cadrage et la luminosite
+         choisis. Memes valeurs que les classes .cadrage-* et .lum-* de
+         src/components/Hero.astro : a changer aux deux endroits. -->
+    <script>
+      var CADRAGES = {
+        centre: "50% 50%", haut: "50% 0%", bas: "50% 100%", gauche: "0% 50%", droite: "100% 50%",
+        "haut-gauche": "0% 0%", "haut-droite": "100% 0%", "bas-gauche": "0% 100%", "bas-droite": "100% 100%",
+      };
+      var LUMIERES = { claire: 0.95, normale: 0.82, sombre: 0.68 };
+
+      var ApercuDiaporama = createClass({
+        getInitialState: function () { return { l: 0, h: 0 }; },
+        render: function () {
+          var self = this;
+          var data = this.props.entry.get("data");
+          var photo = data.get("photo");
+          var champ = this.props.fields.find(function (f) { return f.get("name") === "photo"; });
+          var src = photo ? String(this.props.getAsset(photo, champ)) : "";
+          var position = CADRAGES[data.get("cadrage")] || CADRAGES.centre;
+          var filtre = "brightness(" + (LUMIERES[data.get("luminosite")] || LUMIERES.normale) + ") contrast(1.05) saturate(0.85)";
+
+          function ecran(titre, largeur, format) {
+            return h("figure", { style: { margin: "0 0 1.5rem" } },
+              h("figcaption", { style: { font: "600 12px/1.4 sans-serif", letterSpacing: ".12em", textTransform: "uppercase", color: "#9a9fa9", marginBottom: "6px" } }, titre),
+              h("div", { style: { position: "relative", width: largeur, maxWidth: "100%", aspectRatio: format, overflow: "hidden", background: "#15171c" } },
+                src && h("img", {
+                  src: src,
+                  onLoad: function (e) { self.setState({ l: e.target.naturalWidth, h: e.target.naturalHeight }); },
+                  style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: position, filter: filtre },
+                }),
+                h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(9,10,13,.92) 0%, rgba(9,10,13,.6) 38%, rgba(9,10,13,.1) 72%, rgba(9,10,13,.3) 100%)" } }),
+                h("div", { style: { position: "absolute", left: "6%", bottom: "8%", color: "#f4f4f2", font: "800 clamp(18px, 5vw, 40px)/1 sans-serif", textTransform: "uppercase" } }, "Bourges Volley-Ball")
+              )
+            );
+          }
+
+          // Une photo trop petite est etiree sur les grands ecrans, donc floue
+          var alertes = [];
+          if (this.state.l && this.state.l < 1600) alertes.push("Photo de " + this.state.l + " × " + this.state.h + " px : elle sera floue sur un grand écran. Il faut 1600 px de large au moins, idéalement 2400. Envoyez la photo d’origine : une photo passée par WhatsApp ou Messenger est réduite.");
+          if (this.state.h > this.state.l) alertes.push("Photo en hauteur : sur ordinateur, seule une bande horizontale sera visible. Préférez une photo en largeur.");
+
+          return h("div", { style: { padding: "1rem", background: "#0d0e11", minHeight: "100%" } },
+            alertes.map(function (t, i) {
+              return h("p", { key: i, style: { margin: "0 0 1rem", padding: ".75rem 1rem", background: "#3a2a00", borderLeft: "4px solid #ffb020", color: "#ffe3a3", font: "14px/1.45 sans-serif" } }, t);
+            }),
+            ecran("Sur ordinateur", "100%", "1440 / 650"),
+            ecran("Sur téléphone", "240px", "375 / 585")
+          );
+        },
+      });
+      CMS.registerPreviewTemplate("diaporama", ApercuDiaporama);
+    </script>
+
     <!-- Le volet d'apercu, a droite de l'editeur, est un cadre isole : il
          n'herite d'aucun style du site. Sans cette ligne il affiche le
          texte en Times New Roman sur fond blanc, ce qui ne ressemble a

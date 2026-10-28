@@ -1,0 +1,204 @@
+---
+import Base from "../../layouts/Base.astro";
+import { Image } from "astro:assets";
+import { boutique, RAYONS, dateLongue, euros } from "../../lib/donnees";
+
+const { ouverts, aVenir } = await boutique();
+const rayons = RAYONS.map((r) => ({ ...r, ventes: ouverts.filter((c) => c.data.categorie === r.id) })).filter(
+  (r) => r.ventes.length,
+);
+// Sans visuel propre, une vente prend la photo de son premier article
+const visuel = (c: (typeof ouverts)[number]) => c.data.image ?? c.data.articles.find((a) => a.photo)?.photo;
+const prixMin = (c: (typeof ouverts)[number]) => Math.min(...c.data.articles.map((a) => a.prix));
+---
+
+<Base
+  titre="Boutique"
+  description="Équipements, adhésions, stages, tournois et buvette du Bourges Volley-Ball : commande en ligne, paiement sécurisé par HelloAsso."
+>
+  <section class="page-head wrap">
+    <p class="eyebrow">En ligne</p>
+    <h1>Boutique</h1>
+    <p>
+      Textile du club, adhésions, stages, tournois et buvette : tout se commande
+      ici, en quelques minutes. Le paiement se fait par carte, sur HelloAsso.
+    </p>
+    {
+      rayons.length > 1 && (
+        <nav class="rayons" aria-label="Rayons de la boutique">
+          {rayons.map((r) => (
+            <a href={`#${r.id}`}>{r.titre}</a>
+          ))}
+        </nav>
+      )
+    }
+  </section>
+
+  {
+    rayons.map((r) => (
+      <section class="section wrap rayon" id={r.id}>
+        <div class="section-head">
+          <h2>{r.titre}</h2>
+        </div>
+        <div class="ventes">
+          {r.ventes.map((c) => {
+            const v = visuel(c);
+            return (
+              <a class="vente" href={`/boutique/${c.id}/`} data-fin={c.data.fermetureLe?.toISOString()}>
+                {v && <Image class="visuel" src={v} alt="" widths={[300, 600]} sizes="(min-width: 820px) 160px, 100vw" />}
+                <div class="corps">
+                  <h3>{c.data.nom}</h3>
+                  {c.data.quand && <p class="quand">{c.data.quand}</p>}
+                  <p class="desc">{c.data.description}</p>
+                  <p class="pied">
+                    <span class="prix">
+                      {c.data.articles.length > 1 && "Dès "}
+                      {euros(prixMin(c))}
+                    </span>
+                    {c.data.fermetureLe && <span class="limite">Jusqu’au {dateLongue(c.data.fermetureLe)}</span>}
+                  </p>
+                  <span class="btn">
+                    <span>{r.action}</span>
+                  </span>
+                </div>
+              </a>
+            );
+          })}
+        </div>
+      </section>
+    ))
+  }
+
+  {
+    ouverts.length === 0 && (
+      <section class="section wrap">
+        <div class="ferme">
+          <p class="etiquette">Boutique fermée</p>
+          <h2>Aucune vente en cours</h2>
+          <p>Les prochaines ventes sont annoncées dans les actualités et sur nos réseaux.</p>
+          <a class="btn ghost" href="/contact/">
+            <span>Être prévenu</span>
+          </a>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    aVenir.length > 0 && (
+      <section class="section wrap bientot">
+        <div class="section-head">
+          <h2>Bientôt</h2>
+        </div>
+        <ul>
+          {aVenir.map((c) => (
+            <li>
+              <span>{c.data.nom}</span>
+              <span class="quand">ouvre le {dateLongue(c.data.ouvertureLe!)}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  <section class="section wrap">
+    <p class="note">
+      Paiement sécurisé par HelloAsso, gratuit pour les associations. HelloAsso
+      vous propose en fin de paiement une contribution volontaire à son
+      fonctionnement : elle est modifiable, et peut être ramenée à zéro.
+    </p>
+  </section>
+</Base>
+
+<script>
+  // La page est construite a l'avance : une vente qui ferme entre deux
+  // publications du site disparait ici, le soir de sa date de fermeture.
+  document.querySelectorAll<HTMLElement>(".vente[data-fin]").forEach((v) => {
+    if (Date.parse(v.dataset.fin!) + 86400000 <= Date.now()) v.hidden = true;
+  });
+</script>
+
+<style>
+  .rayons { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.5rem; }
+  .rayons a {
+    border: 1px solid var(--hair);
+    padding: 0.45rem 0.9rem;
+    font-family: "Barlow Semi Condensed", sans-serif;
+    font-weight: 600;
+    font-size: var(--s0);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--fg);
+    text-decoration: none;
+  }
+  .rayons a:hover { border-color: var(--signal); color: var(--signal); }
+  .rayon { scroll-margin-top: 5rem; }
+
+  .ventes { display: grid; gap: 1rem; }
+  @media (min-width: 1100px) { .ventes { grid-template-columns: repeat(2, 1fr); } }
+  .vente {
+    display: grid;
+    background: var(--noir-2);
+    border: 1px solid var(--hair);
+    color: inherit;
+    text-decoration: none;
+  }
+  .vente[hidden] { display: none; }
+  .vente:hover { border-color: var(--signal); }
+  @media (min-width: 560px) {
+    .vente:has(.visuel) { grid-template-columns: 160px 1fr; }
+  }
+  /* Photos produits sur fond blanc : on les pose sur du blanc plutot que de les recadrer */
+  .visuel { width: 100%; height: 100%; max-height: 260px; object-fit: contain; background: #fff; }
+  .corps { padding: clamp(1.1rem, 3vw, 1.6rem); display: grid; gap: 0.6rem; align-content: start; }
+  .vente h3 { font-size: clamp(1.5rem, 4vw, 2rem); }
+  .quand { margin: 0; color: var(--signal); font-weight: 600; }
+  .desc {
+    margin: 0;
+    color: var(--fg-2);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .pied { margin: 0; display: flex; flex-wrap: wrap; gap: 0.4rem 1.2rem; align-items: baseline; }
+  .prix {
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 800;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+  }
+  .limite { color: var(--fg-2); font-size: 0.9rem; }
+  .vente .btn { justify-self: start; }
+
+  .ferme {
+    background: var(--noir-2);
+    border: 1px solid var(--hair);
+    border-left: 4px solid var(--signal);
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+    display: grid;
+    gap: 0.8rem;
+    justify-items: start;
+  }
+  .ferme p { margin: 0; color: var(--fg-2); }
+  .etiquette {
+    font-family: "Barlow Semi Condensed", sans-serif;
+    font-weight: 600;
+    font-size: var(--s0);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .bientot ul { list-style: none; padding: 0; margin: 0; }
+  .bientot li {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.3rem 1rem;
+    padding: 0.8rem 0;
+    border-top: 1px solid var(--hair);
+  }
+  .bientot .quand { color: var(--fg-2); font-weight: 400; }
+  .note { color: var(--fg-2); font-size: 0.9rem; max-width: 70ch; margin: 0; }
+</style>

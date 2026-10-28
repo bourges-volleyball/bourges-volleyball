@@ -1,0 +1,571 @@
+---
+import Base from "../../layouts/Base.astro";
+import { Image, getImage } from "astro:assets";
+import { getCollection } from "astro:content";
+import { RAYONS, dateLongue, euros, venteOuverte } from "../../lib/donnees";
+
+export async function getStaticPaths() {
+  return (await getCollection("boutique")).map((c) => ({ params: { id: c.id }, props: { c } }));
+}
+
+const { c } = Astro.props;
+const d = c.data;
+const rayon = RAYONS.find((r) => r.id === d.categorie)!;
+const ouverte = venteOuverte(d);
+const pasEncore = d.ouvertureLe && d.ouvertureLe.getTime() > Date.now();
+// Version agrandie des photos, ouverte d'un clic : jamais plus grande que l'original
+const grandes = await Promise.all(
+  d.articles.map((a) => a.photo && getImage({ src: a.photo, width: Math.min(1200, a.photo.width), format: "webp" })),
+);
+
+/* Ce dont le script a besoin pour poser les questions et afficher le total.
+   Les prix ne servent qu'a l'affichage : le serveur recalcule tout. */
+const vente = {
+  id: c.id,
+  nominatif: d.nominatif,
+  qui: d.categorie === "adhesion" ? "Nom et prénom de l’adhérent" : "Nom et prénom du participant",
+  questions: d.questions,
+  ouvertureLe: d.ouvertureLe?.toISOString(),
+  fermetureLe: d.fermetureLe?.toISOString(),
+  articles: d.articles.map((a) => ({ nom: a.nom, prix: a.prix, tailles: a.tailles ?? [] })),
+};
+---
+
+<Base titre={d.nom} description={d.description}>
+  <section class="page-head wrap">
+    <p class="eyebrow"><a href={`/boutique/#${d.categorie}`}>Boutique · {rayon.titre}</a></p>
+    <h1>{d.nom}</h1>
+    <p>{d.description}</p>
+    {
+      (d.quand || d.lieu || d.fermetureLe) && (
+        <dl class="infos">
+          {d.quand && (
+            <div>
+              <dt>Quand</dt>
+              <dd>{d.quand}</dd>
+            </div>
+          )}
+          {d.lieu && (
+            <div>
+              <dt>Où</dt>
+              <dd>{d.lieu}</dd>
+            </div>
+          )}
+          {d.fermetureLe && (
+            <div>
+              <dt>Commandes jusqu’au</dt>
+              <dd>{dateLongue(d.fermetureLe)}</dd>
+            </div>
+          )}
+        </dl>
+      )
+    }
+  </section>
+
+  <section class="section wrap">
+    <div class="ferme" data-ferme hidden={ouverte}>
+      <h2>{pasEncore ? `Ouverture le ${dateLongue(d.ouvertureLe!)}` : "Cette vente est fermée"}</h2>
+      <a class="btn ghost" href="/boutique/"><span>Voir les autres ventes</span></a>
+    </div>
+
+    <form class="commande" data-vente={JSON.stringify(vente)} hidden={!ouverte}>
+      <fieldset>
+        <legend><h2>{d.nominatif ? "Choisissez vos places" : "Choisissez vos articles"}</h2></legend>
+        <ul class="articles">
+          {
+            d.articles.map((a, i) => (
+              <li class="article">
+                {a.photo && (
+                  <button type="button" class="loupe" data-grande={grandes[i] && grandes[i].src} data-legende={a.nom} aria-label={`Agrandir la photo : ${a.nom}`}>
+                    <Image class="photo" src={a.photo} alt="" widths={[80, 160]} sizes="80px" />
+                  </button>
+                )}
+                <div class="texte">
+                  <h3>{a.nom}</h3>
+                  {a.description && <p>{a.description}</p>}
+                  {a.tailles?.length ? <p class="tailles">Tailles : {a.tailles.join(" · ")}</p> : null}
+                  <p class="places" data-places={i} hidden />
+                </div>
+                <p class="prix">{euros(a.prix)}</p>
+                <div class="qte">
+                  <button type="button" data-moins={i} aria-label={`Retirer : ${a.nom}`}>−</button>
+                  <input type="number" min="0" max="20" value="0" inputmode="numeric" data-qte={i} aria-label={`Quantité : ${a.nom}`} />
+                  <button type="button" data-plus={i} aria-label={`Ajouter : ${a.nom}`}>+</button>
+                </div>
+                {/* Taille, nom du participant : demandes ici, sous l'article, des qu'on l'ajoute */}
+                <div class="unites" data-unites-de={i}></div>
+              </li>
+            ))
+          }
+        </ul>
+      </fieldset>
+
+      <fieldset>
+        <legend><h2>Vos coordonnées</h2></legend>
+        <div class="champs">
+          <p>
+            <label for="prenom">Prénom</label>
+            <input id="prenom" name="prenom" required maxlength="50" autocomplete="given-name" />
+          </p>
+          <p>
+            <label for="nom">Nom</label>
+            <input id="nom" name="nom" required maxlength="50" autocomplete="family-name" />
+          </p>
+          <p class="large">
+            <label for="email">Adresse mail</label>
+            <input id="email" name="email" type="email" required maxlength="80" autocomplete="email" />
+          </p>
+        </div>
+        <p class="aide">HelloAsso vous envoie le reçu de paiement à cette adresse.</p>
+      </fieldset>
+
+      <div class="payer">
+        <p class="total">Total <strong data-total>0 €</strong></p>
+        <p class="erreur" role="alert" data-erreur hidden></p>
+        <button class="btn" type="submit" data-payer disabled><span>Payer avec HelloAsso</span></button>
+        <p class="note">
+          Vous allez être redirigé vers HelloAsso pour payer par carte. HelloAsso
+          vous propose une contribution volontaire à son fonctionnement : elle est
+          modifiable et peut être ramenée à zéro. Le club conserve votre commande
+          un an (<a href="/confidentialite/">vos données</a>).
+        </p>
+      </div>
+    </form>
+
+    <dialog class="visionneuse" data-visionneuse aria-label="Photo agrandie">
+      <img alt="" />
+      <p></p>
+      <button type="button" class="btn ghost"><span>Fermer</span></button>
+    </dialog>
+  </section>
+</Base>
+
+<script>
+  type Vente = {
+    id: string;
+    nominatif: boolean;
+    qui: string;
+    questions: { libelle: string; type: "texte" | "ouinon" }[];
+    ouvertureLe?: string;
+    fermetureLe?: string;
+    articles: { nom: string; prix: number; tailles: string[] }[];
+  };
+
+  const form = document.querySelector<HTMLFormElement>("form[data-vente]");
+  if (form) {
+    const vente: Vente = JSON.parse(form.dataset.vente!);
+    const qtes = [...form.querySelectorAll<HTMLInputElement>("[data-qte]")];
+    const erreur = form.querySelector<HTMLElement>("[data-erreur]")!;
+    const payer = form.querySelector<HTMLButtonElement>("[data-payer]")!;
+    const enEuros = new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" });
+
+    // La page est construite a l'avance : les dates sont reverifiees ici
+    const maintenant = Date.now();
+    if (
+      (vente.ouvertureLe && Date.parse(vente.ouvertureLe) > maintenant) ||
+      (vente.fermetureLe && Date.parse(vente.fermetureLe) + 86400000 <= maintenant)
+    ) {
+      form.hidden = true;
+      document.querySelector<HTMLElement>("[data-ferme]")!.hidden = false;
+    }
+
+    const qte = (i: number) => {
+      const n = Math.floor(Number(qtes[i].value));
+      return n > 0 ? Math.min(n, Number(qtes[i].max)) : 0;
+    };
+
+    function el<K extends keyof HTMLElementTagNameMap>(
+      tag: K,
+      props: Partial<HTMLElementTagNameMap[K]> = {},
+      ...enfants: (Node | string)[]
+    ) {
+      const e = Object.assign(document.createElement(tag), props);
+      e.append(...enfants);
+      return e;
+    }
+    const ligne = (libelle: string, controle: HTMLInputElement | HTMLSelectElement) =>
+      el("p", {}, el("label", { htmlFor: controle.id, textContent: libelle }), controle);
+
+    /* Sous chaque article ajoute, une case par exemplaire : sa taille, le
+       nom de la personne, les questions de la vente. Redessine a chaque
+       changement de quantite, en gardant ce qui etait deja saisi. */
+    function dessiner() {
+      const saisi = new Map<string, string>();
+      form!.querySelectorAll<HTMLInputElement | HTMLSelectElement>(".unites input, .unites select").forEach((c) => {
+        if (c.type !== "radio" || (c as HTMLInputElement).checked) saisi.set(c.name, c.value);
+      });
+
+      let total = 0;
+      vente.articles.forEach((a, i) => {
+        const n = qte(i);
+        total += Math.round(a.prix * 100) * n;
+        const unites = form!.querySelector<HTMLElement>(`[data-unites-de="${i}"]`)!;
+        unites.replaceChildren();
+        if (!a.tailles.length && !vente.nominatif) return;
+
+        for (let k = 0; k < n; k++) {
+          const nom = `a${i}-${k}`;
+          const bloc = el("fieldset", { className: "unite" });
+          if (n > 1) bloc.append(el("legend", { textContent: `${k + 1} sur ${n}` }));
+          if (a.tailles.length) {
+            const s = el(
+              "select",
+              { id: `${nom}-taille`, name: `${nom}-taille`, required: true },
+              el("option", { value: "", textContent: "Choisir…" }),
+              ...a.tailles.map((t) => el("option", { value: t, textContent: t })),
+            );
+            s.value = saisi.get(s.name) ?? "";
+            bloc.append(ligne("Taille", s));
+          }
+          if (vente.nominatif) {
+            const qui = el("input", { id: `${nom}-qui`, name: `${nom}-qui`, required: true, maxLength: 100 });
+            qui.value = saisi.get(qui.name) ?? "";
+            bloc.append(ligne(vente.qui, qui));
+            vente.questions.forEach((q, j) => {
+              const nq = `${nom}-q${j}`;
+              if (q.type === "ouinon") {
+                const choix = ["Oui", "Non"].map((v) => {
+                  const r = el("input", { type: "radio", name: nq, value: v, required: true });
+                  r.checked = saisi.get(nq) === v;
+                  return el("label", { className: "choix" }, r, v);
+                });
+                bloc.append(el("fieldset", { className: "ouinon" }, el("legend", { textContent: q.libelle }), ...choix));
+              } else {
+                const t = el("input", { id: nq, name: nq, required: true, maxLength: 250 });
+                t.value = saisi.get(nq) ?? "";
+                bloc.append(ligne(q.libelle, t));
+              }
+            });
+          }
+          unites.append(bloc);
+        }
+      });
+
+      form!.querySelector("[data-total]")!.textContent = enEuros.format(total / 100);
+      payer.disabled = total === 0;
+    }
+
+    form.addEventListener("click", (e) => {
+      const b = (e.target as HTMLElement).closest<HTMLButtonElement>("[data-plus], [data-moins]");
+      if (!b) return;
+      const i = Number(b.dataset.plus ?? b.dataset.moins);
+      const n = qte(i) + (b.dataset.plus !== undefined ? 1 : -1);
+      qtes[i].value = String(Math.max(0, Math.min(Number(qtes[i].max), n)));
+      dessiner();
+    });
+    form.addEventListener("input", (e) => {
+      if ((e.target as HTMLElement).matches("[data-qte]")) dessiner();
+    });
+
+    // Places restantes (stage, tournoi) : connues du serveur seul
+    fetch(`/.netlify/functions/commande?campagne=${encodeURIComponent(vente.id)}`)
+      .then((r) => (r.ok ? r.json() : {}))
+      .then((restantes: Record<string, number>) => {
+        vente.articles.forEach((a, i) => {
+          const reste = restantes[a.nom];
+          if (reste === undefined) return;
+          const info = form.querySelector<HTMLElement>(`[data-places="${i}"]`)!;
+          info.hidden = false;
+          info.textContent = reste === 0 ? "Complet" : `${reste} place${reste > 1 ? "s" : ""} restante${reste > 1 ? "s" : ""}`;
+          qtes[i].max = String(Math.min(20, reste));
+          qtes[i].disabled = reste === 0;
+          form.querySelector<HTMLButtonElement>(`[data-plus="${i}"]`)!.disabled = reste === 0;
+        });
+        dessiner();
+      })
+      .catch(() => {});
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      erreur.hidden = true;
+      const champ = (nom: string) =>
+        (form.elements.namedItem(nom) as HTMLInputElement | RadioNodeList | null)?.value ?? "";
+
+      const lignes = vente.articles.flatMap((a, i) => {
+        const n = qte(i);
+        if (!n) return [];
+        const details = Array.from({ length: n }, (_, k) => ({
+          taille: champ(`a${i}-${k}-taille`) || undefined,
+          participant: champ(`a${i}-${k}-qui`) || undefined,
+          reponses: Object.fromEntries(vente.questions.map((q, j) => [q.libelle, champ(`a${i}-${k}-q${j}`)])),
+        }));
+        return [{ article: a.nom, quantite: n, details }];
+      });
+
+      const libelle = payer.firstElementChild!;
+      payer.disabled = true;
+      libelle.textContent = "Redirection vers HelloAsso…";
+      let message = "La commande n’a pas pu être envoyée. Vérifiez votre connexion et réessayez.";
+      try {
+        const r = await fetch("/.netlify/functions/commande", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            campagne: vente.id,
+            payeur: { prenom: champ("prenom"), nom: champ("nom"), email: champ("email") },
+            lignes,
+          }),
+        });
+        const j = await r.json();
+        if (typeof j.url === "string" && j.url.startsWith("https://")) return location.assign(j.url);
+        if (j.erreur) message = j.erreur;
+      } catch {}
+      erreur.textContent = message;
+      erreur.hidden = false;
+      payer.disabled = false;
+      libelle.textContent = "Payer avec HelloAsso";
+    });
+
+    dessiner();
+  }
+
+  // Photo d'un article en grand : <dialog> natif (Echap, clic, bouton ferment)
+  const visionneuse = document.querySelector<HTMLDialogElement>("[data-visionneuse]");
+  if (visionneuse) {
+    document.querySelectorAll<HTMLButtonElement>(".loupe").forEach((b) =>
+      b.addEventListener("click", () => {
+        const img = visionneuse.querySelector("img")!;
+        img.src = b.dataset.grande!;
+        img.alt = b.dataset.legende!;
+        visionneuse.querySelector("p")!.textContent = b.dataset.legende!;
+        visionneuse.showModal();
+      }),
+    );
+    visionneuse.addEventListener("click", () => visionneuse.close());
+  }
+</script>
+
+<style>
+  .eyebrow a { color: inherit; text-decoration: none; }
+  .eyebrow a:hover { color: var(--signal); }
+  .infos { display: flex; flex-wrap: wrap; gap: 1rem 2.5rem; margin: 1.5rem 0 0; }
+  .infos dt {
+    font-family: "Barlow Semi Condensed", sans-serif;
+    font-size: var(--s0);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--fg-2);
+    margin-bottom: 0.2rem;
+  }
+  .infos dd { margin: 0; font-weight: 600; }
+
+  .ferme {
+    background: var(--noir-2);
+    border: 1px solid var(--hair);
+    border-left: 4px solid var(--signal);
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+    display: grid;
+    gap: 1rem;
+    justify-items: start;
+  }
+  .ferme[hidden] { display: none; }
+
+  .commande { display: grid; gap: clamp(2rem, 5vw, 3rem); max-width: 860px; }
+  .commande[hidden] { display: none; }
+  /* :global : les cases de precision sont creees par le script, sans
+     l'attribut qu'Astro ajoute pour limiter les styles a cette page */
+  .commande :global(fieldset) { border: 0; padding: 0; margin: 0; min-width: 0; }
+  .commande :global(fieldset[hidden]) { display: none; }
+  .commande :global(legend) { padding: 0; }
+  .commande legend h2 { font-size: clamp(1.6rem, 4vw, 2.2rem); margin-bottom: 1rem; }
+  .commande :global(p) { margin: 0; }
+
+  .articles {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 1px;
+    background: var(--hair);
+    border: 1px solid var(--hair);
+  }
+  .article {
+    background: var(--noir-2);
+    padding: 0.9rem 1rem;
+    display: grid;
+    gap: 0.6rem 1rem;
+    align-items: center;
+    grid-template-columns: 1fr auto;
+    grid-template-areas: "texte texte" "prix qte" "unites unites";
+  }
+  .article:has(.loupe) {
+    grid-template-columns: 72px 1fr auto;
+    grid-template-areas: "photo texte texte" "photo prix qte" "unites unites unites";
+  }
+  @media (min-width: 640px) {
+    .article { grid-template-columns: 1fr auto auto; grid-template-areas: "texte prix qte" "unites unites unites"; }
+    .article:has(.loupe) {
+      grid-template-columns: 88px 1fr auto auto;
+      grid-template-areas: "photo texte prix qte" "unites unites unites unites";
+    }
+  }
+  /* La photo est un bouton : un clic l'ouvre en grand */
+  .loupe {
+    grid-area: photo;
+    position: relative;
+    padding: 0;
+    border: 1px solid var(--hair);
+    background: #fff;
+    cursor: zoom-in;
+    aspect-ratio: 1;
+  }
+  .loupe:hover { border-color: var(--signal); }
+  .loupe::after {
+    content: "+";
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 1.3rem;
+    height: 1.3rem;
+    display: grid;
+    place-items: center;
+    background: var(--noir);
+    color: var(--signal);
+    font-weight: 800;
+  }
+  .photo { display: block; width: 100%; height: 100%; object-fit: contain; }
+  .texte { grid-area: texte; }
+  .texte h3 { font-size: 1.3rem; }
+  .texte p { margin-top: 0.15rem; color: var(--fg-2); font-size: 0.9rem; }
+  .texte .tailles { color: var(--fg); font-size: 0.85rem; letter-spacing: 0.04em; }
+  .texte .places { color: var(--signal); font-weight: 600; }
+  .texte .places[hidden] { display: none; }
+  .prix {
+    grid-area: prix;
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 800;
+    font-size: 1.35rem;
+    white-space: nowrap;
+  }
+  .qte { grid-area: qte; justify-self: end; display: flex; }
+  .qte button {
+    width: 2.6rem;
+    height: 2.6rem;
+    background: var(--noir-3);
+    color: var(--fg);
+    border: 1px solid var(--hair);
+    font-size: 1.25rem;
+    cursor: pointer;
+  }
+  .qte button:hover:not(:disabled) { border-color: var(--signal); color: var(--signal); }
+  .qte button:disabled { opacity: 0.35; cursor: default; }
+  .qte input {
+    width: 3rem;
+    height: 2.6rem;
+    text-align: center;
+    background: var(--noir);
+    color: var(--fg);
+    border: 1px solid var(--hair);
+    border-width: 1px 0;
+    font: inherit;
+    font-weight: 700;
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+  .qte input::-webkit-inner-spin-button,
+  .qte input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+
+  .champs { display: grid; gap: 1rem; }
+  @media (min-width: 640px) {
+    .champs { grid-template-columns: 1fr 1fr; }
+    .champs .large { grid-column: 1 / -1; }
+  }
+  .commande :global(label:not(.choix)),
+  .commande :global(.ouinon > legend) {
+    display: block;
+    font-family: "Barlow Semi Condensed", sans-serif;
+    font-weight: 600;
+    font-size: var(--s0);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--fg-2);
+    margin-bottom: 0.4rem;
+  }
+  .commande :global(input:not([type="radio"])),
+  .commande :global(select) {
+    width: 100%;
+    background: var(--noir-2);
+    color: var(--fg);
+    border: 1px solid var(--hair);
+    padding: 0.7rem 0.8rem;
+    font: inherit;
+  }
+  .commande :global(input:focus),
+  .commande :global(select:focus) { border-color: var(--signal); }
+  .aide { margin-top: 0.6rem !important; color: var(--fg-2); font-size: 0.85rem; }
+
+  .unites {
+    grid-area: unites;
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr));
+  }
+  .unites:empty { display: none; }
+  .commande :global(fieldset.unite) {
+    background: var(--noir-3);
+    border: 1px solid var(--hair);
+    border-left: 3px solid var(--signal);
+    padding: 0.75rem;
+    display: grid;
+    gap: 0.75rem;
+    align-content: start;
+  }
+  /* float : la legende passe a l'interieur du cadre au lieu de le chevaucher */
+  .commande :global(.unite > legend) {
+    float: left;
+    width: 100%;
+    font-family: "Barlow Semi Condensed", sans-serif;
+    font-weight: 600;
+    font-size: var(--s0);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--signal);
+  }
+  .commande :global(.unite input:not([type="radio"])),
+  .commande :global(.unite select) { background: var(--noir); }
+
+  .visionneuse {
+    border: 0;
+    padding: 1rem;
+    background: var(--noir-2);
+    color: var(--fg);
+    max-width: min(92vw, 900px);
+    text-align: center;
+  }
+  .visionneuse::backdrop { background: rgba(9, 10, 13, 0.85); }
+  .visionneuse img {
+    display: block;
+    margin: 0 auto;
+    width: min(100%, 75vh);
+    max-height: 75vh;
+    object-fit: contain;
+    background: #fff;
+  }
+  .visionneuse p { margin: 0.8rem 0; font-weight: 600; }
+  .commande :global(.ouinon) { display: flex; flex-wrap: wrap; gap: 0.4rem 1.5rem; }
+  .commande :global(.ouinon > legend) { float: left; width: 100%; }
+  .commande :global(.choix) { display: inline-flex; align-items: center; gap: 0.45rem; cursor: pointer; }
+  .commande :global(.choix input) { accent-color: var(--signal); width: 1.15rem; height: 1.15rem; }
+
+  .payer {
+    display: grid;
+    gap: 0.9rem;
+    justify-items: start;
+    border-top: 1px solid var(--hair);
+    padding-top: 1.5rem;
+  }
+  .total { font-size: 1.1rem; }
+  .total strong {
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 800;
+    font-size: 2.2rem;
+    margin-left: 0.5rem;
+  }
+  /* Pas de rouge dans la charte : celui-ci reste lisible sur le fond noir */
+  .erreur { color: #ff8a80; border-left: 3px solid #ff8a80; padding-left: 0.8rem; }
+  .erreur[hidden] { display: none; }
+  button.btn { cursor: pointer; font-family: "Barlow Semi Condensed", sans-serif; }
+  button.btn:disabled { opacity: 0.45; cursor: default; }
+  .note { color: var(--fg-2); font-size: 0.85rem; max-width: 62ch; }
+  .note a { color: inherit; }
+</style>

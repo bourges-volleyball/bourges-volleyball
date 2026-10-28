@@ -1,6 +1,6 @@
 ---
 import Base from "../layouts/Base.astro";
-import { matchs, dateLongue, heure, gagne } from "../lib/donnees";
+import { matchs, dateLongue, heure, gagne, finDuMatch } from "../lib/donnees";
 
 const { joues, aVenir } = await matchs();
 // Equipes presentes dans le calendrier, pour le filtre
@@ -38,7 +38,7 @@ const lesEquipes = [...new Set([...aVenir, ...joues].map((m) => m.data.equipe))]
       ) : (
         <ul class="liste">
           {aVenir.map((m) => (
-            <li data-equipe={m.data.equipe}>
+            <li data-equipe={m.data.equipe} data-jusqua={finDuMatch(m.data.date).toISOString()}>
               <span class="quand">
                 <b>{dateLongue(m.data.date)}</b>
                 <span class="mono">{heure(m.data.date)}</span>
@@ -167,7 +167,9 @@ const lesEquipes = [...new Set([...aVenir, ...joues].map((m) => m.data.equipe))]
       const e = choix.value;
       let n = 0;
       for (const li of lignes) {
-        li.hidden = e !== "" && li.dataset.equipe !== e;
+        // Un match deja passe reste masque (data-jusqua, voir Base.astro)
+        const passe = !!li.dataset.jusqua && Date.parse(li.dataset.jusqua) <= Date.now();
+        li.hidden = passe || (e !== "" && li.dataset.equipe !== e);
         if (!li.hidden) n++;
       }
       compte.textContent = e ? `${n} rencontre${n > 1 ? "s" : ""}` : "";

@@ -33,7 +33,7 @@ const rendezvous = await agenda();
       ) : (
         <ol class="agenda">
           {rendezvous.map((r) => (
-            <li class:list={["item", r.type === "match" ? "est-match" : ""]}>
+            <li class:list={["item", r.type === "match" ? "est-match" : ""]} data-jusqua={r.jusqua.toISOString()}>
               <div class="quand">
                 <b>{dateLongue(r.date)}</b>
                 {r.dateFin && <span class="fin">jusqu’au {dateLongue(r.dateFin)}</span>}

@@ -149,7 +149,9 @@ npm run admin
 npm run dev
 ```
 
-Puis ouvrir **http://localhost:4321/admin/index.html**. Pas de mot de passe :
+Puis ouvrir **http://localhost:4321/admin/index.html** — avec `index.html` :
+sur l'ordinateur, l'adresse courte `/admin/` mène à la page 404 (en ligne, elle
+fonctionne). Pas de mot de passe :
 le bouton « Se connecter » suffit. Les modifications sont écrites directement
 dans les fichiers du projet, comme le ferait un bénévole en ligne — pratique
 pour se former, ou pour saisir beaucoup de contenu d'un coup.
@@ -157,6 +159,11 @@ pour se former, ou pour saisir beaucoup de contenu d'un coup.
 C'est le réglage `local_backend` de `public/admin/config.yml`. Il ne s'active
 que sur `localhost` : en ligne, c'est toujours Netlify Identity qui contrôle
 l'accès.
+
+La page des commandes de la boutique s'essaie aussi :
+**http://localhost:4321/admin/commandes.html** montre alors des **commandes
+d'exemple**, signalées comme telles. Les vraies n'existent qu'en ligne, où
+tournent la connexion et les fonctions Netlify.
 
 ### Actualités
 Publier un article : titre, date, résumé, photo de une, texte.
@@ -202,7 +209,12 @@ du calendrier fédéral. Rien à saisir.
 **Les rencontres FFVolley arrivent toutes seules.** Le calendrier et les
 résultats des quatre équipes engagées en ligue — seniors masculins, seniors
 féminines, M18 filles, M18 garçons — sont récupérés automatiquement sur le
-site de la fédération à chaque publication du site.
+site de la fédération **chaque lundi matin**, et à chaque publication du site.
+
+**Le prochain match avance tout seul.** Toutes les rencontres de la saison
+sont dans les pages : au moment de la visite, celles qui sont passées
+(deux heures après le coup d'envoi) disparaissent de « Prochaine réception »,
+des listes « À venir » et de l'agenda, sans attendre une publication.
 
 Vous n'avez donc à saisir ici **que les matchs Ufolep et les rencontres
 amicales**, que la fédération ne publie pas.
@@ -226,14 +238,37 @@ Décochez « Afficher l'heure » pour un stage ou un week-end, où l'horaire n'a
 pas de sens, et remplissez « Date de fin » si l'événement dure plusieurs jours.
 
 ### Boutique
-Une fiche par **commande groupée**. Les deux dates d'ouverture et de fermeture
-pilotent tout : entre les deux, la boutique s'affiche avec un décompte des
-jours restants ; en dehors, elle bascule seule sur « aucune commande en cours »
-et propose au visiteur d'être prévenu.
+Une fiche par **vente**, comme un formulaire HelloAsso : la boutique textile,
+une adhésion, un stage, un tournoi, une buvette. Le visiteur choisit, remplit
+et paie sans quitter le site ; seul le paiement par carte passe par HelloAsso.
 
-C'est volontaire : personne n'a à penser à fermer la boutique le soir de la
-date limite. Indiquez le lien de la campagne HelloAsso dans le champ prévu,
-et listez les tailles disponibles une par ligne.
+- **Rayon** : Équipements, Adhésions, Stages, Tournois ou Buvette.
+- **Articles ou tarifs** : un par prix. Chacun peut avoir une photo (qui s'ouvre en grand d'un clic), une liste
+  de **tailles** (demandée pour chaque article commandé) et un **nombre de
+  places** (le site affiche les places restantes et ferme l'article une fois
+  complet).
+- **Demander le nom de chaque participant** : à cocher pour une adhésion, un
+  stage, un tournoi. On peut ajouter des **questions** (texte ou oui/non),
+  posées pour chaque participant.
+- **Dates** : facultatives. Le soir du « dernier jour pour commander », la vente
+  se ferme toute seule. Sans date, elle reste ouverte (buvette).
+
+**Le montant est toujours recalculé par le serveur** à partir de la fiche :
+modifier un prix dans l'administration s'applique dès la publication suivante.
+
+### Commandes payées
+Elles se consultent sur **/admin/commandes.html**, avec le même compte que
+l'administration. Pour chaque vente :
+- le **résumé** des quantités, taille par taille : c'est la commande groupée à
+  passer chez l'équipementier ;
+- la liste des commandes, avec une case **Remis** à cocher à la livraison, ou à
+  l'arrivée au stage ;
+- un bouton **Exporter (Excel)** : une ligne par article, avec les tailles, les
+  participants et leurs réponses.
+
+Un remboursement se fait dans l'espace HelloAsso du club, rubrique
+*Suivi des paiements* : toutes les ventes du site y apparaissent sous le nom
+« Checkout ».
 
 ### Partenaires
 Trois niveaux : principal, officiel, institutionnel. Le partenaire principal
@@ -249,17 +284,30 @@ rubrique **Photos de l'accueil** : ajouter, supprimer, et régler l'ordre
 de passage avec le champ « Ordre ». Trois à cinq photos, format paysage,
 1600 pixels de large minimum, des cadrages serrés sur l'action.
 
-**Les trois photos actuelles sont libres de droits, à remplacer.**
+**L'aperçu, à droite du formulaire, montre la photo telle qu'elle apparaîtra**,
+sur ordinateur et sur téléphone, avec le titre par-dessus. Deux réglages :
 
-Le site les assombrit automatiquement pour que le texte reste lisible —
-inutile de les retoucher, les gymnases sont toujours trop clairs et
-le traitement s'en charge.
+- **Cadrage** : la partie de la photo à garder quand l'écran la recoupe
+  (centre, haut pour garder les têtes, bas, gauche, droite, coins).
+  L'ordinateur coupe le haut et le bas, le téléphone les côtés : vérifier
+  les deux vignettes.
+- **Luminosité** : plus claire pour une photo de gymnase sombre, plus sombre
+  si le titre se lit mal.
 
-**Ne les compressez pas non plus.** Déposez la photo d'origine, en grand :
-le site fabrique tout seul une version WebP allégée et plusieurs tailles,
-et sert à chaque visiteur celle qui correspond à son écran. Une photo
-réduite à la main avant d'être déposée ne peut plus être agrandie, et
-s'affichera floue sur un grand écran.
+L'aperçu affiche aussi **un avertissement si la photo est trop petite** ou
+prise en hauteur. (Sur téléphone, l'administration masque l'aperçu : faire ce
+réglage sur un ordinateur.)
+
+**Ne passez pas les photos par WhatsApp ou Messenger.** Ils les réduisent à
+1600 pixels au plus et les recompressent : sur un écran large, la photo est
+alors étirée et paraît floue. C'est le cas des trois photos déposées le
+28 octobre (960 à 1500 pixels de large). Déposez le fichier d'origine, sorti
+du téléphone ou de l'appareil (par câble, Google Photos, mail en « taille
+réelle ») : le site fabrique tout seul une version allégée et plusieurs
+tailles, et sert à chaque visiteur celle qui correspond à son écran.
+
+Le site assombrit légèrement les photos pour que le texte reste lisible :
+inutile de les retoucher.
 
 ---
 
@@ -392,12 +440,17 @@ et les données structurées lues par Google (`src/layouts/Base.astro`).
 
 ### À fournir par le club
 
-- [ ] Remplacer les trois photos du diaporama par des photos du club
+- [ ] Redéposer les photos du diaporama **en version d'origine** : celles du
+  28 octobre sont passées par WhatsApp (960 à 1500 px) et paraissent floues
+- [ ] Brancher la mise à jour du lundi (`BUILD_HOOK_URL`, section 8)
+- [ ] Remplacer les photos des articles de la boutique : celles reprises de
+  HelloAsso ne font que 300 px, et s'agrandissent d'un clic
 - [ ] Remplacer les photos d'équipe et saisir les effectifs réels
 - [ ] Renseigner les encadrants de chaque groupe (tous « À préciser »)
 - [ ] Ajouter les vrais partenaires et leurs logos
-- [ ] Ouvrir la prochaine commande groupée dans la rubrique Boutique — la
-  dernière campagne HelloAsso (Joma, –20 % catalogue) date de 2024-2025
+- [ ] **Brancher le paiement de la boutique** (une fois, voir ci-dessous)
+- [ ] Donner une date au tournoi Octobre rose dans la boutique (sans date, la
+  vente reste ouverte)
 - [ ] Confirmer les dates du tournoi inter-entreprises, de l'AG et du stage
 - [ ] Vérifier les mentions légales et la page Confidentialité (adresse,
   durée de conservation des messages, fixée à un an)
@@ -412,8 +465,38 @@ et les données structurées lues par Google (`src/layouts/Base.astro`).
 - [ ] **La liste des équipes Ufolep engagées.** Le club en aligne plusieurs
   en départemental du Cher ; la fiche Ufolep décrit les deux sections mais ne
   les nomme pas, faute de la liste. À compléter dans le champ Présentation.
-- [ ] Les **buvettes en ligne** HelloAsso (tournois, buvette virtuelle) ne sont
-  pas mentionnées sur le site.
+- [ ] La buvette du tournoi inter-entreprises (close sur HelloAsso) n'a pas été
+  reprise : dupliquer la buvette du club dans la boutique le moment venu.
+
+### Brancher le paiement de la boutique (une fois)
+
+Vérifié le 28 octobre 2026 : l'association est **vérifiée** sur HelloAsso,
+condition pour encaisser par le site. Il reste trois gestes, dans l'ordre :
+
+1. **Créer la clé API** — espace HelloAsso du club, *Mon compte →
+   Intégrations et API → Générer ma clé API*. Elle donne un identifiant
+   (*client id*) et un secret (*client secret*). Le secret ne s'affiche
+   qu'une fois : le copier directement à l'étape 2, ne l'envoyer à personne.
+2. **La donner au site** — Netlify, *Site configuration → Environment
+   variables* : `HELLOASSO_CLIENT_ID` et `HELLOASSO_CLIENT_SECRET`, puis
+   *Deploys → Trigger deploy*.
+3. **Renseigner l'adresse de notification** — même page HelloAsso, champ
+   *Mon URL de callback* :
+   `https://bourges-volleyball.netlify.app/.netlify/functions/paiement`
+   (à changer avec le nom de domaine). C'est elle qui marque une commande
+   payée même si l'acheteur ferme son navigateur avant de revenir sur le site.
+
+Ensuite, **faire un achat réel à 1 €** (un sirop à la buvette) pour vérifier
+toute la chaîne, puis le rembourser depuis HelloAsso.
+
+Enfin, **passer en privé ou clôturer les formulaires HelloAsso** repris par le
+site (boutique Héroïc, adhésions, stage, tournoi, buvettes) : sinon on peut
+encore commander des deux côtés, et les places du stage seraient vendues deux
+fois. Les commandes déjà passées sur HelloAsso restent dans son espace.
+
+Pour des essais sans argent réel, HelloAsso propose un bac à sable
+(helloasso-sandbox.com) : y créer une association de test, et ajouter dans
+Netlify `HELLOASSO_API = https://api.helloasso-sandbox.com` avec ses clés.
 
 ### Fait
 
@@ -446,11 +529,23 @@ qui quittent le bureau** (*Identity → l'utilisateur → Delete*).
 
 ### Ce qui est déjà en place
 
-- **Pas de base de données, pas de serveur.** Le site est un ensemble de
-  fichiers. Il n'y a rien à pirater derrière, et aucune mise à jour de
-  sécurité à suivre — contrairement à un WordPress.
-- **Aucun mot de passe, aucune donnée de visiteur** n'est stocké par le site.
-  Les paiements passent par HelloAsso, l'identification par Netlify.
+- **Presque pas de serveur.** Les pages sont des fichiers. Seule la boutique
+  fait tourner quelques petites fonctions chez Netlify (`netlify/functions/`),
+  sans base de données à administrer : les commandes sont rangées dans
+  Netlify Blobs.
+- **Aucune carte bancaire ne passe par le site.** Le paiement se fait sur
+  HelloAsso ; le site ne connaît que le montant. Ce montant est **recalculé
+  par le serveur** à partir des fiches : le navigateur n'envoie que des choix.
+- **Une commande n'est « payée » que si HelloAsso le confirme**, interrogé
+  directement par le serveur. Ni le retour sur le site ni le contenu d'une
+  notification ne suffisent.
+- **La liste des commandes** (noms, mails, participants) n'est servie qu'à un
+  compte de l'administration, dont le jeton est vérifié auprès de Netlify.
+  L'export Excel neutralise les cellules qui pourraient se lancer comme des
+  formules.
+- **Les commandes s'effacent seules** : un an après, ou deux jours si elles
+  n'ont jamais été payées (`netlify/functions/purge-commandes.mjs`, chaque
+  nuit). Le calcul des montants est vérifié par `npm test`.
 - **Aucun traceur, aucun cookie publicitaire.** Pas de Google Analytics, pas de
   bouton de réseau social espion. C'est aussi ce qui évite d'avoir à afficher
   une bannière de consentement.
@@ -533,9 +628,21 @@ Il n'existe pas d'équivalent. Chaque comité départemental publie ses résulta
 à sa manière, souvent en PDF. Les rencontres Ufolep se saisissent donc à la
 main dans la rubrique Matchs.
 
-### Programmer une mise à jour quotidienne
+### La mise à jour du lundi (à brancher une fois)
 
-Dans Netlify : *Site configuration → Build & deploy → Build hooks*, créer un
-hook, puis le déclencher chaque nuit depuis n'importe quel service de tâches
-planifiées gratuit. Sans cela, les résultats ne se rafraîchissent qu'au moment
-où un bénévole publie quelque chose.
+La fonction `netlify/functions/reconstruire.mjs` reconstruit le site chaque
+lundi vers 6h : les scores du week-end et les changements de calendrier
+arrivent ainsi sans que personne ne publie rien. Pour l'activer :
+
+1. Netlify, *Site configuration → Build & deploy → Build hooks → Add build
+   hook*, nommé par exemple « Lundi FFVolley », branche `main`. Copier
+   l'adresse obtenue.
+2. *Site configuration → Environment variables* : `BUILD_HOOK_URL` = cette
+   adresse. Ne la diffusez pas : elle permet de lancer une publication.
+
+**Pourquoi pas tous les jours ?** Avec l'offre gratuite de Netlify, chaque
+publication coûte 15 crédits sur 300 par mois, soit une vingtaine de
+publications, modifications des bénévoles comprises. Une par semaine en
+consomme quatre ou cinq. Le prochain match, lui, avance tout seul dans le
+navigateur des visiteurs, sans publication. Si le club passe à une offre
+payante, il suffit de changer `schedule` dans le fichier (`"@daily"`).

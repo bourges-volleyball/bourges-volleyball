@@ -1,0 +1,123 @@
+---
+/* Retour de HelloAsso apres un paiement (returnUrl et errorUrl de
+   netlify/functions/commande.mjs). La page demande au serveur, qui demande
+   a HelloAsso : l'adresse seule ne prouve pas qu'un paiement a abouti. */
+import Base from "../../layouts/Base.astro";
+---
+
+<Base titre="Paiement" description="Suivi de votre paiement sur la boutique du Bourges Volley-Ball.">
+  <section class="page-head wrap">
+    <p class="eyebrow">Boutique</p>
+    <h1 data-titre>Vérification du paiement…</h1>
+    <p data-texte>Un instant : nous demandons à HelloAsso où en est votre paiement.</p>
+  </section>
+
+  <section class="section wrap">
+    <div class="recap" data-recap hidden>
+      <p class="ref" data-ref></p>
+      <h2 data-vente></h2>
+      <ul data-lignes></ul>
+      <p class="total">Total <strong data-total></strong></p>
+    </div>
+    <p class="actions">
+      <a class="btn" href="/boutique/" data-retour><span>Retour à la boutique</span></a>
+    </p>
+  </section>
+</Base>
+
+<script>
+  const $ = (s: string) => document.querySelector<HTMLElement>(s)!;
+  const p = new URLSearchParams(location.search);
+  const campagne = p.get("campagne") ?? "";
+  const adresse = `/.netlify/functions/paiement?campagne=${encodeURIComponent(campagne)}&commande=${encodeURIComponent(p.get("commande") ?? "")}`;
+
+  function dire(titre: string, texte: string) {
+    $("[data-titre]").textContent = titre;
+    $("[data-texte]").textContent = texte;
+  }
+
+  async function verifier(essai: number): Promise<void> {
+    let c: any = null;
+    try {
+      const r = await fetch(adresse);
+      if (r.ok) c = await r.json();
+    } catch {}
+
+    if (c?.statut === "payée") {
+      dire(
+        "Merci, c’est payé !",
+        c.categorie === "buvette"
+          ? "Montrez cet écran à la buvette pour être servi."
+          : "Votre commande est enregistrée. HelloAsso vous envoie le reçu par mail.",
+      );
+      $("[data-ref]").textContent =
+        `Commande ${c.ref}, payée le ` +
+        new Date(c.payeeLe).toLocaleString("fr-FR", { dateStyle: "long", timeStyle: "short" });
+      $("[data-vente]").textContent = c.vente;
+      $("[data-lignes]").replaceChildren(
+        ...c.lignes.map((l: { article: string; quantite: number }) =>
+          Object.assign(document.createElement("li"), { textContent: `${l.quantite} × ${l.article}` }),
+        ),
+      );
+      $("[data-total]").textContent = new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(
+        c.total / 100,
+      );
+      $("[data-recap]").hidden = false;
+      return;
+    }
+
+    // HelloAsso peut mettre quelques secondes a valider : on redemande
+    if (c?.statut === "en attente" && !p.has("erreur") && essai < 4) {
+      setTimeout(() => verifier(essai + 1), 2500);
+      return;
+    }
+
+    if (c) {
+      dire(
+        "Le paiement n’a pas abouti",
+        "Rien n’a été débité. Vous pouvez reprendre votre commande depuis la boutique.",
+      );
+      $("[data-retour]").setAttribute("href", `/boutique/${encodeURIComponent(campagne)}/`);
+      $("[data-retour]").firstElementChild!.textContent = "Reprendre ma commande";
+    } else {
+      dire(
+        "Commande introuvable",
+        "Si vous avez payé, vous avez reçu un reçu de HelloAsso par mail. Pour toute question, écrivez-nous.",
+      );
+    }
+  }
+
+  verifier(0);
+</script>
+
+<style>
+  .recap {
+    background: var(--noir-2);
+    border: 1px solid var(--hair);
+    border-left: 4px solid var(--signal);
+    padding: clamp(1.25rem, 4vw, 2rem);
+    display: grid;
+    gap: 0.6rem;
+    max-width: 640px;
+    margin-bottom: 1.5rem;
+  }
+  .recap[hidden] { display: none; }
+  .recap h2 { font-size: clamp(1.5rem, 4vw, 2rem); }
+  .ref {
+    margin: 0;
+    font-family: "Barlow Semi Condensed", sans-serif;
+    font-size: var(--s0);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--signal);
+  }
+  .recap ul { margin: 0; padding-left: 1.1rem; color: var(--fg-2); }
+  .total { margin: 0; }
+  .total strong {
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 800;
+    font-size: 1.8rem;
+    margin-left: 0.4rem;
+  }
+  .actions { margin: 0; }
+</style>

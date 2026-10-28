@@ -6,10 +6,10 @@ import BandeMatch from "../components/BandeMatch.astro";
 import BandePartenaires from "../components/BandePartenaires.astro";
 import { matchs, actus, partenaires, agenda, dateLongue, heure } from "../lib/donnees";
 
-const { prochain, joues } = await matchs();
+const { aVenir, joues } = await matchs();
 const dernieresActus = await actus(3);
 const groupes = await partenaires();
-const rendezvous = await agenda(4);
+const rendezvous = await agenda(10);
 ---
 
 <Base>
@@ -17,7 +17,7 @@ const rendezvous = await agenda(4);
 
 
   <Portes />
-  <BandeMatch prochain={prochain} resultats={joues.slice(0, 3)} />
+  <BandeMatch aVenir={aVenir.slice(0, 15)} resultats={joues.slice(0, 3)} />
 
   {
     rendezvous.length > 0 && (
@@ -26,9 +26,9 @@ const rendezvous = await agenda(4);
           <h2>Prochains rendez-vous</h2>
           <a class="lien" href="/agenda/">Tout l&rsquo;agenda</a>
         </div>
-        <ol class="rdv">
+        <ol class="rdv" data-max="4">
           {rendezvous.map((r) => (
-            <li>
+            <li data-jusqua={r.jusqua.toISOString()}>
               <span class="rdv-date">
                 <b>{dateLongue(r.date)}</b>
                 {r.avecHeure && !r.dateFin && <span class="mono">{heure(r.date)}</span>}

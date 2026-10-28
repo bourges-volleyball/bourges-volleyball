@@ -34,6 +34,8 @@
 
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
+/* Un element masque le reste, meme si une regle lui donne un display */
+[hidden]{display:none !important}
 body{
   margin:0;background:var(--noir);color:var(--fg);
   font-family:"Barlow","Helvetica Neue",Arial,sans-serif;

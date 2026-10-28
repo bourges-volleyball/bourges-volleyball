@@ -82,21 +82,44 @@ const partenaires = defineCollection({
 });
 
 
-/* Boutique ponctuelle : les ventes du club ouvrent et ferment a dates fixes
-   (commande groupee de maillots a la rentree, par exemple). Ce sont ces deux
-   dates qui determinent si un article est commandable, pas une case a cocher
-   qu il faudrait penser a decocher. */
+/* Decap enregistre parfois un champ facultatif laisse vide sous forme de "" :
+   on le traite comme absent, sinon une date vide devient « Invalid Date ». */
+const facultatif = <T extends z.ZodTypeAny>(t: T) =>
+  z.preprocess((v) => (v === "" || v === null ? undefined : v), t.optional());
+
+/* Boutique : une fiche par vente, comme un formulaire HelloAsso (textile,
+   adhesion, stage, tournoi, buvette). Le site prend la commande, HelloAsso
+   n encaisse que le paiement (voir netlify/lib/boutique.mjs).
+   Ce sont les dates qui ouvrent et ferment une vente, pas une case a cocher
+   qu il faudrait penser a decocher. Sans date, la vente reste ouverte. */
 const boutique = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/boutique" }),
   schema: ({ image }) => z.object({
     nom: z.string(),
+    categorie: z.enum(["equipement", "adhesion", "stage", "tournoi", "buvette"]),
     description: z.string(),
-    prix: z.number(),
     image: image().optional(),
-    tailles: z.array(z.string()).optional(),
-    lienHelloAsso: lienWeb,
-    ouvertureLe: z.coerce.date(),
-    fermetureLe: z.coerce.date(),
+    quand: facultatif(z.string()),
+    lieu: facultatif(z.string()),
+    ouvertureLe: facultatif(z.coerce.date()),
+    fermetureLe: facultatif(z.coerce.date()),
+    // Coche : chaque place achetee demande le nom de la personne, et les questions
+    nominatif: z.boolean().default(false),
+    questions: z
+      .array(z.object({ libelle: z.string(), type: z.enum(["texte", "ouinon"]).default("texte") }))
+      .default([]),
+    articles: z
+      .array(
+        z.object({
+          nom: z.string(),
+          description: facultatif(z.string()),
+          prix: z.number().positive(),
+          photo: image().optional(),
+          places: facultatif(z.number().int().min(0)),
+          tailles: z.array(z.string()).optional(),
+        }),
+      )
+      .min(1),
     ordre: z.number().default(10),
   }),
 });
@@ -128,6 +151,11 @@ const diaporama = defineCollection({
     z.object({
       photo: image(),
       alt: z.string(),
+      // Partie de la photo a garder quand l'ecran la recadre (Hero.astro)
+      cadrage: z
+        .enum(["centre", "haut", "bas", "gauche", "droite", "haut-gauche", "haut-droite", "bas-gauche", "bas-droite"])
+        .default("centre"),
+      luminosite: z.enum(["claire", "normale", "sombre"]).default("normale"),
       ordre: z.number().default(10),
     }),
 });
