@@ -127,7 +127,9 @@ de redirection DNS. Il faut aussi changer l'adresse dans **deux fichiers** :
 
 Tout se passe sur **votre-site.fr/admin/**, que le bouton **Admin** du haut
 du site ouvre directement (dans le menu sur téléphone). Se connecter avec le
-mail et le mot de passe reçus par invitation.
+mail et le mot de passe reçus par invitation. Si l'administration affiche
+« Git Gateway Error: [object Object] », c'est une ancienne connexion restée
+en cache : se reconnecter dans une fenêtre de navigation privée.
 
 **Les bénévoles n'ont pas de compte GitHub et n'en auront jamais besoin.**
 Ils s'identifient avec un mail et un mot de passe ; c'est Git Gateway qui
