@@ -12,20 +12,82 @@
     <style>
       [class*="CustomIconWrapper"] { text-align: center; }
 
+      /* Habillage leger aux couleurs du site : polices Barlow, barre du haut
+         sombre, boutons principaux en vert lime. Les zones de saisie restent
+         claires, donc lisibles. Les noms de classes sont ceux de Decap 3.16 ;
+         s'ils changent, l'administration retrouve son aspect d'origine.
+         « :root » devant chaque regle : Decap ajoute ses styles apres
+         celui-ci, a egalite il l'emporterait. */
+      @font-face{font-family:"Barlow";font-weight:400;font-display:swap;src:url(/admin/polices/barlow-latin-400-normal.woff2) format("woff2")}
+      @font-face{font-family:"Barlow";font-weight:500;font-display:swap;src:url(/admin/polices/barlow-latin-500-normal.woff2) format("woff2")}
+      @font-face{font-family:"Barlow";font-weight:600;font-display:swap;src:url(/admin/polices/barlow-latin-600-normal.woff2) format("woff2")}
+      @font-face{font-family:"Barlow";font-weight:700;font-display:swap;src:url(/admin/polices/barlow-latin-700-normal.woff2) format("woff2")}
+      @font-face{font-family:"Barlow Condensed";font-weight:800;font-display:swap;src:url(/admin/polices/barlow-condensed-latin-800-normal.woff2) format("woff2")}
+      @font-face{font-family:"Barlow Semi Condensed";font-weight:600;font-display:swap;src:url(/admin/polices/barlow-semi-condensed-latin-600-normal.woff2) format("woff2")}
+
+      :root body, :root button, :root input, :root select, :root textarea {
+        font-family: "Barlow", "Helvetica Neue", Arial, sans-serif;
+      }
+      :root [class*="CollectionTopHeading"], :root [class*="SidebarHeading"],
+      :root [class*="SearchResultHeading"], :root [class*="GroupHeading"] {
+        font-family: "Barlow Condensed", "Arial Narrow", sans-serif; font-weight: 800;
+        text-transform: uppercase; letter-spacing: .01em; line-height: 1;
+      }
+      :root [class*="CollectionTopHeading"] { font-size: 30px; }
+      :root [class*="SidebarHeading"] { font-size: 26px; }
+      :root [class*="FieldLabel"] { font-family: "Barlow Semi Condensed", sans-serif; font-weight: 600; letter-spacing: .1em; }
+
+      /* Barre du haut, comme l'en-tete du site */
+      :root header[class*="AppHeader"] { background: #0d0e11; box-shadow: none; border-bottom: 1px solid #282c34; }
+      :root [class*="AppHeaderNavLink"] {
+        color: #f4f4f2; font-family: "Barlow Semi Condensed", sans-serif; font-weight: 600;
+        text-transform: uppercase; letter-spacing: .09em; font-size: 14px;
+      }
+      :root [class*="AppHeaderNavLink"] span { color: inherit; }
+      :root [class*="AppHeaderNavLink"]:hover, :root [class*="AppHeaderNavLink"].header-link-active,
+      :root [class*="AppHeaderNavLink"]:hover span, :root [class*="AppHeaderNavLink"].header-link-active span { color: #b4e600; }
+      :root [class*="AppHeaderQuickNewButton"] { background: #b4e600; color: #101114; font-weight: 700; }
+      :root [class*="AppHeaderQuickNewButton"]:hover { background: #96c200; color: #101114; }
+      :root [class*="AppHeaderSiteLink"] { color: #9a9fa9; }
+      :root [class*="AppHeaderSiteLink"]:hover { color: #f4f4f2; }
+
+      /* Boutons principaux en vert lime */
+      :root [class*="CollectionTopNewButton"], :root [class*="LoginButton"], :root [class*="PublishButton"] {
+        background: #b4e600; color: #101114; font-weight: 700;
+      }
+      :root [class*="CollectionTopNewButton"]:hover, :root [class*="LoginButton"]:hover,
+      :root [class*="PublishButton"]:hover { background: #96c200; color: #101114; }
+
+      /* Rubrique ouverte dans la colonne de gauche : le lime du site, en
+         version foncee sur fond clair, ou le lime pur ne se lirait pas */
+      :root [class*="SidebarNavLink"].sidebar-active { color: #3d4d00; background: #f2f8dc; border-left-color: #b4e600; }
+      /* Survol a la souris seulement : sur telephone, il resterait colle apres un toucher */
+      @media (hover: hover) {
+        :root [class*="SidebarNavLink"]:hover { color: #3d4d00; background: #f2f8dc; border-left-color: #b4e600; }
+      }
+
+      /* Ecran de connexion sur fond sombre, logo en blanc comme sur le site */
+      :root [class*="StyledAuthenticationPage"] { background: #0d0e11; }
+      :root [class*="StyledAuthenticationPage"] [class*="CustomIconWrapper"] img { filter: invert(1); mix-blend-mode: screen; }
+      :root [class*="GoBackButtonStyle"] { color: #9a9fa9; }
+      :root [class*="GoBackButtonStyle"]:hover { color: #f4f4f2; }
+
       /* Boutons Commandes (/admin/commandes.html) et Guide (/admin/guide/).
          Ranges dans la barre du haut, juste avant « Nouveau », par le script
          en bas de page ; en attendant (ecran de connexion), ils flottent en
          haut a droite. */
       .liens-admin { position: fixed; right: 12px; top: 12px; z-index: 400; display: flex; gap: 8px; }
+      .liens-admin[hidden] { display: none; }
       .liens-admin.dans-barre { position: static; margin-right: 10px; }
       .lien-admin {
         display: inline-flex; align-items: center; gap: 7px;
         text-decoration: none; white-space: nowrap;
         font: 700 14px/1 sans-serif; letter-spacing: .05em; text-transform: uppercase;
-        padding: 9px 14px; border-radius: 5px; border: 2px solid #0d0e11;
-        background: #0d0e11; color: #b4e600;
+        padding: 9px 14px; border-radius: 5px;
+        /* Commandes : bouton creux, comme sur le site (barre et connexion sont sombres) */
+        background: transparent; color: #f4f4f2; border: 2px solid rgba(255, 255, 255, .5);
       }
-      .lien-admin:hover, .lien-admin:focus-visible { background: #fff; color: #0d0e11; }
+      .lien-admin:hover, .lien-admin:focus-visible { background: #f4f4f2; color: #0d0e11; border-color: #f4f4f2; }
       .lien-admin.guide { background: #b4e600; color: #0d0e11; border-color: #b4e600; }
       .lien-admin.guide:hover, .lien-admin.guide:focus-visible { background: #0d0e11; color: #b4e600; border-color: #0d0e11; }
       .lien-admin .rond {
@@ -35,7 +97,7 @@
       .lien-admin .rond b { color: #0d0e11; }
       .lien-admin.guide .rond b { color: #b4e600; }
       .lien-admin.guide:hover .rond b, .lien-admin.guide:focus-visible .rond b { color: #0d0e11; }
-      .lien-admin:not(.guide):hover .rond b, .lien-admin:not(.guide):focus-visible .rond b { color: #fff; }
+      .lien-admin:not(.guide):hover .rond b, .lien-admin:not(.guide):focus-visible .rond b { color: #f4f4f2; }
       @media (max-width: 599px) {
         .lien-admin { padding: 8px 10px; font-size: 13px; }
         .lien-admin .long { display: none; }
@@ -83,6 +145,10 @@
         var liens = document.querySelector(".liens-admin");
         new MutationObserver(function () {
           var barre = document.querySelector('[class*="AppHeaderActions"]');
+          // Dans l'editeur, il n'y a plus de barre : flottants, les boutons
+          // cacheraient la sienne (et sur telephone le bouton Publier)
+          var editeur = !barre && document.querySelector('[class*="ToolbarContainer"]');
+          if (liens.hidden !== !!editeur) liens.hidden = !!editeur;
           if (barre && liens.parentNode !== barre) {
             barre.prepend(liens);
             liens.classList.add("dans-barre");
