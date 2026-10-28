@@ -145,6 +145,11 @@
         var liens = document.querySelector(".liens-admin");
         new MutationObserver(function () {
           var barre = document.querySelector('[class*="AppHeaderActions"]');
+          // Connecte, mais sur une adresse que Decap ne connait pas (reste d'un
+          // lien de connexion Netlify, ancien favori) : il afficherait
+          // « Introuvable ». Retour a la liste des contenus. Ses adresses : #/,
+          // #/collections/..., #/search/..., #/workflow, #/edit/...
+          if (barre && !/^(#\/?)?$|^#\/(collections|search|workflow|edit)(\/|$)/.test(location.hash)) location.replace("#/");
           // Dans l'editeur, il n'y a plus de barre : flottants, les boutons
           // cacheraient la sienne (et sur telephone le bouton Publier)
           var editeur = !barre && document.querySelector('[class*="ToolbarContainer"]');
