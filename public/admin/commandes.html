@@ -9,60 +9,200 @@
     <!-- Les commandes payees de la boutique. Meme connexion que
          l'administration (Netlify Identity) : la fonction qui fournit la
          liste verifie le jeton aupres de Netlify avant de repondre. -->
+    <!-- Memes polices, couleurs et formes que le site (src/styles/global.css,
+         src/components/Header.astro). La page vit dans public/ et non dans
+         Astro : elle garde ainsi sa connexion Netlify telle quelle, hors de
+         la politique de securite des pages du site. -->
     <style>
+      @font-face{font-family:"Barlow";font-weight:400;font-display:swap;src:url(/admin/polices/barlow-latin-400-normal.woff2) format("woff2")}
+      @font-face{font-family:"Barlow";font-weight:500;font-display:swap;src:url(/admin/polices/barlow-latin-500-normal.woff2) format("woff2")}
+      @font-face{font-family:"Barlow";font-weight:600;font-display:swap;src:url(/admin/polices/barlow-latin-600-normal.woff2) format("woff2")}
+      @font-face{font-family:"Barlow";font-weight:700;font-display:swap;src:url(/admin/polices/barlow-latin-700-normal.woff2) format("woff2")}
+      @font-face{font-family:"Barlow Condensed";font-weight:800;font-display:swap;src:url(/admin/polices/barlow-condensed-latin-800-normal.woff2) format("woff2")}
+      @font-face{font-family:"Barlow Semi Condensed";font-weight:600;font-display:swap;src:url(/admin/polices/barlow-semi-condensed-latin-600-normal.woff2) format("woff2")}
+
       :root {
         --noir: #0d0e11; --noir-2: #15171c; --noir-3: #1d2027; --hair: #282c34;
-        --fg: #f4f4f2; --fg-2: #9a9fa9; --signal: #b4e600; --sur-signal: #101114;
+        --fg: #f4f4f2; --fg-2: #9a9fa9; --signal: #b4e600; --signal-fonce: #96c200; --sur-signal: #101114;
+        --pad: clamp(1.15rem, 4vw, 3.5rem); --s0: .75rem; --s2: 1.18rem;
         color-scheme: dark;
       }
       * { box-sizing: border-box; }
-      body { margin: 0; background: var(--noir); color: var(--fg); font: 16px/1.5 system-ui, sans-serif; }
-      header, main { max-width: 1100px; margin: 0 auto; padding: 1rem; }
-      header { display: flex; flex-wrap: wrap; gap: 0.75rem 1.5rem; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--hair); }
-      h1 { font-size: 1.5rem; margin: 0; }
-      h2 { font-size: 1.2rem; margin: 2rem 0 0.75rem; }
-      a { color: var(--signal); }
-      button, select { font: inherit; background: var(--noir-3); color: var(--fg); border: 1px solid var(--hair); padding: 0.55rem 0.9rem; cursor: pointer; }
-      button.principal { background: var(--signal); color: var(--sur-signal); border-color: var(--signal); font-weight: 700; }
-      .barre { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; margin-top: 1.25rem; }
-      .barre select { flex: 1 1 260px; max-width: 100%; }
-      .info { color: var(--fg-2); }
-      .resume { display: grid; gap: 1px; background: var(--hair); border: 1px solid var(--hair); }
-      .resume div { background: var(--noir-2); padding: 0.6rem 0.9rem; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.25rem 1rem; }
-      .resume b { color: var(--signal); }
-      .commande { background: var(--noir-2); border: 1px solid var(--hair); padding: 0.9rem 1rem; margin-bottom: 0.75rem; }
-      .commande.remis { opacity: 0.55; }
-      .tete { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.25rem 1rem; }
-      .tete .qui { font-weight: 700; }
-      .commande ul { margin: 0.5rem 0; padding-left: 1.1rem; }
-      .commande li span { color: var(--fg-2); }
-      .pied { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem 1rem; align-items: center; color: var(--fg-2); font-size: 0.9rem; }
-      label.remis { display: inline-flex; gap: 0.4rem; align-items: center; color: var(--fg); cursor: pointer; }
-      input[type="checkbox"] { width: 1.2rem; height: 1.2rem; accent-color: var(--signal); }
       [hidden] { display: none !important; }
+      body {
+        margin: 0; background: var(--noir); color: var(--fg);
+        font-family: "Barlow", "Helvetica Neue", Arial, sans-serif; font-size: 1rem; line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+      h1, h2, h3 {
+        font-family: "Barlow Condensed", "Arial Narrow", sans-serif; font-weight: 800;
+        text-transform: uppercase; line-height: .92; letter-spacing: .005em; margin: 0;
+      }
+      a { color: inherit; }
+      :focus-visible { outline: 3px solid var(--signal); outline-offset: 3px; }
+      .wrap { max-width: 1180px; margin-inline: auto; padding-inline: var(--pad); }
+      .eyebrow, .etiquette, .compte {
+        font-family: "Barlow Semi Condensed", sans-serif; font-weight: 600; font-size: var(--s0);
+        letter-spacing: .16em; text-transform: uppercase; color: var(--fg-2); margin: 0;
+      }
+
+      /* En-tete du site */
+      header.site {
+        position: sticky; top: 0; z-index: 30; background: rgba(13, 14, 17, .94);
+        border-bottom: 1px solid var(--hair); backdrop-filter: blur(8px);
+      }
+      .bar { display: flex; align-items: center; gap: 1rem; padding-block: .6rem; }
+      .mark { display: flex; align-items: center; gap: .6rem; text-decoration: none; margin-right: auto; }
+      .mark img { width: 42px; height: 42px; filter: invert(1); mix-blend-mode: screen; flex: none; }
+      .mark span { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 1.3rem; text-transform: uppercase; line-height: .95; }
+      .nav { display: flex; gap: 1.25rem; }
+      .nav a {
+        text-decoration: none; font-family: "Barlow Semi Condensed", sans-serif; font-weight: 600;
+        font-size: .88rem; letter-spacing: .09em; text-transform: uppercase; padding-block: .35rem;
+        border-bottom: 3px solid transparent; transition: border-color .12s, color .12s; white-space: nowrap;
+      }
+      .nav a:hover { border-bottom-color: var(--signal); color: var(--signal); }
+      @media (max-width: 560px) { .nav { gap: .8rem; } .nav a { font-size: .78rem; } .mark span { display: none; } }
+
+      /* Boutons : l'oblique du site */
+      .btn {
+        text-decoration: none; font-family: "Barlow Semi Condensed", sans-serif; font-weight: 600;
+        font-size: .92rem; letter-spacing: .09em; text-transform: uppercase; cursor: pointer;
+        padding: .75rem 1.35rem; display: inline-block; transform: skewX(-10deg);
+        background: var(--signal); color: var(--sur-signal); border: 2px solid var(--signal);
+        transition: background .12s, color .12s;
+      }
+      .btn > span { display: inline-block; transform: skewX(10deg); }
+      .btn:hover { background: transparent; color: var(--signal); }
+      .btn.ghost { background: transparent; color: var(--fg); border-color: rgba(255, 255, 255, .5); }
+      .btn.ghost:hover { background: var(--fg); color: var(--noir); border-color: var(--fg); }
+
+      .page-head { border-bottom: 1px solid var(--hair); padding-block: clamp(1.75rem, 4.5vw, 3rem); }
+      .page-head h1 { font-size: clamp(2.4rem, 7vw, 4.5rem); margin-top: .7rem; }
+      .page-head p { margin: 1rem 0 0; max-width: 60ch; color: var(--fg-2); font-size: var(--s2); }
+      .section { padding-block: clamp(1.75rem, 4vw, 2.75rem); }
+      .section + .section { padding-top: 0; }
+      .section-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .5rem 1rem; margin-bottom: 1.25rem; }
+      .section-head h2 { font-size: clamp(1.7rem, 4.5vw, 2.4rem); }
+      .info { color: var(--fg-2); font-size: var(--s2); margin: 0; }
+      .essai { border-left: 3px solid var(--signal); padding-left: .9rem; margin-bottom: 1.5rem; }
+
+      /* Choix de la vente et export, comme les champs de la boutique */
+      .barre { display: flex; flex-wrap: wrap; gap: 1rem 1.5rem; align-items: end; }
+      .champ { flex: 1 1 280px; max-width: 560px; margin: 0; }
+      .champ label { display: block; margin-bottom: .4rem; }
+      select {
+        width: 100%; background: var(--noir-2); color: var(--fg); border: 1px solid var(--hair);
+        padding: .7rem .8rem; font: inherit; font-weight: 600; cursor: pointer;
+      }
+      select:focus { border-color: var(--signal); }
+
+      /* A commander : une case par article et par taille, le chiffre en lime */
+      .resume {
+        display: grid; gap: 1px; background: var(--hair); border: 1px solid var(--hair);
+        grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
+      }
+      .resume div { background: var(--noir-2); padding: .85rem 1rem; display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
+      .resume span { font-weight: 600; }
+      .resume b { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 1.7rem; line-height: 1; color: var(--signal); font-variant-numeric: tabular-nums; }
+      .resume .vide { color: var(--fg-2); font-weight: 400; }
+
+      /* Les commandes, en cartes comme les articles de la boutique */
+      .liste { display: grid; gap: .75rem; }
+      .commande {
+        background: var(--noir-2); border: 1px solid var(--hair); border-left: 3px solid var(--signal);
+        padding: 1rem 1.15rem; display: grid; gap: .6rem;
+      }
+      .commande.remis { border-left-color: var(--hair); }
+      .commande.remis .tete, .commande.remis ul { opacity: .5; }
+      .tete { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: .25rem 1rem; }
+      .tete .qui { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 1.35rem; text-transform: uppercase; line-height: 1; }
+      .tete a { color: var(--signal); text-decoration: none; font-size: .95rem; word-break: break-all; }
+      .tete a:hover { text-decoration: underline; }
+      .commande ul { list-style: none; margin: 0; padding: 0; display: grid; gap: .2rem; }
+      .commande li b { font-weight: 600; }
+      .commande li span { color: var(--fg-2); }
+      .pied {
+        display: flex; flex-wrap: wrap; align-items: center; gap: .5rem 1.25rem;
+        border-top: 1px solid var(--hair); padding-top: .65rem;
+      }
+      .pied .montant { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 1.35rem; }
+      .pied .ref { margin-right: auto; }
+      label.remis {
+        display: inline-flex; gap: .5rem; align-items: center; cursor: pointer;
+        font-family: "Barlow Semi Condensed", sans-serif; font-weight: 600; font-size: .85rem;
+        letter-spacing: .1em; text-transform: uppercase;
+      }
+      label.remis input { width: 1.2rem; height: 1.2rem; accent-color: var(--signal); margin: 0; }
+
+      footer { border-top: 1px solid var(--hair); background: #08090b; margin-top: 2rem; }
+      footer .wrap { padding-block: 1.1rem; display: flex; flex-wrap: wrap; gap: .4rem 1.5rem; }
+      footer a { text-decoration: none; }
+      footer a:hover { color: var(--signal); }
     </style>
   </head>
   <body>
-    <header>
-      <h1>Commandes de la boutique</h1>
-      <nav><a href="/admin/">Administration</a> · <a href="/boutique/">Boutique</a> · <a href="/admin/guide/#commandes">Guide</a></nav>
-    </header>
-    <main>
-      <p class="info" id="essai" hidden>Essai sur l'ordinateur : commandes d'exemple, rien n'est enregistré. En ligne, cette page montre les vraies commandes.</p>
-      <p class="info" id="etat">Chargement…</p>
-      <p id="connexion" hidden><button class="principal" type="button" id="seConnecter">Se connecter</button></p>
-
-      <div id="contenu" hidden>
-        <div class="barre">
-          <select id="vente" aria-label="Vente"></select>
-          <button type="button" id="export">Exporter (Excel)</button>
-        </div>
-        <h2>À commander ou à préparer</h2>
-        <div class="resume" id="resume"></div>
-        <h2 id="titreListe">Commandes</h2>
-        <div id="liste"></div>
+    <header class="site">
+      <div class="wrap bar">
+        <a class="mark" href="/">
+          <img src="/images/logo-bvb.png" alt="" width="42" height="42" />
+          <span>Bourges<br />Volley-Ball</span>
+        </a>
+        <nav class="nav" aria-label="Administration">
+          <a href="/admin/">Administration</a>
+          <a href="/boutique/">Boutique</a>
+          <a href="/admin/guide/#commandes">Guide</a>
+        </nav>
       </div>
+    </header>
+
+    <main>
+      <section class="page-head wrap">
+        <p class="eyebrow">Administration · Boutique</p>
+        <h1>Commandes</h1>
+        <p>Les commandes payées sur le site, vente par vente. Cochez « Remis » quand l'acheteur a reçu sa commande.</p>
+      </section>
+
+      <section class="section wrap">
+        <p class="info essai" id="essai" hidden>Essai sur l'ordinateur : commandes d'exemple, rien n'est enregistré. En ligne, cette page montre les vraies commandes.</p>
+        <p class="info" id="etat">Chargement…</p>
+        <p id="connexion" hidden><button class="btn" type="button" id="seConnecter"><span>Se connecter</span></button></p>
+
+        <div id="contenu" hidden>
+          <div class="barre">
+            <p class="champ">
+              <label class="etiquette" for="vente">Vente</label>
+              <select id="vente"></select>
+            </p>
+            <button class="btn ghost" type="button" id="export"><span>Exporter (Excel)</span></button>
+          </div>
+        </div>
+      </section>
+
+      <section class="section wrap" id="blocResume" hidden>
+        <div class="section-head">
+          <h2>À commander ou à préparer</h2>
+          <span class="compte">Total par article</span>
+        </div>
+        <div class="resume" id="resume"></div>
+      </section>
+
+      <section class="section wrap" id="blocListe" hidden>
+        <div class="section-head">
+          <h2 id="titreListe">Commandes payées</h2>
+          <span class="compte" id="totalListe"></span>
+        </div>
+        <div class="liste" id="liste"></div>
+      </section>
     </main>
+
+    <footer>
+      <div class="wrap eyebrow">
+        <span>Bourges Volley-Ball</span>
+        <span>Page réservée aux bénévoles</span>
+        <a href="/confidentialite/">Données des acheteurs</a>
+      </div>
+    </footer>
 
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
     <script>
@@ -114,10 +254,11 @@
         resume.replaceChildren.apply(resume, Object.keys(compte).sort().map(function (k) {
           var d = el("div"); d.append(el("span", k), el("b", String(compte[k]))); return d;
         }));
-        if (!liste.length) resume.append(el("div", "Aucune commande payée pour cette vente."));
+        if (!liste.length) resume.append(el("div", "Aucune commande payée pour cette vente.", "vide"));
 
         var total = liste.reduce(function (s, c) { return s + c.total; }, 0);
-        document.getElementById("titreListe").textContent = liste.length + " commande" + (liste.length > 1 ? "s" : "") + " payée" + (liste.length > 1 ? "s" : "") + " · " + euros.format(total / 100);
+        document.getElementById("titreListe").textContent = "Commande" + (liste.length > 1 ? "s" : "") + " payée" + (liste.length > 1 ? "s" : "");
+        document.getElementById("totalListe").textContent = liste.length + " · " + euros.format(total / 100);
 
         var zone = document.getElementById("liste");
         zone.replaceChildren.apply(zone, liste.map(function (c) {
@@ -127,17 +268,21 @@
           tete.lastChild.href = "mailto:" + c.payeur.email;
           var ul = el("ul");
           unites(c).forEach(function (u) {
-            var li = el("li", u.article);
+            var li = el("li"); li.append(el("b", u.article));
             var precisions = [u.taille, u.participant, jours(u.jours)].concat(u.options, Object.keys(u.reponses).map(function (q) { return q + " : " + u.reponses[q]; })).filter(Boolean);
-            if (precisions.length) li.append(el("span", " - " + precisions.join(" - ")));
+            if (precisions.length) li.append(el("span", " · " + precisions.join(" · ")));
             ul.append(li);
           });
           var pied = el("div", null, "pied");
           var remis = el("label", null, "remis");
           var caseRemis = el("input"); caseRemis.type = "checkbox"; caseRemis.checked = !!c.remis;
           caseRemis.addEventListener("change", function () { marquer(c, caseRemis, bloc); });
-          remis.append(caseRemis, " Remis");
-          pied.append(el("span", new Date(c.payeeLe || c.creeLe).toLocaleString("fr-FR", { dateStyle: "short", timeStyle: "short" }) + " · " + euros.format(c.total / 100) + " · n° " + c.id.slice(0, 8).toUpperCase()), remis);
+          remis.append(caseRemis, "Remis");
+          pied.append(
+            el("b", euros.format(c.total / 100), "montant"),
+            el("span", new Date(c.payeeLe || c.creeLe).toLocaleString("fr-FR", { dateStyle: "short", timeStyle: "short" }) + " · n° " + c.id.slice(0, 8).toUpperCase(), "eyebrow ref"),
+            remis
+          );
           bloc.append(tete, ul, pied);
           return bloc;
         }));
@@ -198,7 +343,7 @@
           if (ventes[avant]) choix.value = avant;
           etat.hidden = !!liste.length;
           etat.textContent = "Aucune commande payée pour le moment.";
-          document.getElementById("contenu").hidden = !liste.length;
+          ["contenu", "blocResume", "blocListe"].forEach(function (id) { document.getElementById(id).hidden = !liste.length; });
           afficher();
         }).catch(function (e) {
           etat.hidden = false;
@@ -238,6 +383,11 @@
 
       choix.addEventListener("change", afficher);
       document.getElementById("seConnecter").addEventListener("click", function () { identite.open("login"); });
+      // Widget Netlify absent (bloque par le reseau, ou essai sur l'ordinateur)
+      if (!identite) {
+        identite = { on: function () {}, open: function () {}, close: function () {} };
+        if (!essai) etat.textContent = "La connexion Netlify n'a pas pu se charger. Rechargez la page.";
+      }
 
       if (essai) {
         document.getElementById("essai").hidden = false;
