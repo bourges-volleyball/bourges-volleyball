@@ -116,6 +116,31 @@ img.affiche{object-fit:contain!important;background:var(--noir-2)}
   *{transition:none!important;animation:none!important}
 }
 
+/* Mouvement : en CSS seulement, et seulement si le visiteur n'a pas demandé
+   à réduire les animations. Un navigateur qui ne connaît pas ces règles
+   affiche le site comme avant, rien ne reste caché. */
+@media (prefers-reduced-motion:no-preference){
+  /* Changement de page en fondu, l'en-tête reste en place (Header.astro) */
+  @view-transition{navigation:auto}
+  ::view-transition-old(root){animation:.15s ease-in both vt-sortie}
+  ::view-transition-new(root){animation:.3s ease-out both vt-entree}
+
+  /* Les cartes montent en fondu en arrivant à l'écran, au rythme du
+     défilement : visibles après 8rem de défilement. Liste à compléter si
+     une page reçoit un nouveau type de carte. */
+  @supports (animation-timeline:view()){
+    :is(.porte,.une,.suite>li,.grille>*,.ventes>*,.articles>li,.rdv>li,.agenda>li,.liste>li,
+        .rencontres>li,.effectif>li,.chiffres>li,.frise>li,.palmares>li,.etapes>li,.niveaux>*){
+      animation:apparition linear both;
+      animation-timeline:view();
+      animation-range:entry 0 entry 8rem;
+    }
+  }
+}
+@keyframes vt-sortie{to{opacity:0}}
+@keyframes vt-entree{from{opacity:0;translate:0 .75rem}}
+@keyframes apparition{from{opacity:0;translate:0 1.5rem}}
+
 /* Voile de confirmation apres un lien d'invitation (Base.astro) */
 .voile-invit{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;padding:var(--pad);background:rgba(13,14,17,.985);text-align:center}
 .voile-invit>div{display:grid;gap:1.15rem;justify-items:center;max-width:40ch}

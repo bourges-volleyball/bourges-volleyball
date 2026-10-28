@@ -67,6 +67,8 @@ const liens = [
     background: rgba(13, 14, 17, 0.94);
     border-bottom: 1px solid var(--hair);
     backdrop-filter: blur(8px);
+    /* Reste immobile pendant le fondu entre deux pages (global.css) */
+    view-transition-name: entete;
   }
   .bar { display: flex; align-items: center; gap: 1rem; padding-block: 0.6rem; }
   .mark { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; margin-right: auto; }
