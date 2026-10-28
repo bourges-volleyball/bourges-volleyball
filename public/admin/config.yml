@@ -294,6 +294,7 @@ collections:
   - name: "matchs"
     label: "Matchs"
     label_singular: "un match"
+    description: "Les matchs FFVolley (seniors et M18) arrivent tout seuls, avec leurs scores et le classement : ne les saisissez pas ici. Cette rubrique sert aux autres : Ufolep, coupes, amicaux, tournois. Rouvrez le match après la rencontre pour ajouter le score."
     folder: "src/content/matchs"
     create: true
     slug: "{{year}}-{{month}}-{{day}}-{{adversaire}}"
@@ -308,7 +309,7 @@ collections:
           time_format: "HH:mm",
           picker_utc: false,
         }
-      - { name: "equipe", label: "Équipe concernée", widget: "string" }
+      - { name: "equipe", label: "Équipe concernée", widget: "string", hint: "Toujours écrit pareil (par exemple « Ufolep ») : c'est ce nom qui range le match dans l'onglet de l'équipe, page Matchs." }
       - { name: "adversaire", label: "Adversaire", widget: "string" }
       - {
           name: "domicile",
@@ -338,7 +339,7 @@ collections:
           label: "Détail des sets",
           widget: "string",
           required: false,
-          hint: "Exemple : 25-22 - 21-25 - 25-19 - 25-20",
+          hint: "Score de l'équipe qui reçoit en premier, sets séparés par une virgule. Exemple : 25:22, 21:25, 25:19, 25:20",
         }
 
   - name: "partenaires"
@@ -490,13 +491,14 @@ collections:
               label: "Tailles",
               widget: "list",
               required: false,
-              hint: "Une taille par ligne, demandée pour chaque article commandé. Laissez vide pour un sac, une boisson, une place.",
+              hint: "Séparées par des virgules, par exemple : S, M, L, XL. Demandée pour chaque article commandé. Laissez vide pour un sac, une boisson, une place.",
             }
       - { name: "ordre", label: "Ordre", widget: "number", value_type: "int", default: 10, hint: "1 en premier dans son rayon." }
 
   - name: "evenements"
     label: "Agenda"
     label_singular: "un événement"
+    description: "Les rendez-vous du club : tournois, stages, assemblée générale, soirées, repas. Pas les matchs : ils sont sur la page Matchs. Un événement passé disparaît tout seul de l'agenda."
     folder: "src/content/evenements"
     create: true
     slug: "{{slug}}"
@@ -519,14 +521,14 @@ collections:
           date_format: "DD/MM/YYYY",
           time_format: false,
           required: false,
-          hint: "A remplir uniquement si l'événement dure plusieurs jours.",
+          hint: "À remplir uniquement si l'événement dure plusieurs jours.",
         }
       - {
           name: "avecHeure",
           label: "Afficher l'heure",
           widget: "boolean",
           default: true,
-          hint: "Decochez pour un stage ou un week-end, ou l'heure n'a pas de sens.",
+          hint: "Décochez pour un stage ou un week-end, où l'heure n'a pas de sens.",
         }
       - { name: "lieu", label: "Lieu", widget: "string", required: false }
       - {
@@ -543,4 +545,31 @@ collections:
             ],
         }
       - { name: "description", label: "Description", widget: "text" }
-      - { name: "lien", label: "Lien (inscription, infos)", widget: "string", required: false, pattern: ["^https?://", "L'adresse doit commencer par https://"] }
+      - { name: "lien", label: "Lien (inscription, infos)", widget: "string", required: false, pattern: ["^https?://", "L'adresse doit commencer par https://"], hint: "Par exemple la page de la vente dans la boutique, pour s'inscrire à un tournoi ou un stage. Affiche le bouton « S'inscrire ou en savoir plus »." }
+
+  # Reglages lus par scripts/ffvb.mjs avant chaque construction du site
+  - name: "reglages"
+    label: "Réglages"
+    description: "À toucher une fois par saison, en septembre, quand la FFVolley publie les nouvelles poules. Voir le guide, partie « Les matchs »."
+    editor: { preview: false }
+    files:
+      - name: "ffvb"
+        label: "Matchs FFVolley : saison et poules"
+        file: "src/data/ffvb-poules.json"
+        fields:
+          - name: "poules"
+            label: "Équipes suivies"
+            label_singular: "une équipe"
+            widget: "list"
+            summary: "{{fields.equipe}}"
+            hint: "Une ligne par équipe engagée en championnat FFVolley. L'ordre est celui des onglets de la page Matchs."
+            fields:
+              - { name: "equipe", label: "Équipe", widget: "string", hint: "Le nom de l'onglet sur la page Matchs. Par exemple : Seniors masculins." }
+              - { name: "competition", label: "Compétition", widget: "string", hint: "Par exemple : Prénationale masculine." }
+              - {
+                  name: "adresse",
+                  label: "Adresse de la poule sur ffvbbeach.org",
+                  widget: "string",
+                  pattern: ["^https?://(www\\.)?ffvbbeach\\.org/ffvbapp/resu/vbspo_calendrier\\.php\\?(?=.*saison=)(?=.*codent=)(?=.*poule=)","Collez l'adresse de la page Calendrier de la poule, sur ffvbbeach.org"],
+                  hint: "Sur ffvbbeach.org, ouvrez le calendrier de la poule de l'équipe et copiez l'adresse de la page. Elle contient la saison, la ligue et la poule : c'est tout ce qu'il faut au site.",
+                }

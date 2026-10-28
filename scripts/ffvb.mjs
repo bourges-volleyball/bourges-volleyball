@@ -9,21 +9,37 @@
  */
 import fs from "node:fs";
 
-const SAISON = process.env.FFVB_SAISON ?? "2026/2027";
-const CODENT = "LICE"; // Ligue Centre-Val de Loire
 const NOUS = "BOURGES VOLLEY-BALL";
 const SORTIE = "src/data/ffvb.json";
+const REGLAGES = "src/data/ffvb-poules.json";
 
-const POULES = [
-  { poule: "PNM", equipe: "Seniors masculins", competition: "Prénationale masculine" },
-  { poule: "RFS", equipe: "Seniors féminines", competition: "Régionale féminine" },
-  { poule: "18A", equipe: "M18 filles", competition: "Régionale M18 filles" },
-  { poule: "18M", equipe: "M18 garçons", competition: "Prénationale M18 garçons" },
-];
+/* Les equipes suivies se reglent dans l'administration (Reglages > Matchs
+   FFVolley). Chaque poule y est donnee par l'adresse de sa page Calendrier
+   sur ffvbbeach.org : on en tire la saison, le code de ligue (codent) et le
+   code de poule. Changer de saison, c'est donc coller les nouvelles adresses. */
+function lireReglages() {
+  try {
+    return JSON.parse(fs.readFileSync(REGLAGES, "utf8")).poules.flatMap((p) => {
+      const u = new URL(p.adresse);
+      const q = Object.fromEntries(["saison", "codent", "poule"].map((k) => [k, u.searchParams.get(k)]));
+      if (!/(^|\.)ffvbbeach\.org$/.test(u.hostname) || !q.saison || !q.codent || !q.poule) {
+        console.warn(`${p.equipe} : l'adresse ne donne pas saison, codent et poule, equipe ignoree`);
+        return [];
+      }
+      return [{ equipe: p.equipe, competition: p.competition, ...q }];
+    });
+  } catch (e) {
+    console.warn(`Reglages illisibles (${REGLAGES} : ${e.message}) : le fichier existant est conserve.`);
+    process.exit(0);
+  }
+}
+const POULES = lireReglages();
 
-const url = (poule) =>
+// L'adresse est reconstruite a partir des seuls codes : on n'interroge jamais
+// un autre site que celui de la federation, quoi qu'on ait colle.
+const url = (p) =>
   `https://www.ffvbbeach.org/ffvbapp/resu/vbspo_calendrier.php` +
-  `?saison=${encodeURIComponent(SAISON)}&codent=${CODENT}&poule=${poule}`;
+  `?saison=${encodeURIComponent(p.saison)}&codent=${encodeURIComponent(p.codent)}&poule=${encodeURIComponent(p.poule)}`;
 
 /** Les pages sont en ISO-8859-1 : decodees en UTF-8, les accents seraient perdus. */
 async function lirePage(u) {
@@ -87,11 +103,13 @@ function extraire(html, { equipe, competition }) {
     if (/^x+$/i.test(adverse.trim())) continue;
 
     const nous = domicile === NOUS;
-    const scoreD = /^\d+$/.test(c[6] ?? "") ? Number(c[6]) : undefined;
-    const scoreE = /^\d+$/.test(c[7] ?? "") ? Number(c[7]) : undefined;
-
-    // Le lieu est la premiere cellule suivante qui ressemble a un nom de salle.
-    const lieu = c.slice(6).find((v) => /[A-Za-zÀ-ÿ]{3,}/.test(v) && !/\//.test(v));
+    // Match joue : scores en 6 et 7, detail des sets en 8. A venir : la
+    // salle en 7. « F » marque l'equipe forfait, comptee 3-0 par la FFVolley.
+    const forfait = c[6] === "F" || c[7] === "F";
+    const score = (v) => (/^\d+$/.test(v ?? "") ? Number(v) : v === "F" ? 0 : undefined);
+    const scoreD = score(c[6]);
+    const scoreE = score(c[7]);
+    const joue = scoreD !== undefined && scoreE !== undefined;
 
     matchs.push({
       id: c[0],
@@ -100,22 +118,43 @@ function extraire(html, { equipe, competition }) {
       date: versISO(c[1], c[2]),
       domicile: nous,
       adversaire: nous ? exterieur : domicile,
-      lieu: lieu ?? null,
+      lieu: joue ? null : c[7] || null,
       scoreNous: nous ? scoreD : scoreE,
       scoreEux: nous ? scoreE : scoreD,
+      // Sets dans l'ordre domicile:exterieur, comme le score affiche
+      sets: joue && !forfait ? c[8] || undefined : undefined,
+      forfait: forfait || undefined,
     });
   }
   return matchs;
 }
 
+/** Le classement est le tableau en tete de page : « 1. | EQUIPE | points | joues | gagnes | perdus ». */
+function classement(html) {
+  return (html.match(/<tr[^>]*>[\s\S]*?<\/tr>/g) ?? [])
+    .map(cellules)
+    .filter((c) => /^\d+\.$/.test(c[0] ?? ""))
+    .map((c) => ({
+      rang: parseInt(c[0], 10),
+      nom: c[1],
+      points: Number(c[2]) || 0,
+      joues: Number(c[3]) || 0,
+      gagnes: Number(c[4]) || 0,
+      perdus: Number(c[5]) || 0,
+      nous: c[1] === NOUS,
+    }));
+}
+
 const tous = [];
+const classements = {};
 const echecs = [];
 
 for (const p of POULES) {
   try {
-    const html = await lirePage(url(p.poule));
+    const html = await lirePage(url(p));
     const m = extraire(html, p);
     tous.push(...m);
+    classements[p.equipe] = classement(html);
     console.log(`${p.poule} (${p.equipe}) : ${m.length} rencontre(s)`);
   } catch (e) {
     echecs.push(`${p.poule} : ${e.message}`);
@@ -134,9 +173,11 @@ tous.sort((a, b) => a.date.localeCompare(b.date));
 
 const contenu = {
   miseAJour: new Date().toISOString(),
-  saison: SAISON,
+  saison: POULES[0]?.saison ?? null,
   source: "ffvbbeach.org",
   poulesEnEchec: echecs,
+  // Dans l'ordre de POULES : c'est aussi l'ordre des onglets de la page Matchs
+  classements,
   matchs: tous,
 };
 

@@ -35,8 +35,18 @@ function estJoue(m: { data: { scoreNous?: number; scoreEux?: number } }) {
 /* Les rencontres FFVolley sont recuperees automatiquement (voir
    scripts/ffvb.mjs) et presentees comme celles saisies a la main. Les
    benevoles n ont donc a saisir que les matchs Ufolep et amicaux. */
+type LigneClassement = { rang: number; nom: string; points: number; joues: number; gagnes: number; perdus: number; nous: boolean };
+const FFVB = ffvb as unknown as {
+  matchs: { id: string; equipe: string; competition: string; date: string; domicile: boolean; adversaire: string;
+    lieu: string | null; scoreNous?: number; scoreEux?: number; sets?: string; forfait?: boolean }[];
+  classements?: Record<string, LigneClassement[]>;
+};
+
+/** Classement de chaque poule FFVolley, par equipe du club, dans l'ordre des poules. */
+export const classements: Record<string, LigneClassement[]> = FFVB.classements ?? {};
+
 function depuisFFVB() {
-  return ffvb.matchs.map((m) => ({
+  return FFVB.matchs.map((m) => ({
     id: `ffvb-${m.id}`,
     data: {
       date: new Date(m.date),
@@ -47,13 +57,14 @@ function depuisFFVB() {
       lieu: m.lieu ?? undefined,
       scoreNous: m.scoreNous ?? undefined,
       scoreEux: m.scoreEux ?? undefined,
-      sets: undefined as string | undefined,
+      sets: m.sets,
+      forfait: m.forfait === true,
     },
   }));
 }
 
 export async function matchs() {
-  const saisis = await getCollection("matchs");
+  const saisis = (await getCollection("matchs")).map((m) => ({ id: m.id, data: { ...m.data, forfait: false } }));
   const tous = [...depuisFFVB(), ...saisis];
   const joues = tous
     .filter(estJoue)
@@ -108,6 +119,30 @@ export function heure(d: Date) {
 export function gagne(m: { data: { scoreNous?: number; scoreEux?: number } }) {
   const { scoreNous, scoreEux } = m.data;
   return scoreNous !== undefined && scoreEux !== undefined && scoreNous > scoreEux;
+}
+
+/** Bilan d'une equipe a partir de ses matchs joues, du plus recent au plus ancien
+ *  (l'ordre de matchs().joues) : la serie part du dernier match. */
+export function bilan(joues: { data: { scoreNous?: number; scoreEux?: number } }[]) {
+  const victoires = joues.filter(gagne).length;
+  const enGagnant = joues.length > 0 && gagne(joues[0]);
+  let serie = 0;
+  while (serie < joues.length && gagne(joues[serie]) === enGagnant) serie++;
+  return { victoires, defaites: joues.length - victoires, serie, enGagnant };
+}
+
+/** Regroupe des matchs tries par date en semaines du lundi au dimanche, a
+ *  l'heure de Paris : un groupe, c'est un week-end de championnat. */
+export function parSemaine<T extends { data: { date: Date } }>(liste: T[]) {
+  const groupes = new Map<string, T[]>();
+  for (const m of liste) {
+    const [a, mo, j] = m.data.date.toLocaleDateString("fr-CA", { timeZone: FUSEAU }).split("-").map(Number);
+    const lundi = new Date(Date.UTC(a, mo - 1, j));
+    lundi.setUTCDate(j - ((lundi.getUTCDay() + 6) % 7));
+    const cle = lundi.toISOString().slice(0, 10);
+    groupes.set(cle, [...(groupes.get(cle) ?? []), m]);
+  }
+  return [...groupes.values()];
 }
 
 /* Boutique : les rayons, dans l'ordre de la page. */

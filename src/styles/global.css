@@ -129,7 +129,7 @@ img.affiche{object-fit:contain!important;background:var(--noir-2)}
      défilement : visibles après 8rem de défilement. Liste à compléter si
      une page reçoit un nouveau type de carte. */
   @supports (animation-timeline:view()){
-    :is(.porte,.une,.suite>li,.grille>*,.ventes>*,.articles>li,.rdv>li,.agenda>li,.liste>li,
+    :is(.porte,.une,.suite>li,.grille>*,.ventes>*,.articles>li,.rdv>li,.evts>li,.affiches>li,.scores>li,
         .rencontres>li,.effectif>li,.chiffres>li,.frise>li,.palmares>li,.etapes>li,.niveaux>*){
       animation:apparition linear both;
       animation-timeline:view();

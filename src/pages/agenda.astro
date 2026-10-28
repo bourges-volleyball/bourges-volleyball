@@ -1,121 +1,187 @@
 ---
 import Base from "../layouts/Base.astro";
-import { agenda, dateLongue, heure, LIBELLE_TYPE } from "../lib/donnees";
+import { agenda, heure, FUSEAU, LIBELLE_TYPE } from "../lib/donnees";
 
-const rendezvous = await agenda();
+/* Les evenements du club seulement : les matchs ont leur page (/matchs/). */
+const evts = (await agenda()).filter((r) => r.type !== "match");
 
+const f = (d: Date, o: Intl.DateTimeFormatOptions) => d.toLocaleDateString("fr-FR", { timeZone: FUSEAU, ...o });
+type Evt = (typeof evts)[number];
+/** « jusqu'au dimanche 8 novembre » ou « à 20h30 » */
+const quand = (e: Evt) =>
+  e.dateFin ? `jusqu’au ${f(e.dateFin, { weekday: "long", day: "numeric", month: "long" })}` : e.avecHeure ? `à ${heure(e.date)}` : "";
+
+/* En vedette, le prochain evenement ; on en prepare deux pour que le second
+   prenne le relais si le premier se termine avant la reconstruction du lundi. */
+const vedettes = evts.slice(0, 2);
+
+/* Le reste, par mois */
+const mois = new Map<string, Evt[]>();
+for (const e of evts.slice(1)) {
+  const cle = f(e.date, { month: "long", year: "numeric" });
+  mois.set(cle, [...(mois.get(cle) ?? []), e]);
+}
 ---
 
 <Base
   titre="Agenda"
-  description="Tous les rendez-vous du Bourges Volley-Ball : matchs, tournois, stages et vie du club."
+  description="Les rendez-vous du Bourges Volley-Ball : tournois, stages, assemblée générale et vie du club."
 >
   <section class="page-head wrap">
     <p class="eyebrow">Ce qui arrive</p>
     <h1>Agenda</h1>
-    <p>
-      Matchs, tournois, stages et rendez-vous du club, réunis dans un seul
-      calendrier et classés par date.
-    </p>
+    <p>Tournois, stages, assemblée générale et moments du club. Les matchs ont leur propre page.</p>
+    <p class="vers-matchs"><a class="lien" href="/matchs/">Voir les matchs et résultats</a></p>
   </section>
 
-  <section class="section wrap">
-    <div class="section-head">
-      <h2>Les prochaines dates</h2>
-      <a class="lien" href="/matchs/">Tout le calendrier</a>
-    </div>
-    {
-      rendezvous.length === 0 ? (
-        <p class="vide">
-          Aucun rendez-vous programmé pour le moment. Le calendrier se remplit
-          dès que les dates de la saison sont connues.
-        </p>
-      ) : (
-        <ol class="agenda">
-          {rendezvous.map((r) => (
-            <li class:list={["item", r.type === "match" ? "est-match" : ""]} data-jusqua={r.jusqua.toISOString()}>
-              <div class="quand">
-                <b>{dateLongue(r.date)}</b>
-                {r.dateFin && <span class="fin">jusqu’au {dateLongue(r.dateFin)}</span>}
-                {r.avecHeure && !r.dateFin && <span class="mono">{heure(r.date)}</span>}
+  {
+    evts.length === 0 ? (
+      <section class="section wrap">
+        <div class="vide">
+          <p class="eyebrow">Pour l’instant</p>
+          <h2>Pas d’événement annoncé</h2>
+          <p>Les prochaines dates du club, tournois, stages ou soirées, seront annoncées ici dès qu’elles seront fixées.</p>
+          <a class="btn" href="/matchs/"><span>Voir les prochains matchs</span></a>
+        </div>
+      </section>
+    ) : (
+      <>
+        <section class="section wrap">
+          {vedettes.map((e) => (
+            <article class="vedette" data-jusqua={e.jusqua.toISOString()}>
+              <div class="date-bloc" aria-hidden="true">
+                <span class="jour-sem">{f(e.date, { weekday: "long" })}</span>
+                <span class="num">{f(e.date, { day: "numeric" })}</span>
+                <span class="mois">{f(e.date, { month: "long" })}</span>
               </div>
-              <div class="quoi">
-                <p class="genre">{LIBELLE_TYPE[r.type] ?? "Événement"}</p>
-                <h2>{r.titre}</h2>
-                <p class="detail">{r.detail}</p>
-                {r.lieu && <p class="lieu">{r.lieu}</p>}
+              <div class="vedette-corps">
+                <p class="eyebrow">Prochain rendez-vous · {LIBELLE_TYPE[e.type] ?? "Événement"}</p>
+                <h2>{e.titre}</h2>
+                <p class="meta">
+                  <span class="hors-ecran">{f(e.date, { weekday: "long", day: "numeric", month: "long" })} </span>
+                  {quand(e)}
+                  {e.lieu && <>{quand(e) && " · "}{e.lieu}</>}
+                </p>
+                <p class="detail">{e.detail}</p>
+                {e.lien && (
+                  <a class="btn" href={e.lien}>
+                    <span>S’inscrire ou en savoir plus</span>
+                  </a>
+                )}
               </div>
-              {r.lien && (
-                <a class="lien" href={r.lien}>
-                  En savoir plus<span class="hors-ecran"> sur {r.titre}</span>
-                </a>
-              )}
-            </li>
+            </article>
           ))}
-        </ol>
-      )
-    }
-  </section>
+        </section>
+
+        {[...mois].map(([nom, liste]) => (
+          <section class="section wrap mois-groupe">
+            <div class="section-head"><h2>{nom}</h2></div>
+            <ul class="evts">
+              {liste.map((e) => (
+                <li class="evt" data-jusqua={e.jusqua.toISOString()}>
+                  <div class="evt-haut">
+                    <p class="pastille" aria-hidden="true">
+                      <b>{f(e.date, { day: "numeric" })}</b>
+                      <span>{f(e.date, { weekday: "short" })}</span>
+                    </p>
+                    <span class="type">{LIBELLE_TYPE[e.type] ?? "Événement"}</span>
+                  </div>
+                  <h3>{e.titre}</h3>
+                  <p class="meta">
+                    <span class="hors-ecran">{f(e.date, { weekday: "long", day: "numeric", month: "long" })} </span>
+                    {quand(e)}
+                    {e.lieu && <>{quand(e) && " · "}{e.lieu}</>}
+                  </p>
+                  <p class="detail">{e.detail}</p>
+                  {e.lien && (
+                    <a class="lien" href={e.lien}>
+                      En savoir plus<span class="hors-ecran"> sur {e.titre}</span>
+                    </a>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))}
+      </>
+    )
+  }
 </Base>
 
 <style>
-  .agenda { list-style: none; padding: 0; margin: 0; display: grid; }
   .hors-ecran {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
+    position: absolute; width: 1px; height: 1px; overflow: hidden;
+    clip-path: inset(50%); white-space: nowrap;
   }
-  .item {
-    display: grid;
-    gap: 0.5rem 1.5rem;
-    padding: 1.25rem 0;
-    border-top: 1px solid var(--hair);
-    align-items: start;
+  .vers-matchs { margin-top: 1.25rem !important; }
+
+  /* Vedette : seule la premiere encore a venir s'affiche */
+  .vedette:not([hidden]) ~ .vedette { display: none; }
+  .vedette {
+    display: grid; gap: 1.5rem 2.5rem;
+    background: var(--noir-2); border: 1px solid var(--hair); border-top: 3px solid var(--signal);
+    padding: clamp(1.25rem, 3vw, 2.25rem);
   }
-  .item:first-child { border-top: 2px solid var(--structure); }
-  @media (min-width: 860px) {
-    .item { grid-template-columns: 15rem 1fr auto; align-items: baseline; }
+  @media (min-width: 760px) {
+    .vedette { grid-template-columns: auto 1fr; align-items: start; }
   }
-  .quand b {
-    display: block;
-    font-family: "Barlow Condensed", sans-serif;
-    font-weight: 800;
-    text-transform: uppercase;
-    font-size: 1.25rem;
-    line-height: 1.1;
+  .date-bloc {
+    display: grid; justify-items: start; line-height: 1;
+    font-family: "Barlow Condensed", sans-serif; font-weight: 800; text-transform: uppercase;
   }
-  .quand .mono,
-  .quand .fin {
-    font-family: "Barlow Semi Condensed", sans-serif;
-    font-size: var(--s0);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--fg-2);
+  .date-bloc .num { font-size: clamp(4.5rem, 12vw, 7rem); color: var(--signal); line-height: 0.9; }
+  .date-bloc .jour-sem, .date-bloc .mois {
+    font-family: "Barlow Semi Condensed", sans-serif; font-weight: 600;
+    font-size: 0.95rem; letter-spacing: 0.14em; color: var(--fg-2);
   }
-  .genre {
-    margin: 0 0 0.25rem;
-    font-family: "Barlow Semi Condensed", sans-serif;
-    font-weight: 600;
-    font-size: 0.66rem;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--fg-2);
+  .vedette-corps { display: grid; gap: 0.7rem; justify-items: start; }
+  .vedette-corps .eyebrow { color: var(--signal); }
+  .vedette-corps h2 { font-size: clamp(2rem, 5vw, 3rem); }
+  .vedette .detail { font-size: var(--s2); max-width: 60ch; }
+  .vedette .btn { margin-top: 0.5rem; }
+
+  .meta {
+    margin: 0; font-family: "Barlow Semi Condensed", sans-serif; font-weight: 600;
+    font-size: var(--s0); letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-2);
   }
-  .quoi h2 { font-size: 1.5rem; }
-  .detail { margin: 0.4rem 0 0; color: var(--fg-2); font-size: 0.94rem; max-width: 62ch; }
-  .lieu {
-    margin: 0.35rem 0 0;
-    font-family: "Barlow Semi Condensed", sans-serif;
-    font-size: var(--s0);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--fg-2);
+  .detail { margin: 0; color: var(--fg-2); }
+
+  .mois-groupe { padding-top: 0; }
+  /* Un mois dont tous les evenements sont passes disparait */
+  .mois-groupe:not(:has(.evt:not([hidden]))) { display: none; }
+  .mois-groupe h2 { text-transform: uppercase; }
+  .evts {
+    list-style: none; padding: 0; margin: 0;
+    display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
   }
-  /* Les matchs portent la marque du club : c est notre calendrier sportif */
-  .est-match .quoi h2 { color: var(--structure); }
-  .item .lien { justify-self: start; white-space: nowrap; }
-  .vide { color: var(--fg-2); }
+  .evt {
+    display: grid; gap: 0.6rem; align-content: start;
+    background: var(--noir-2); border: 1px solid var(--hair); border-top: 3px solid var(--hair);
+    padding: 1.1rem 1.2rem 1.25rem;
+  }
+  .evt:hover { border-top-color: var(--signal); }
+  .evt-haut { display: flex; justify-content: space-between; align-items: start; gap: 0.5rem; }
+  .pastille { margin: 0; display: grid; justify-items: start; line-height: 1; }
+  .pastille b { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 2.6rem; color: var(--signal); }
+  .pastille span {
+    font-family: "Barlow Semi Condensed", sans-serif; font-weight: 600; font-size: var(--s0);
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg-2);
+  }
+  .type {
+    font-family: "Barlow Semi Condensed", sans-serif; font-weight: 600; font-size: 0.66rem;
+    letter-spacing: 0.14em; text-transform: uppercase; white-space: nowrap;
+    border: 1px solid var(--hair); padding: 0.15rem 0.5rem; color: var(--fg-2);
+  }
+  .evt h3 { font-size: 1.5rem; }
+  .evt .detail { font-size: 0.94rem; }
+  .evt .lien { justify-self: start; margin-top: 0.25rem; }
+
+  .vide {
+    display: grid; gap: 0.9rem; justify-items: start;
+    background: var(--noir-2); border: 1px solid var(--hair); border-top: 3px solid var(--signal);
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+  }
+  .vide h2 { font-size: clamp(1.9rem, 5vw, 2.6rem); }
+  .vide p:not(.eyebrow) { margin: 0; color: var(--fg-2); max-width: 55ch; }
+  .vide .eyebrow { color: var(--signal); }
 </style>

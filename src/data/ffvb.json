@@ -1,8 +1,324 @@
 {
-  "miseAJour": "2026-09-11T08:17:10.396Z",
+  "miseAJour": "2026-10-28T15:15:54.274Z",
   "saison": "2026/2027",
   "source": "ffvbbeach.org",
   "poulesEnEchec": [],
+  "classements": {
+    "Seniors masculins": [
+      {
+        "rang": 1,
+        "nom": "BOURGES VOLLEY-BALL",
+        "points": 5,
+        "joues": 2,
+        "gagnes": 2,
+        "perdus": 0,
+        "nous": true
+      },
+      {
+        "rang": 2,
+        "nom": "C'CHARTRES VOLLEY",
+        "points": 3,
+        "joues": 1,
+        "gagnes": 1,
+        "perdus": 0,
+        "nous": false
+      },
+      {
+        "rang": 3,
+        "nom": "ETUDIANT CLUB ORLEANAIS",
+        "points": 3,
+        "joues": 1,
+        "gagnes": 1,
+        "perdus": 0,
+        "nous": false
+      },
+      {
+        "rang": 4,
+        "nom": "SAINT AVERTIN SPORTS",
+        "points": 3,
+        "joues": 2,
+        "gagnes": 1,
+        "perdus": 1,
+        "nous": false
+      },
+      {
+        "rang": 5,
+        "nom": "CHATEAUDUN VOLLEY-BALL",
+        "points": 3,
+        "joues": 2,
+        "gagnes": 1,
+        "perdus": 1,
+        "nous": false
+      },
+      {
+        "rang": 6,
+        "nom": "AS AMICALE JEUNESSE BLESOISE",
+        "points": 3,
+        "joues": 2,
+        "gagnes": 1,
+        "perdus": 1,
+        "nous": false
+      },
+      {
+        "rang": 7,
+        "nom": "TOURS VOLLEY-BALL",
+        "points": 1,
+        "joues": 2,
+        "gagnes": 0,
+        "perdus": 2,
+        "nous": false
+      },
+      {
+        "rang": 8,
+        "nom": "SMOC ST-JEAN DE BRAYE",
+        "points": -3,
+        "joues": 2,
+        "gagnes": 0,
+        "perdus": 1,
+        "nous": false
+      }
+    ],
+    "Seniors féminines": [
+      {
+        "rang": 1,
+        "nom": "UNION SPORTIVE CHAMBRAY LES TOURS",
+        "points": 6,
+        "joues": 2,
+        "gagnes": 2,
+        "perdus": 0,
+        "nous": false
+      },
+      {
+        "rang": 2,
+        "nom": "MONTLOUIS 1",
+        "points": 5,
+        "joues": 2,
+        "gagnes": 2,
+        "perdus": 0,
+        "nous": false
+      },
+      {
+        "rang": 3,
+        "nom": "JOUE VOLLEY-BALL",
+        "points": 4,
+        "joues": 2,
+        "gagnes": 1,
+        "perdus": 1,
+        "nous": false
+      },
+      {
+        "rang": 4,
+        "nom": "AS.CASTELNEUVIENNE V.B.",
+        "points": 4,
+        "joues": 2,
+        "gagnes": 1,
+        "perdus": 1,
+        "nous": false
+      },
+      {
+        "rang": 5,
+        "nom": "VOLLEY BEAUNE CLUB",
+        "points": 3,
+        "joues": 2,
+        "gagnes": 1,
+        "perdus": 1,
+        "nous": false
+      },
+      {
+        "rang": 6,
+        "nom": "NEUVILLE SPORTS",
+        "points": 3,
+        "joues": 2,
+        "gagnes": 1,
+        "perdus": 1,
+        "nous": false
+      },
+      {
+        "rang": 7,
+        "nom": "CERCLE JULES FERRY FLEURY",
+        "points": 2,
+        "joues": 1,
+        "gagnes": 1,
+        "perdus": 0,
+        "nous": false
+      },
+      {
+        "rang": 8,
+        "nom": "ETUDIANT CLUB ORLEANAIS",
+        "points": 0,
+        "joues": 1,
+        "gagnes": 0,
+        "perdus": 1,
+        "nous": false
+      },
+      {
+        "rang": 9,
+        "nom": "MONTLOUIS 2",
+        "points": 0,
+        "joues": 1,
+        "gagnes": 0,
+        "perdus": 1,
+        "nous": false
+      },
+      {
+        "rang": 10,
+        "nom": "BOURGES VOLLEY-BALL",
+        "points": 0,
+        "joues": 1,
+        "gagnes": 0,
+        "perdus": 1,
+        "nous": true
+      },
+      {
+        "rang": 11,
+        "nom": "U.S.ORLEANS VOLLEY-BALL",
+        "points": 0,
+        "joues": 2,
+        "gagnes": 0,
+        "perdus": 2,
+        "nous": false
+      }
+    ],
+    "M18 filles": [
+      {
+        "rang": 1,
+        "nom": "ALERTE SPORTIVE MONTLOUIS",
+        "points": 6,
+        "joues": 2,
+        "gagnes": 2,
+        "perdus": 0,
+        "nous": false
+      },
+      {
+        "rang": 2,
+        "nom": "VOLLEY BEAUNE CLUB",
+        "points": 6,
+        "joues": 2,
+        "gagnes": 2,
+        "perdus": 0,
+        "nous": false
+      },
+      {
+        "rang": 3,
+        "nom": "BOURGES VOLLEY-BALL",
+        "points": 3,
+        "joues": 1,
+        "gagnes": 1,
+        "perdus": 0,
+        "nous": true
+      },
+      {
+        "rang": 4,
+        "nom": "UNION SP VENDOMOISE",
+        "points": 0,
+        "joues": 2,
+        "gagnes": 0,
+        "perdus": 2,
+        "nous": false
+      },
+      {
+        "rang": 5,
+        "nom": "UNION SPORTIVE CHAMBRAY LES TOURS",
+        "points": 0,
+        "joues": 1,
+        "gagnes": 0,
+        "perdus": 1,
+        "nous": false
+      },
+      {
+        "rang": 6,
+        "nom": "JOUE VOLLEY-BALL",
+        "points": -1,
+        "joues": 2,
+        "gagnes": 0,
+        "perdus": 2,
+        "nous": false
+      },
+      {
+        "rang": 7,
+        "nom": "CERCLE JULES FERRY FLEURY",
+        "points": 0,
+        "joues": 0,
+        "gagnes": 0,
+        "perdus": 0,
+        "nous": false
+      }
+    ],
+    "M18 garçons": [
+      {
+        "rang": 1,
+        "nom": "SAINT AVERTIN SPORTS",
+        "points": 6,
+        "joues": 2,
+        "gagnes": 2,
+        "perdus": 0,
+        "nous": false
+      },
+      {
+        "rang": 2,
+        "nom": "ETUDIANT CLUB ORLEANAIS",
+        "points": 3,
+        "joues": 1,
+        "gagnes": 1,
+        "perdus": 0,
+        "nous": false
+      },
+      {
+        "rang": 3,
+        "nom": "C'CHARTRES VOLLEY",
+        "points": 3,
+        "joues": 1,
+        "gagnes": 1,
+        "perdus": 0,
+        "nous": false
+      },
+      {
+        "rang": 4,
+        "nom": "CHATEAUDUN VOLLEY-BALL",
+        "points": 3,
+        "joues": 2,
+        "gagnes": 1,
+        "perdus": 1,
+        "nous": false
+      },
+      {
+        "rang": 5,
+        "nom": "AS AMICALE JEUNESSE BLESOISE",
+        "points": 3,
+        "joues": 2,
+        "gagnes": 1,
+        "perdus": 1,
+        "nous": false
+      },
+      {
+        "rang": 6,
+        "nom": "BOURGES VOLLEY-BALL",
+        "points": 2,
+        "joues": 2,
+        "gagnes": 1,
+        "perdus": 1,
+        "nous": true
+      },
+      {
+        "rang": 7,
+        "nom": "SMOC ST-JEAN DE BRAYE",
+        "points": 1,
+        "joues": 2,
+        "gagnes": 0,
+        "perdus": 2,
+        "nous": false
+      },
+      {
+        "rang": 8,
+        "nom": "TOURS VOLLEY-BALL",
+        "points": 0,
+        "joues": 2,
+        "gagnes": 0,
+        "perdus": 2,
+        "nous": false
+      }
+    ]
+  },
   "matchs": [
     {
       "id": "18MA001",
@@ -11,7 +327,10 @@
       "date": "2026-09-26T16:00:00.000Z",
       "domicile": true,
       "adversaire": "SMOC ST-JEAN DE BRAYE",
-      "lieu": "LEO LAGRANGE"
+      "lieu": null,
+      "scoreNous": 3,
+      "scoreEux": 2,
+      "sets": "25:11, 20:25, 25:19, 20:25, 15:11"
     },
     {
       "id": "PNMA001",
@@ -20,7 +339,10 @@
       "date": "2026-09-26T18:30:00.000Z",
       "domicile": true,
       "adversaire": "SMOC ST-JEAN DE BRAYE",
-      "lieu": "LEO LAGRANGE"
+      "lieu": null,
+      "scoreNous": 3,
+      "scoreEux": 0,
+      "forfait": true
     },
     {
       "id": "18AA008",
@@ -29,7 +351,10 @@
       "date": "2026-10-10T16:00:00.000Z",
       "domicile": false,
       "adversaire": "UNION SP VENDOMOISE",
-      "lieu": "MAILLETTES"
+      "lieu": null,
+      "scoreNous": 3,
+      "scoreEux": 0,
+      "sets": "20:25, 18:25, 12:25"
     },
     {
       "id": "18MA005",
@@ -38,7 +363,10 @@
       "date": "2026-10-10T16:00:00.000Z",
       "domicile": true,
       "adversaire": "CHATEAUDUN VOLLEY-BALL",
-      "lieu": "LEO LAGRANGE"
+      "lieu": null,
+      "scoreNous": 0,
+      "scoreEux": 3,
+      "sets": "9:25, 12:25, 13:25"
     },
     {
       "id": "PNMA005",
@@ -47,7 +375,10 @@
       "date": "2026-10-10T18:30:00.000Z",
       "domicile": true,
       "adversaire": "CHATEAUDUN VOLLEY-BALL",
-      "lieu": "LEO LAGRANGE"
+      "lieu": null,
+      "scoreNous": 3,
+      "scoreEux": 2,
+      "sets": "25:11, 18:25, 20:25, 25:22, 15:9"
     },
     {
       "id": "RFSA034",
@@ -56,7 +387,19 @@
       "date": "2026-10-10T18:30:00.000Z",
       "domicile": false,
       "adversaire": "NEUVILLE SPORTS",
-      "lieu": "COMPLEXE SPORTIF"
+      "lieu": null,
+      "scoreNous": 0,
+      "scoreEux": 3,
+      "sets": "25:17, 25:12, 25:17"
+    },
+    {
+      "id": "18AA010",
+      "equipe": "M18 filles",
+      "competition": "Régionale M18 filles",
+      "date": "2026-11-07T17:00:00.000Z",
+      "domicile": true,
+      "adversaire": "JOUE VOLLEY-BALL",
+      "lieu": "LEO LAGRANGE"
     },
     {
       "id": "18MA009",
@@ -254,7 +597,7 @@
       "date": "2027-01-30T17:00:00.000Z",
       "domicile": false,
       "adversaire": "SMOC ST-JEAN DE BRAYE",
-      "lieu": "HALLE DES SPORTS"
+      "lieu": "MARCEL JORIOT"
     },
     {
       "id": "RFSA056",
@@ -389,15 +732,6 @@
       "date": "2027-04-17T18:30:00.000Z",
       "domicile": true,
       "adversaire": "SAINT AVERTIN SPORTS",
-      "lieu": "LEO LAGRANGE"
-    },
-    {
-      "id": "18AA010",
-      "equipe": "M18 filles",
-      "competition": "Régionale M18 filles",
-      "date": "2027-11-07T17:00:00.000Z",
-      "domicile": true,
-      "adversaire": "JOUE VOLLEY-BALL",
       "lieu": "LEO LAGRANGE"
     }
   ]

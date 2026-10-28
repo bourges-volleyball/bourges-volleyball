@@ -602,15 +602,27 @@ la commande de build est `npm run maj:ffvb && npm run build`.
 | M18 filles | 18A — régionale |
 | M18 garçons | 18M — prénationale |
 
-Elles sont déclarées en haut de `scripts/ffvb.mjs`, avec le code de ligue
-`LICE` (Centre-Val de Loire). **À chaque changement de saison**, mettez à jour
-la constante `SAISON` et vérifiez les codes de poule, qui changent quand une
-équipe monte ou descend.
+Elles se règlent dans l'administration, rubrique **Réglages > Matchs FFVolley**,
+qui écrit `src/data/ffvb-poules.json`. Chaque équipe y est donnée par l'adresse
+de sa page Calendrier sur ffvbbeach.org : le script en tire la saison, le code
+de ligue (`LICE` pour Centre-Val de Loire) et le code de poule, puis
+reconstruit l'adresse lui-même (il n'interroge jamais un autre site). **À
+chaque changement de saison**, un bénévole colle les nouvelles adresses : la
+marche à suivre est dans le guide des bénévoles, partie 8. Une adresse
+illisible fait ignorer l'équipe ; un fichier illisible fait garder les données
+précédentes, sans casser la construction.
 
 ### Ce que le script fait, et ne fait pas
 
 Il ne retient que les rencontres où figure Bourges Volley-Ball, écarte les journées où le club est **exempt** — la fédération les note
-« xxxxx » — et convertit les horaires en heure de Paris.
+« xxxxx » — et convertit les horaires en heure de Paris. Il reprend aussi le
+**classement** de chaque poule (tableau en tête de page), le **détail des
+sets** et les **forfaits** (« F », comptés 3-0) : la page Matchs les affiche
+par équipe, dans l'ordre de `POULES`.
+
+Le guide des bénévoles, lui, est une page statique : `public/admin/guide/`
+(lien « Guide » en bas à gauche de l'administration). Son PDF se régénère
+depuis le navigateur, Imprimer > Enregistrer en PDF, après toute modification.
 
 **Il n'échoue jamais bruyamment.** Si la fédération est injoignable ou change
 la structure de ses pages, le script conserve le fichier précédent et le site

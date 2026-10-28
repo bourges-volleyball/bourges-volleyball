@@ -1,0 +1,24 @@
+{
+  "poules": [
+    {
+      "equipe": "Seniors masculins",
+      "competition": "Prénationale masculine",
+      "adresse": "https://www.ffvbbeach.org/ffvbapp/resu/vbspo_calendrier.php?saison=2026%2F2027&codent=LICE&poule=PNM"
+    },
+    {
+      "equipe": "Seniors féminines",
+      "competition": "Régionale féminine",
+      "adresse": "https://www.ffvbbeach.org/ffvbapp/resu/vbspo_calendrier.php?saison=2026%2F2027&codent=LICE&poule=RFS"
+    },
+    {
+      "equipe": "M18 filles",
+      "competition": "Régionale M18 filles",
+      "adresse": "https://www.ffvbbeach.org/ffvbapp/resu/vbspo_calendrier.php?saison=2026%2F2027&codent=LICE&poule=18A"
+    },
+    {
+      "equipe": "M18 garçons",
+      "competition": "Prénationale M18 garçons",
+      "adresse": "https://www.ffvbbeach.org/ffvbapp/resu/vbspo_calendrier.php?saison=2026%2F2027&codent=LICE&poule=18M"
+    }
+  ]
+}

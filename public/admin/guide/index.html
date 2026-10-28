@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex" />
+<title>Guide de l'administration - Bourges Volley-Ball</title>
+<link rel="icon" href="/images/logo-bvb.png" />
+<!-- Guide des benevoles, aux couleurs du site (memes polices et couleurs que
+     src/styles/global.css). Le PDF a cote (guide-administration-bvb.pdf) est
+     l'impression de cette page : apres une modification, le regenerer avec
+     « Imprimer > Enregistrer en PDF » depuis le navigateur. -->
+<style>
+@font-face{font-family:"Barlow";font-weight:400;font-display:swap;src:url(/admin/polices/barlow-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:"Barlow";font-weight:600;font-display:swap;src:url(/admin/polices/barlow-latin-600-normal.woff2) format("woff2")}
+@font-face{font-family:"Barlow";font-weight:700;font-display:swap;src:url(/admin/polices/barlow-latin-700-normal.woff2) format("woff2")}
+@font-face{font-family:"Barlow Condensed";font-weight:800;font-display:swap;src:url(/admin/polices/barlow-condensed-latin-800-normal.woff2) format("woff2")}
+@font-face{font-family:"Barlow Condensed";font-style:italic;font-weight:800;font-display:swap;src:url(/admin/polices/barlow-condensed-latin-800-italic.woff2) format("woff2")}
+@font-face{font-family:"Barlow Semi Condensed";font-weight:600;font-display:swap;src:url(/admin/polices/barlow-semi-condensed-latin-600-normal.woff2) format("woff2")}
+
+:root{
+  --noir:#0D0E11;--noir-2:#15171C;--noir-3:#1D2027;--hair:#282C34;
+  --fg:#F4F4F2;--fg-2:#9A9FA9;--signal:#B4E600;--sur-signal:#101114;
+  --pad:clamp(1.15rem,4vw,3rem);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--noir);color:var(--fg);font:400 1.06rem/1.65 "Barlow","Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:800;text-transform:uppercase;line-height:.95;margin:0}
+a{color:var(--signal)}
+img{max-width:100%;height:auto;display:block}
+.wrap{max-width:62rem;margin-inline:auto;padding-inline:var(--pad)}
+.eyebrow{font-family:"Barlow Semi Condensed",sans-serif;font-weight:600;font-size:.75rem;letter-spacing:.16em;text-transform:uppercase;color:var(--signal);margin:0}
+
+/* En-tete */
+.entete{border-bottom:1px solid var(--hair);background:var(--noir-2)}
+.entete .wrap{display:flex;align-items:center;gap:1rem;padding-block:1rem}
+.entete img{width:3rem}
+.entete strong{font-family:"Barlow Condensed",sans-serif;font-weight:800;text-transform:uppercase;font-size:1.25rem;line-height:1}
+.entete nav{margin-left:auto;display:flex;gap:1.25rem;flex-wrap:wrap;font-family:"Barlow Semi Condensed",sans-serif;font-weight:600;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase}
+.entete nav a{text-decoration:none;color:var(--fg)}
+.entete nav a:hover{color:var(--signal)}
+
+.titre{padding-block:clamp(2.5rem,7vw,4.5rem) 2rem}
+.titre h1{font-size:clamp(2.8rem,9vw,5.2rem);margin-top:.6rem}
+.titre h1 em{font-style:italic;color:var(--signal)}
+.titre p{color:var(--fg-2);font-size:1.18rem;max-width:44rem;margin:1.1rem 0 0}
+
+/* Sommaire */
+.sommaire{border-top:2px solid var(--signal);padding-top:1rem;margin-bottom:1rem}
+.sommaire ol{list-style:none;padding:0;margin:.8rem 0 0;display:grid;gap:.15rem 2rem;grid-template-columns:repeat(auto-fill,minmax(15rem,1fr));counter-reset:n}
+.sommaire li{counter-increment:n}
+.sommaire a{display:block;padding:.35rem 0;color:var(--fg);text-decoration:none;font-weight:600;border-bottom:1px solid var(--hair)}
+.sommaire a::before{content:counter(n,decimal-leading-zero);font-family:"Barlow Condensed",sans-serif;font-weight:800;color:var(--signal);margin-right:.7rem}
+.sommaire a:hover{color:var(--signal)}
+
+/* Sections */
+section{padding-block:clamp(2.2rem,5vw,3.25rem);border-top:1px solid var(--hair)}
+section h2{font-size:clamp(2rem,6vw,3rem);margin:.4rem 0 1.1rem}
+section h3{font-size:1.45rem;margin:1.8rem 0 .6rem}
+section p,section li{max-width:46rem}
+section ul,section ol{padding-left:1.25rem}
+section li{margin:.3rem 0}
+strong{color:#fff}
+.discret{color:var(--fg-2)}
+code,.adresse{font-family:"Barlow Semi Condensed",sans-serif;font-weight:600;letter-spacing:.02em;background:var(--noir-3);border:1px solid var(--hair);padding:.05rem .4rem;color:var(--signal);overflow-wrap:anywhere}
+
+/* Le chemin d'une modification : quatre etapes */
+.etapes{list-style:none;padding:0!important;margin:1.5rem 0;display:grid;gap:.75rem;grid-template-columns:repeat(auto-fit,minmax(12rem,1fr))}
+.etapes li{margin:0;background:var(--noir-2);border:1px solid var(--hair);border-top:3px solid var(--signal);padding:1rem 1.1rem;max-width:none}
+.etapes b{display:block;font-family:"Barlow Condensed",sans-serif;font-weight:800;font-size:2.2rem;line-height:1;color:var(--signal)}
+.etapes span{display:block;font-weight:700;margin:.3rem 0 .2rem;color:#fff}
+.etapes small{color:var(--fg-2);font-size:.92rem;line-height:1.45;display:block}
+
+/* Encadres */
+.note,.attention{border-left:4px solid var(--signal);background:var(--noir-2);padding:.9rem 1.1rem;margin:1.25rem 0;max-width:46rem}
+.attention{border-left-color:#ffb020}
+.note p,.attention p{margin:.3rem 0}
+.note b:first-child,.attention b:first-child{font-family:"Barlow Semi Condensed",sans-serif;letter-spacing:.12em;text-transform:uppercase;font-size:.78rem}
+.note b:first-child{color:var(--signal)}
+.attention b:first-child{color:#ffb020}
+
+/* Captures */
+figure{margin:1.5rem 0;max-width:none}
+figure img{border:1px solid var(--hair)}
+figcaption{color:var(--fg-2);font-size:.9rem;margin-top:.5rem}
+
+/* Tableau des rubriques */
+table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.98rem}
+th,td{text-align:left;vertical-align:top;padding:.65rem .5rem;border-top:1px solid var(--hair)}
+thead th{border-top:0;font-family:"Barlow Semi Condensed",sans-serif;font-weight:600;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--fg-2)}
+td:first-child{font-weight:700;white-space:nowrap;color:#fff}
+td{color:var(--fg-2)}
+
+.pied{padding-block:2.5rem;color:var(--fg-2);font-size:.92rem;border-top:1px solid var(--hair)}
+
+@media (max-width:640px){td:first-child{white-space:normal}}
+
+/* Impression et PDF : fond blanc pour economiser l'encre, le vert fonce
+   des bandes claires du site (--signal-clair) remplace le lime illisible */
+@media print{
+  @page{margin:14mm 14mm 16mm}
+  :root{--noir:#fff;--noir-2:#f4f4f1;--noir-3:#ececea;--hair:#dcdcd8;--fg:#131417;--fg-2:#5f636b;--signal:#546B00}
+  body{font-size:10.5pt}
+  strong,.etapes span,td:first-child{color:#131417}
+  .entete{background:#0D0E11;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .entete strong{color:#F4F4F2}
+  .entete nav{display:none}
+  section{padding-block:1.4rem}
+  figure img{max-height:120mm;width:auto;margin-inline:auto}
+  figure,.etapes li,.note,.attention,tr{break-inside:avoid}
+  h2,h3{break-after:avoid}
+  a{text-decoration:none}
+}
+</style>
+</head>
+<body>
+
+<header class="entete">
+  <div class="wrap">
+    <img src="/images/logo-bvb.png" alt="" width="48" height="48" />
+    <strong>Bourges<br />Volley-Ball</strong>
+    <nav aria-label="Liens">
+      <a href="/admin/">Administration</a>
+      <a href="/admin/commandes.html">Commandes</a>
+      <a href="/">Le site</a>
+      <a href="/admin/guide/guide-administration-bvb.pdf">PDF</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<div class="wrap titre">
+  <p class="eyebrow">Pour les bénévoles du club</p>
+  <h1>Guide de <em>l'administration</em></h1>
+  <p>Publier une actualité, changer les photos de l'accueil, ouvrir une vente, suivre les commandes : tout se fait depuis l'administration du site, sans rien installer. Ce guide explique comment, et ce que le site fait tout seul.</p>
+</div>
+
+<nav class="wrap sommaire" aria-label="Sommaire">
+  <p class="eyebrow">Sommaire</p>
+  <ol>
+    <li><a href="#comprendre">Comment marche le site</a></li>
+    <li><a href="#connexion">Se connecter</a></li>
+    <li><a href="#rubriques">Les rubriques</a></li>
+    <li><a href="#publier">Publier, modifier, supprimer</a></li>
+    <li><a href="#actus">Les actualités</a></li>
+    <li><a href="#photos">Les photos de l'accueil</a></li>
+    <li><a href="#agenda">L'agenda</a></li>
+    <li><a href="#matchs">Les matchs</a></li>
+    <li><a href="#boutique">La boutique</a></li>
+    <li><a href="#commandes">Les commandes payées</a></li>
+    <li><a href="#autres">Équipes, partenaires, textes</a></li>
+    <li><a href="#regles">Les bons réflexes</a></li>
+  </ol>
+</nav>
+
+<section id="comprendre" class="wrap">
+  <p class="eyebrow">01</p>
+  <h2>Comment marche le site</h2>
+  <p>Le site n'a pas de base de données à surveiller ni de serveur à mettre à jour. Chaque fois que vous publiez quelque chose, le site entier est reconstruit en une ou deux minutes, puis mis en ligne.</p>
+  <ol class="etapes">
+    <li><b>1</b><span>Vous écrivez</span><small>dans l'administration, depuis un ordinateur ou un téléphone.</small></li>
+    <li><b>2</b><span>Vous publiez</span><small>la modification est enregistrée et gardée en mémoire : on peut toujours revenir en arrière.</small></li>
+    <li><b>3</b><span>Le site se reconstruit</span><small>chez l'hébergeur, Netlify. Comptez une à deux minutes.</small></li>
+    <li><b>4</b><span>C'est en ligne</span><small>rechargez la page du site pour voir le changement.</small></li>
+  </ol>
+
+  <h3>Ce que le site fait tout seul</h3>
+  <ul>
+    <li><strong>Les matchs FFVolley</strong> (seniors et M18), leurs scores, le détail des sets et les classements sont repris du site de la fédération, à chaque publication et chaque lundi matin.</li>
+    <li><strong>Le calendrier se tient à jour</strong> : un match ou un événement passé disparaît des pages « à venir », sans que personne n'y touche.</li>
+    <li><strong>Les ventes de la boutique s'ouvrent et se ferment</strong> aux dates que vous avez indiquées.</li>
+    <li><strong>Les paiements</strong> passent par HelloAsso : le site prend la commande, HelloAsso encaisse, et la commande payée apparaît sur la page Commandes.</li>
+  </ul>
+
+  <div class="note">
+    <p><b>Bon à savoir</b></p>
+    <p>L'hébergement gratuit permet une vingtaine de publications par mois, mise à jour du lundi comprise. Préparez plusieurs changements avant de publier plutôt que de publier dix fois une virgule.</p>
+  </div>
+</section>
+
+<section id="connexion" class="wrap">
+  <p class="eyebrow">02</p>
+  <h2>Se connecter</h2>
+  <ol>
+    <li>Ouvrez l'adresse du site suivie de <span class="adresse">/admin/</span>. Aujourd'hui : <span class="adresse">bourges-volleyball.netlify.app/admin/</span></li>
+    <li>Cliquez sur <strong>Se connecter</strong>, puis entrez votre adresse e-mail et votre mot de passe.</li>
+  </ol>
+  <figure>
+    <img src="img/connexion.webp" alt="Page de connexion de l'administration : logo du club et bouton Se connecter." width="1920" height="1200" loading="lazy" />
+    <figcaption>La porte d'entrée de l'administration.</figcaption>
+  </figure>
+  <h3>Première fois</h3>
+  <p>On n'ouvre pas soi-même un compte : un responsable du club vous <strong>invite</strong>. Vous recevez un e-mail ; cliquez sur le lien, le site vous demande alors de choisir votre mot de passe. C'est fait, vous pouvez vous connecter.</p>
+  <h3>Mot de passe oublié</h3>
+  <p>Sur la fenêtre de connexion, cliquez sur « Forgot password? » et suivez le lien reçu par e-mail.</p>
+</section>
+
+<section id="rubriques" class="wrap">
+  <p class="eyebrow">03</p>
+  <h2>Les rubriques</h2>
+  <p>Une fois connecté, la colonne de gauche liste les rubriques du site. Cliquez sur l'une d'elles pour voir son contenu, ou sur le bouton foncé en haut à droite pour en ajouter.</p>
+  <figure>
+    <img src="img/rubriques.webp" alt="Écran principal : la liste des rubriques à gauche, les actualités au centre et le bouton « + une actualité »." width="1920" height="1200" loading="lazy" />
+    <figcaption>L'écran principal, rubrique Actualités ouverte.</figcaption>
+  </figure>
+  <table>
+    <thead><tr><th scope="col">Rubrique</th><th scope="col">Ce qu'on y fait</th></tr></thead>
+    <tbody>
+      <tr><td>Actualités</td><td>Les articles de la page Actualités et de l'accueil.</td></tr>
+      <tr><td>Photos de l'accueil</td><td>Les grandes photos qui défilent en haut de l'accueil.</td></tr>
+      <tr><td>Textes des pages</td><td>Le texte d'accueil, l'histoire et le palmarès du club.</td></tr>
+      <tr><td>Équipes</td><td>Chaque équipe : créneaux, coach, tarif, photo, effectif.</td></tr>
+      <tr><td>Matchs</td><td>Seulement les matchs hors FFVolley : Ufolep, coupes, amicaux.</td></tr>
+      <tr><td>Partenaires</td><td>Les logos et liens des partenaires.</td></tr>
+      <tr><td>Boutique</td><td>Les ventes : équipements, adhésions, stages, tournois, buvette.</td></tr>
+      <tr><td>Agenda</td><td>Les événements du club : tournois, stages, assemblée générale, soirées.</td></tr>
+      <tr><td>Réglages</td><td>Une fois par saison : les poules FFVolley suivies (voir la partie 8).</td></tr>
+    </tbody>
+  </table>
+  <p class="discret">Les commandes payées ne sont pas une rubrique : elles ont leur propre page, voir la partie 10.</p>
+</section>
+
+<section id="publier" class="wrap">
+  <p class="eyebrow">04</p>
+  <h2>Publier, modifier, supprimer</h2>
+  <p>Toutes les rubriques fonctionnent de la même façon.</p>
+  <ul>
+    <li><strong>Ajouter</strong> : bouton foncé en haut de la rubrique (« + une actualité », « + une vente »…).</li>
+    <li><strong>Modifier</strong> : cliquez sur l'élément dans la liste.</li>
+    <li><strong>Publier</strong> : bouton <strong>Publier</strong> en haut, puis <strong>Publier maintenant</strong>. Le site est à jour une à deux minutes plus tard.</li>
+    <li><strong>Supprimer</strong> : bouton <strong>Supprimer l'entrée</strong> en haut d'un élément ouvert.</li>
+  </ul>
+  <p>Le formulaire est à gauche, l'<strong>aperçu</strong> à droite : il montre à peu près ce que verront les visiteurs. Sous chaque champ, une petite phrase grise explique quoi y mettre.</p>
+  <div class="note">
+    <p><b>Pas de panique</b></p>
+    <p>Tant que vous n'avez pas cliqué sur Publier, rien ne change sur le site. Et ce qui est publié reste enregistré : une erreur se rattrape, même une suppression.</p>
+  </div>
+  <p class="discret">Sur téléphone, l'aperçu est masqué pour laisser la place au formulaire. Tout le reste fonctionne.</p>
+</section>
+
+<section id="actus" class="wrap">
+  <p class="eyebrow">05</p>
+  <h2>Les actualités</h2>
+  <figure>
+    <img src="img/actualite.webp" alt="Formulaire d'une actualité : titre, date, résumé, photo de une ; l'aperçu de l'article à droite." width="1920" height="1200" loading="lazy" />
+    <figcaption>Une actualité ouverte : le formulaire à gauche, l'aperçu à droite.</figcaption>
+  </figure>
+  <ul>
+    <li><strong>Titre</strong> court, qui donne envie de lire.</li>
+    <li><strong>Date de publication</strong> : les actualités sont classées par cette date, la plus récente en premier.</li>
+    <li><strong>Résumé</strong> : deux lignes, affichées sous le titre et sur l'accueil.</li>
+    <li><strong>Photo de une</strong> : en largeur, 1200 px au moins. Pour une affiche (portrait ou carrée), cochez <strong>C'est une affiche</strong> : elle s'affichera en entier.</li>
+    <li><strong>Brouillon</strong> : cochée, l'actualité est enregistrée mais n'apparaît pas sur le site.</li>
+    <li><strong>Texte</strong> : le corps de l'article. Les boutons au-dessus du champ mettent en gras, ajoutent un lien, une liste ou un tableau.</li>
+  </ul>
+</section>
+
+<section id="photos" class="wrap">
+  <p class="eyebrow">06</p>
+  <h2>Les photos de l'accueil</h2>
+  <p>Trois à cinq photos qui défilent en grand en haut de la page d'accueil. Ce sont les premières images que voit un visiteur : elles doivent être nettes.</p>
+  <figure>
+    <img src="img/diaporama.webp" alt="Formulaire d'une photo de l'accueil : photo, description, cadrage, luminosité, ordre ; à droite l'aperçu sur ordinateur et sur téléphone, avec un avertissement de taille." width="1920" height="1200" loading="lazy" />
+    <figcaption>À droite, la photo telle qu'elle apparaîtra sur ordinateur et sur téléphone. Le bandeau orange prévient quand la photo est trop petite.</figcaption>
+  </figure>
+  <div class="attention">
+    <p><b>Attention à la qualité</b></p>
+    <p>Il faut une photo d'au moins <strong>1600 pixels de large</strong>, idéalement 2400. Une photo envoyée par <strong>WhatsApp ou Messenger</strong> est réduite et devient floue en grand : demandez le fichier d'origine au photographe (par e-mail, WeTransfer ou clé USB).</p>
+  </div>
+  <ul>
+    <li><strong>Ce que montre la photo</strong> : quelques mots, lus aux personnes aveugles.</li>
+    <li><strong>Cadrage</strong> : la partie de la photo à garder quand l'écran la recoupe. Un ordinateur garde une bande en largeur, un téléphone une bande en hauteur : regardez les deux aperçus.</li>
+    <li><strong>Luminosité</strong> : plus claire pour une photo sombre de gymnase, plus sombre si le titre se lit mal.</li>
+    <li><strong>Ordre</strong> : la photo 1 passe en premier.</li>
+  </ul>
+</section>
+
+<section id="agenda" class="wrap">
+  <p class="eyebrow">07</p>
+  <h2>L'agenda</h2>
+  <p>La page Agenda montre les <strong>événements du club</strong> : tournois, stages, assemblée générale, soirées, repas. Les matchs n'y figurent pas, ils ont leur page.</p>
+  <ul>
+    <li><strong>Date et heure</strong> du début. Pour un événement sur plusieurs jours, remplissez aussi la <strong>date de fin</strong> et décochez <strong>Afficher l'heure</strong>.</li>
+    <li><strong>Type</strong> : tournoi, vie du club, stage ou autre.</li>
+    <li><strong>Lien</strong> : pour s'inscrire, mettez l'adresse de la vente dans la boutique (par exemple <span class="adresse">https://bourges-volleyball.netlify.app/boutique/tournoi-octobre-rose/</span>). Un bouton « S'inscrire ou en savoir plus » apparaît.</li>
+  </ul>
+  <p>Le prochain événement s'affiche en grand, les suivants sont rangés par mois. Un événement passé disparaît tout seul.</p>
+</section>
+
+<section id="matchs" class="wrap">
+  <p class="eyebrow">08</p>
+  <h2>Les matchs</h2>
+  <p><strong>Les matchs FFVolley arrivent tout seuls</strong> : seniors masculins, seniors féminines, M18 filles et garçons, avec les scores, le détail des sets et le classement de chaque poule. Ne les saisissez pas.</p>
+  <figure>
+    <img src="img/matchs.webp" alt="Rubrique Matchs de l'administration, avec son explication en haut et le bouton « + un match »." width="1920" height="1200" loading="lazy" />
+    <figcaption>La rubrique Matchs ne sert qu'aux rencontres hors FFVolley.</figcaption>
+  </figure>
+  <p>La rubrique <strong>Matchs</strong> sert aux autres rencontres : <strong>Ufolep, coupes, matchs amicaux</strong>.</p>
+  <ol>
+    <li>Avant la rencontre : « + un match », remplissez la date, l'équipe, l'adversaire, domicile ou extérieur. Laissez les scores vides.</li>
+    <li>Après la rencontre : rouvrez le match et ajoutez les sets gagnés de chaque côté, et si vous voulez le détail des sets.</li>
+  </ol>
+  <div class="note">
+    <p><b>Le nom de l'équipe compte</b></p>
+    <p>Écrivez-le toujours de la même façon (par exemple « Ufolep ») : c'est lui qui range le match dans le bon onglet de la page Matchs.</p>
+  </div>
+  <h3>Chaque début de saison</h3>
+  <p>En septembre, quand la FFVolley publie les poules de la nouvelle saison, il faut dire au site où trouver chaque équipe : une équipe qui monte ou qui descend change de poule, et l'adresse change avec la saison.</p>
+  <ol>
+    <li>Sur <span class="adresse">ffvbbeach.org</span>, ouvrez les résultats de la ligue (ou de la fédération pour une équipe en national), puis le <strong>calendrier de la poule</strong> de l'équipe.</li>
+    <li>Copiez l'adresse de cette page, dans la barre d'adresse du navigateur. Elle ressemble à <span class="adresse">…vbspo_calendrier.php?saison=2027/2028&amp;codent=LICE&amp;poule=PNM</span></li>
+    <li>Dans l'administration, rubrique <strong>Réglages</strong>, ouvrez <strong>Matchs FFVolley : saison et poules</strong> et collez l'adresse dans la ligne de l'équipe. Une nouvelle équipe engagée ? « Ajouter une équipe ». Une équipe qui ne joue plus en FFVolley ? Supprimez sa ligne.</li>
+    <li>Publiez : deux minutes plus tard, la page Matchs montre la nouvelle saison.</li>
+  </ol>
+</section>
+
+<section id="boutique" class="wrap">
+  <p class="eyebrow">09</p>
+  <h2>La boutique</h2>
+  <p>Une <strong>vente</strong>, c'est l'équivalent d'un formulaire HelloAsso : la boutique textile, une adhésion, un stage, un tournoi, la buvette. Le visiteur choisit sur le site, paie sur HelloAsso, et revient sur le site.</p>
+  <figure>
+    <img src="img/boutique.webp" alt="Formulaire d'une vente : nom, rayon, description, visuel, date et horaires, lieu, dates d'ouverture et de fermeture ; à droite l'aperçu." width="1920" height="1200" loading="lazy" />
+    <figcaption>Le stage de la Toussaint : chaque tarif est un article, avec son nombre de places.</figcaption>
+  </figure>
+  <h3>Créer une vente</h3>
+  <ul>
+    <li><strong>Nom</strong> et <strong>rayon</strong> (équipements, adhésions, stages, tournois, buvette).</li>
+    <li><strong>Description</strong> : ce qui est vendu, pour qui, les consignes (date de livraison, ce qu'il faut apporter…).</li>
+    <li><strong>Date et horaires</strong>, <strong>lieu</strong> : pour un stage ou un tournoi.</li>
+    <li><strong>Ouverture</strong> et <strong>dernier jour pour commander</strong> : la vente s'ouvre et se ferme toute seule à ces dates. Sans date, elle reste ouverte (buvette).</li>
+    <li><strong>Demander le nom de chaque participant</strong> : à cocher pour une adhésion, un stage, un tournoi. Ajoutez au besoin des <strong>questions</strong> (téléphone, droit à l'image…), pas plus que nécessaire.</li>
+  </ul>
+  <h3>Les articles</h3>
+  <ul>
+    <li>Un article par produit ou par tarif (« 1 jour », « 2 jours »…).</li>
+    <li><strong>Prix</strong> en euros, avec un <strong>point</strong> pour les centimes : <code>17.99</code>.</li>
+    <li><strong>Nombre de places</strong> : à remplir s'il y a une limite. Le site arrête les ventes quand c'est complet.</li>
+    <li><strong>Tailles</strong> : séparées par des virgules, par exemple <code>S, M, L, XL</code>. L'acheteur choisit sa taille pour chaque article.</li>
+    <li><strong>Photo</strong> : carrée de préférence, 600 px au moins. Elle s'agrandit au clic.</li>
+  </ul>
+  <div class="attention">
+    <p><b>Une vente, un seul endroit</b></p>
+    <p>Quand une vente est sur le site, fermez le formulaire HelloAsso correspondant : sinon on peut commander des deux côtés, et les places d'un stage seraient vendues deux fois.</p>
+  </div>
+</section>
+
+<section id="commandes" class="wrap">
+  <p class="eyebrow">10</p>
+  <h2>Les commandes payées</h2>
+  <p>Elles se consultent sur une page à part : l'adresse du site suivie de <span class="adresse">/admin/commandes.html</span>. Connectez-vous avec le même compte que l'administration.</p>
+  <figure>
+    <img src="img/commandes.webp" alt="Page Commandes : choix de la vente, total à commander par article et taille, puis la liste des commandes payées avec une case Remis." width="1920" height="1200" loading="lazy" />
+    <figcaption>Ici des commandes d'exemple. En ligne, la page montre les vraies commandes.</figcaption>
+  </figure>
+  <ul>
+    <li><strong>Choisissez la vente</strong> dans la liste en haut.</li>
+    <li><strong>À commander ou à préparer</strong> : le total par article et par taille, prêt pour la commande groupée chez l'équipementier.</li>
+    <li>Dessous, chaque commande payée : nom, e-mail, articles, montant. Cochez <strong>Remis</strong> quand l'acheteur a reçu sa commande.</li>
+    <li><strong>Exporter (Excel)</strong> télécharge la liste, par exemple pour les inscrits d'un stage.</li>
+  </ul>
+  <div class="note">
+    <p><b>Données personnelles</b></p>
+    <p>Ces listes contiennent des noms, des e-mails, parfois des téléphones. Ne les transférez qu'aux personnes qui en ont besoin, et supprimez les fichiers exportés quand ils ne servent plus. Le site efface lui-même les commandes au bout d'un an.</p>
+  </div>
+  <p class="discret">Un remboursement se fait dans l'espace HelloAsso du club, rubrique des paiements.</p>
+</section>
+
+<section id="autres" class="wrap">
+  <p class="eyebrow">11</p>
+  <h2>Équipes, partenaires, textes</h2>
+  <ul>
+    <li><strong>Équipes</strong> : en début de saison, mettez à jour les créneaux, le coach, le tarif et la photo. L'effectif (joueurs, postes, numéros) est facultatif.</li>
+    <li><strong>Partenaires</strong> : nom, niveau (principal, officiel, institutionnel), lien et logo. Un logo en PNG à fond transparent rend mieux.</li>
+    <li><strong>Textes des pages</strong> : le texte du haut de l'accueil, l'histoire et le palmarès du club.</li>
+  </ul>
+</section>
+
+<section id="regles" class="wrap">
+  <p class="eyebrow">12</p>
+  <h2>Les bons réflexes</h2>
+  <ul>
+    <li><strong>Regroupez vos modifications</strong> avant de publier : une vingtaine de publications par mois, pas plus.</li>
+    <li><strong>Des photos d'origine</strong>, jamais passées par WhatsApp ou Messenger.</li>
+    <li><strong>Demandez l'accord</strong> avant de publier la photo ou le nom d'un enfant.</li>
+    <li><strong>Pas de données personnelles</strong> dans une actualité : ni téléphone ni adresse de particulier.</li>
+    <li><strong>Vérifiez sur le site</strong> deux minutes après avoir publié.</li>
+    <li><strong>Un doute, un bug ?</strong> Prévenez la personne qui s'occupe du site avant de tenter une réparation.</li>
+  </ul>
+</section>
+</main>
+
+<footer class="wrap pied">
+  Bourges Volley-Ball · Guide de l'administration · Mis à jour en octobre 2026
+</footer>
+</body>
+</html>

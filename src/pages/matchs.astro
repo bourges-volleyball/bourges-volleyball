@@ -1,184 +1,394 @@
 ---
 import Base from "../layouts/Base.astro";
-import { matchs, dateLongue, heure, gagne, finDuMatch } from "../lib/donnees";
+import { matchs, classements, bilan, parSemaine, dateLongue, heure, gagne, finDuMatch, FUSEAU } from "../lib/donnees";
 
 const { joues, aVenir } = await matchs();
-// Equipes presentes dans le calendrier, pour le filtre
-const lesEquipes = [...new Set([...aVenir, ...joues].map((m) => m.data.equipe))].sort();
+const maintenant = Date.now();
+
+/* En haut, la prochaine semaine de matchs, toutes equipes confondues. On en
+   prepare deux : si la premiere se termine avant la reconstruction du lundi,
+   le navigateur la masque (data-jusqua) et la CSS montre la suivante. */
+const semaines = parSemaine(aVenir.filter((m) => finDuMatch(m.data.date).getTime() > maintenant)).slice(0, 2);
+
+/** « samedi 7 et dimanche 8 novembre » */
+function jours(liste: { data: { date: Date } }[]) {
+  const dates = [...new Set(liste.map((m) => dateLongue(m.data.date)))];
+  const mois = (s: string) => s.split(" ").at(-1);
+  return new Intl.ListFormat("fr", { type: "conjunction" }).format(
+    dates.map((s, i) => (i < dates.length - 1 && mois(s) === mois(dates.at(-1)!) ? s.replace(/ \S+$/, "") : s)),
+  );
+}
+const court = (d: Date) => d.toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short", timeZone: FUSEAU });
+
+type Match = (typeof joues)[number];
+/** Equipes et score dans l'ordre de la feuille de match : celle qui recoit d'abord. */
+const affiche = (m: Match) => ({
+  recoit: m.data.domicile ? "Bourges VB" : m.data.adversaire,
+  visite: m.data.domicile ? m.data.adversaire : "Bourges VB",
+  score: m.data.domicile ? `${m.data.scoreNous} – ${m.data.scoreEux}` : `${m.data.scoreEux} – ${m.data.scoreNous}`,
+});
+
+/* Une fiche par equipe : les equipes FFVolley dans l'ordre des poules
+   (scripts/ffvb.mjs), puis celles saisies a la main (Ufolep, amicaux). */
+const ordre = Object.keys(classements);
+const place = (e: string) => (ordre.includes(e) ? ordre.indexOf(e) : ordre.length);
+const fiches = [...new Set([...aVenir, ...joues].map((m) => m.data.equipe))]
+  .sort((a, b) => place(a) - place(b) || a.localeCompare(b))
+  .map((nom) => {
+    const resultats = joues.filter((m) => m.data.equipe === nom);
+    const calendrier = aVenir.filter((m) => m.data.equipe === nom);
+    const table = classements[nom] ?? [];
+    return {
+      nom,
+      id: "equipe-" + nom.toLowerCase().normalize("NFD").replace(/[^a-z0-9]+/g, "-"),
+      competition: (calendrier[0] ?? resultats[0]).data.competition,
+      resultats,
+      calendrier,
+      table,
+      nous: table.find((l) => l.nous),
+      bilan: bilan(resultats),
+    };
+  });
+const pluriel = (n: number, mot: string) => `${n} ${mot}${n > 1 ? "s" : ""}`;
 ---
 
 <Base
   titre="Matchs et résultats"
-  description="Calendrier et résultats des équipes du Bourges Volley-Ball : prénationale masculine, régionale féminine et jeunes."
+  description="Calendrier, résultats et classements des équipes du Bourges Volley-Ball : prénationale masculine, régionale féminine et jeunes."
 >
   <section class="page-head wrap">
     <p class="eyebrow">Saison en cours</p>
     <h1>Matchs &amp; résultats</h1>
-    <p>Toutes les rencontres du club, à venir et jouées, toutes équipes confondues.</p>
+    <p>Les prochains matchs du club, puis équipe par équipe : résultats, classement et calendrier.</p>
   </section>
 
   {
-    lesEquipes.length > 1 && (
-      <div class="wrap filtre">
-        <label for="equipe">Équipe</label>
-        <select id="equipe">
-          <option value="">Toutes les équipes</option>
-          {lesEquipes.map((e) => <option value={e}>{e}</option>)}
-        </select>
-        <p class="compte" id="compte" aria-live="polite"></p>
-      </div>
+    semaines.length > 0 && (
+      <section class="section wrap">
+        {semaines.map((s) => (
+          <div class="semaine" data-jusqua={finDuMatch(s.at(-1)!.data.date).toISOString()}>
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Prochains matchs</p>
+                <h2>{jours(s)}</h2>
+              </div>
+            </div>
+            <ul class="affiches">
+              {s.map((m) => {
+                const a = affiche(m);
+                return (
+                  <li class:list={["affiche", { dom: m.data.domicile }]} data-jusqua={finDuMatch(m.data.date).toISOString()}>
+                    <p class="haut">
+                      <span class="mono">{court(m.data.date)} · {heure(m.data.date)}</span>
+                      <span class="etat">{m.data.domicile ? "Domicile" : "Extérieur"}</span>
+                    </p>
+                    <p class="eyebrow">{m.data.equipe}</p>
+                    <p class="versus">
+                      <span class:list={{ nous: m.data.domicile }}>{a.recoit}</span>
+                      <span class="contre">reçoit</span>
+                      <span class:list={{ nous: !m.data.domicile }}>{a.visite}</span>
+                    </p>
+                    <p class="ou">
+                      {m.data.competition}
+                      {m.data.lieu && <><br />{m.data.lieu}</>}
+                    </p>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        ))}
+      </section>
     )
   }
 
   <section class="section wrap">
-    <div class="section-head"><h2>À venir</h2></div>
-    {
-      aVenir.length === 0 ? (
-        <p class="vide">Aucune rencontre programmée pour l&rsquo;instant.</p>
-      ) : (
-        <ul class="liste">
-          {aVenir.map((m) => (
-            <li data-equipe={m.data.equipe} data-jusqua={finDuMatch(m.data.date).toISOString()}>
-              <span class="quand">
-                <b>{dateLongue(m.data.date)}</b>
-                <span class="mono">{heure(m.data.date)}</span>
-              </span>
-              <span class="qui">
-                {m.data.domicile
-                  ? `Bourges VB \u2014 ${m.data.adversaire}`
-                  : `${m.data.adversaire} \u2014 Bourges VB`}
-              </span>
-              <span class="ou">
-                {m.data.competition}
-                {m.data.lieu ? ` \u00b7 ${m.data.lieu}` : ""}
-              </span>
-              <span class:list={["etat", m.data.domicile ? "dom" : "ext"]}>
-                {m.data.domicile ? "Domicile" : "Extérieur"}
-              </span>
-            </li>
-          ))}
-        </ul>
-      )
-    }
-  </section>
+    <div class="section-head"><h2>Par équipe</h2></div>
 
-  <section class="section wrap">
-    <div class="section-head"><h2>Résultats</h2></div>
-    {
-      joues.length === 0 ? (
-        <p class="vide">Les résultats apparaîtront ici après la première journée.</p>
-      ) : (
-        <ul class="liste resultats">
-          {joues.map((m) => (
-            <li class:list={{ win: gagne(m) }} data-equipe={m.data.equipe}>
-              <span class="quand">
-                <b>{dateLongue(m.data.date)}</b>
-                <span class="mono">{m.data.equipe}</span>
-              </span>
-              <span class="qui">
-                {m.data.domicile
-                  ? `Bourges VB \u2014 ${m.data.adversaire}`
-                  : `${m.data.adversaire} \u2014 Bourges VB`}
-              </span>
-              <span class="score">
-                {m.data.domicile
-                  ? `${m.data.scoreNous} \u2014 ${m.data.scoreEux}`
-                  : `${m.data.scoreEux} \u2014 ${m.data.scoreNous}`}
-              </span>
-              {m.data.sets && <span class="sets">{m.data.sets}</span>}
-            </li>
-          ))}
-        </ul>
-      )
-    }
+    {/* Affiche par le script : sans lui, toutes les fiches restent visibles */}
+    <div class="onglets" role="tablist" aria-label="Équipes" hidden>
+      {fiches.map((f, i) => (
+        <button type="button" role="tab" id={`onglet-${f.id}`} aria-controls={f.id} aria-selected={i === 0 ? "true" : "false"} data-equipe={f.nom}>
+          <span>{f.nom}</span>
+        </button>
+      ))}
+    </div>
+
+    {fiches.length === 0 && <p class="vide">Aucune rencontre pour l&rsquo;instant.</p>}
+
+    {fiches.map((f) => (
+      <article class="fiche" id={f.id} role="tabpanel" aria-labelledby={`onglet-${f.id}`}>
+        <header class="fiche-tete">
+          <p class="eyebrow">{f.competition}</p>
+          <h3>{f.nom}</h3>
+          <ul class="bilan">
+            {f.nous && <li><b>{f.nous.rang}<span class="ord">{f.nous.rang === 1 ? "er" : "e"}</span></b> sur {f.table.length}</li>}
+            {f.nous && <li><b>{f.nous.points}</b> pts</li>}
+            {f.resultats.length > 0 && (
+              <li>{pluriel(f.bilan.victoires, "victoire")} · {pluriel(f.bilan.defaites, "défaite")}</li>
+            )}
+            {f.bilan.serie >= 2 && (
+              <li class:list={["serie", { gagne: f.bilan.enGagnant }]}>
+                {f.bilan.serie} {f.bilan.enGagnant ? "victoires" : "défaites"} de suite
+              </li>
+            )}
+          </ul>
+        </header>
+
+        <div class:list={["fiche-corps", { "avec-classement": f.table.length > 0 }]}>
+          <div>
+            <h4 class="eyebrow">Résultats</h4>
+            {f.resultats.length === 0 ? (
+              <p class="vide">Pas encore de match joué.</p>
+            ) : (
+              <ol class="scores">
+                {f.resultats.map((m) => {
+                  const a = affiche(m);
+                  const v = gagne(m);
+                  return (
+                    <li class:list={{ gagne: v }}>
+                      <span class="vd" title={v ? "Victoire" : "Défaite"}>{v ? "V" : "D"}</span>
+                      <span class="qui">
+                        <span class="mono">{court(m.data.date)}</span>
+                        {a.recoit} — {a.visite}
+                      </span>
+                      <span class="score">{a.score}</span>
+                      {m.data.forfait ? (
+                        <span class="sets">{v ? "Gagné par forfait" : "Perdu par forfait"}</span>
+                      ) : (
+                        m.data.sets && <span class="sets">{m.data.sets.split(/,\s*/).join("  ·  ")}</span>
+                      )}
+                    </li>
+                  );
+                })}
+              </ol>
+            )}
+          </div>
+
+          {f.table.length > 0 && (
+            <div>
+              <h4 class="eyebrow">Classement</h4>
+              <table class="classement">
+                <thead>
+                  <tr>
+                    <th scope="col"><abbr title="Rang">#</abbr></th>
+                    <th scope="col">Équipe</th>
+                    <th scope="col"><abbr title="Points">Pts</abbr></th>
+                    <th scope="col"><abbr title="Matchs joués">J</abbr></th>
+                    <th scope="col"><abbr title="Victoires">V</abbr></th>
+                    <th scope="col"><abbr title="Défaites">D</abbr></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {f.table.map((l) => (
+                    <tr class:list={{ nous: l.nous }}>
+                      <td>{l.rang}</td>
+                      <th scope="row">{l.nom}</th>
+                      <td><b>{l.points}</b></td>
+                      <td>{l.joues}</td>
+                      <td>{l.gagnes}</td>
+                      <td>{l.perdus}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+
+        {f.calendrier.length > 0 && (
+          <details class="calendrier">
+            <summary>La suite du calendrier</summary>
+            <ol>
+              {f.calendrier.map((m) => {
+                const a = affiche(m);
+                return (
+                  <li data-jusqua={finDuMatch(m.data.date).toISOString()}>
+                    <span class="mono">{court(m.data.date)} · {heure(m.data.date)}</span>
+                    <span class="qui">{a.recoit} — {a.visite}</span>
+                    <span class="ou">{m.data.lieu}</span>
+                    <span class:list={["etat", { dom: m.data.domicile }]}>{m.data.domicile ? "Domicile" : "Extérieur"}</span>
+                  </li>
+                );
+              })}
+            </ol>
+          </details>
+        )}
+      </article>
+    ))}
   </section>
 </Base>
 
 <style>
-  .liste { list-style: none; padding: 0; margin: 0; display: grid; }
-  .liste li {
-    display: grid; gap: 0.25rem 1.25rem; padding: 1rem 0;
-    border-top: 1px solid var(--hair); align-items: baseline;
+  /* Seule la premiere semaine encore a venir s'affiche */
+  .semaine:not([hidden]) ~ .semaine { display: none; }
+
+  .affiches {
+    list-style: none; padding: 0; margin: 0;
+    display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
   }
-  .liste li:first-child { border-top: 2px solid var(--structure); }
-  @media (min-width: 820px) {
-    .liste li { grid-template-columns: 15rem 1fr auto; }
-    .resultats li { grid-template-columns: 15rem 1fr auto; }
+  .affiche {
+    display: grid; gap: 0.6rem; align-content: start;
+    background: var(--noir-2); border: 1px solid var(--hair); border-top: 3px solid var(--hair);
+    padding: 1.1rem 1.2rem 1.25rem;
   }
-  .quand b {
+  /* A domicile : le match ou l'on peut venir encourager l'equipe, en vert */
+  .affiche.dom { border-top-color: var(--signal); }
+  .section-head .eyebrow { color: var(--signal); }
+  .affiche p { margin: 0; }
+  .haut { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; }
+  .haut .mono { font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; font-size: 0.9rem; }
+  .versus {
+    display: grid; gap: 0.15rem;
     font-family: "Barlow Condensed", sans-serif; font-weight: 800;
-    text-transform: uppercase; font-size: 1.2rem; display: block;
+    font-size: 1.55rem; line-height: 1; text-transform: uppercase;
   }
-  .quand .mono {
-    font-size: var(--s0); letter-spacing: 0.1em;
-    text-transform: uppercase; color: var(--fg-2);
+  .versus .nous { color: var(--signal); }
+  .contre {
+    font-family: "Barlow Semi Condensed", sans-serif; font-weight: 600;
+    font-size: 0.7rem; letter-spacing: 0.16em; color: var(--fg-2);
   }
-  /* Les noms FFVolley arrivent en majuscules : tout passe en capitales
-     pour que « Bourges VB » et l adversaire aient la meme allure. */
-  .qui { font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em; }
   .ou {
     font-family: "Barlow Semi Condensed", sans-serif; font-size: var(--s0);
     letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-2);
   }
   .etat {
-    font-family: "Barlow Semi Condensed", sans-serif; font-size: 0.66rem;
-    letter-spacing: 0.14em; text-transform: uppercase;
-    border: 1px solid var(--hair); padding: 0.15rem 0.5rem;
-    color: var(--fg-2); justify-self: start;
+    font-family: "Barlow Semi Condensed", sans-serif; font-weight: 600; font-size: 0.66rem;
+    letter-spacing: 0.14em; text-transform: uppercase; white-space: nowrap;
+    border: 1px solid var(--hair); padding: 0.15rem 0.5rem; color: var(--fg-2);
   }
+  .dom .etat, .etat.dom { background: var(--signal); border-color: var(--signal); color: var(--sur-signal); }
+
+  /* Onglets d'equipe : l'oblique des boutons du site */
+  .onglets { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 1.75rem; }
+  .onglets button {
+    transform: skewX(-10deg); cursor: pointer; min-height: 44px;
+    background: transparent; color: var(--fg); border: 1px solid rgba(255, 255, 255, 0.35);
+    padding: 0.55rem 1.1rem;
+    font-family: "Barlow Semi Condensed", sans-serif; font-weight: 600;
+    font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .onglets button > span { display: inline-block; transform: skewX(10deg); }
+  .onglets button:hover { border-color: var(--signal); }
+  .onglets [aria-selected="true"] { background: var(--signal); color: var(--sur-signal); border-color: var(--signal); }
+  /* Sur telephone, une seule rangee qui defile plutot que trois lignes de boutons */
+  @media (max-width: 699px) {
+    .onglets {
+      flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none;
+      margin-inline: calc(var(--pad) * -1); padding: 0.15rem var(--pad);
+    }
+    .onglets button { flex: none; }
+  }
+
+  .fiche + .fiche { margin-top: 3rem; }
+  .fiche-tete { border-top: 2px solid var(--signal); padding-top: 1.1rem; }
+  .fiche-tete h3 { font-size: clamp(1.8rem, 5vw, 2.6rem); margin-top: 0.35rem; }
+  .bilan {
+    list-style: none; padding: 0; margin: 0.9rem 0 0;
+    display: flex; flex-wrap: wrap; gap: 0.5rem;
+  }
+  .bilan li {
+    background: var(--noir-2); border: 1px solid var(--hair); padding: 0.3rem 0.75rem;
+    font-family: "Barlow Semi Condensed", sans-serif; font-size: 0.9rem;
+    letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .bilan b { font-size: 1.1rem; color: var(--signal); }
+  .ord { text-transform: none; font-size: 0.8em; }
+  .serie.gagne { color: var(--signal); border-color: var(--signal); }
+
+  .fiche-corps { display: grid; gap: 2rem; margin-top: 1.75rem; }
+  @media (min-width: 900px) {
+    .fiche-corps.avec-classement { grid-template-columns: 1.15fr 1fr; gap: 3rem; }
+  }
+  h4.eyebrow { margin-bottom: 0.75rem; }
+
+  .scores { list-style: none; padding: 0; margin: 0; }
+  .scores li {
+    display: grid; grid-template-columns: auto 1fr auto; gap: 0.2rem 0.9rem; align-items: center;
+    padding: 0.8rem 0; border-top: 1px solid var(--hair);
+  }
+  .vd {
+    width: 1.7rem; height: 1.7rem; display: grid; place-items: center;
+    font-family: "Barlow Condensed", sans-serif; font-weight: 800;
+    background: var(--noir-3); color: var(--fg-2);
+  }
+  .gagne .vd { background: var(--signal); color: var(--sur-signal); }
+  .scores .qui { display: grid; font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em; line-height: 1.25; }
+  .scores .qui .mono { font-weight: 400; font-size: var(--s0); letter-spacing: 0.1em; color: var(--fg-2); }
   .score {
     font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 1.6rem;
-    font-variant-numeric: tabular-nums; color: var(--fg-2);
+    font-variant-numeric: tabular-nums; color: var(--fg-2); white-space: nowrap;
   }
   /* Gagner : l'un des deux seuls emplois du vert */
-  .win .score { color: var(--signal); }
+  .gagne .score { color: var(--signal); }
   .sets {
-    grid-column: 1 / -1;
+    grid-column: 2 / -1;
     font-family: "Barlow Semi Condensed", sans-serif; font-size: var(--s0);
-    color: var(--fg-2); font-variant-numeric: tabular-nums;
+    color: var(--fg-2); font-variant-numeric: tabular-nums; white-space: pre-wrap;
   }
-  .vide { color: var(--fg-2); }
-  .liste li[hidden] { display: none; }
 
-  .filtre {
-    display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 1rem;
-    padding-top: 1.25rem;
+  .classement { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  .classement th, .classement td { padding: 0.5rem 0.4rem; text-align: right; border-top: 1px solid var(--hair); }
+  .classement thead th {
+    border-top: 0; color: var(--fg-2); font-weight: 600;
+    font-family: "Barlow Semi Condensed", sans-serif; font-size: var(--s0); letter-spacing: 0.1em;
   }
-  .filtre label {
+  .classement abbr { text-decoration: none; }
+  .classement th[scope="row"], .classement thead th:nth-child(2) {
+    text-align: left; font-weight: 600; text-transform: uppercase; font-size: 0.88rem; letter-spacing: 0.02em;
+  }
+  .classement td:first-child { text-align: left; color: var(--fg-2); width: 2rem; }
+  .classement td:not(:nth-child(3)) { color: var(--fg-2); }
+  /* Le club : la ligne en blanc, couleur de l'identite */
+  .classement .nous th, .classement .nous td { background: var(--structure); color: var(--sur-structure); }
+  .classement .nous td:first-child { background: var(--signal); color: var(--sur-signal); font-weight: 700; text-align: center; }
+
+  .calendrier { margin-top: 1.75rem; border-top: 1px solid var(--hair); }
+  .calendrier summary {
+    cursor: pointer; padding: 0.9rem 0; min-height: 44px;
     font-family: "Barlow Semi Condensed", sans-serif; font-weight: 600;
-    font-size: var(--s0); letter-spacing: 0.14em; text-transform: uppercase;
-    color: var(--fg-2);
+    font-size: var(--s0); letter-spacing: 0.14em; text-transform: uppercase; color: var(--signal);
   }
-  .filtre select {
-    background: var(--noir-2); color: var(--fg);
-    border: 1px solid var(--hair); padding: 0.55rem 0.8rem;
-    font: inherit; font-weight: 600; min-height: 44px;
+  .calendrier ol { list-style: none; padding: 0; margin: 0; }
+  .calendrier li {
+    display: grid; gap: 0.15rem 1rem; padding: 0.75rem 0; border-top: 1px solid var(--hair); align-items: baseline;
   }
-  .filtre select:focus { border-color: var(--signal); }
-  .compte { margin: 0; color: var(--fg-2); font-size: 0.9rem; }
+  @media (min-width: 820px) {
+    .calendrier li { grid-template-columns: 11rem 1fr 14rem auto; }
+  }
+  .calendrier .mono { text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.9rem; }
+  .calendrier .qui { font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em; }
+  .calendrier .etat { justify-self: start; }
+
+  .vide { color: var(--fg-2); }
 </style>
 
 <script>
-  const choix = document.querySelector("#equipe");
-  const compte = document.querySelector("#compte");
-  if (choix instanceof HTMLSelectElement && compte) {
-    const lignes = [...document.querySelectorAll<HTMLElement>(".liste li[data-equipe]")];
-    const filtrer = () => {
-      const e = choix.value;
-      let n = 0;
-      for (const li of lignes) {
-        // Un match deja passe reste masque (data-jusqua, voir Base.astro)
-        const passe = !!li.dataset.jusqua && Date.parse(li.dataset.jusqua) <= Date.now();
-        li.hidden = passe || (e !== "" && li.dataset.equipe !== e);
-        if (!li.hidden) n++;
+  const liste = document.querySelector<HTMLElement>('[role="tablist"]');
+  const onglets = [...document.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+  if (liste && onglets.length > 1) {
+    liste.hidden = false;
+    const choisir = (choisi: HTMLButtonElement, memoriser = true) => {
+      for (const o of onglets) {
+        const actif = o === choisi;
+        o.setAttribute("aria-selected", String(actif));
+        o.tabIndex = actif ? 0 : -1;
+        document.getElementById(o.getAttribute("aria-controls")!)!.hidden = !actif;
       }
-      compte.textContent = e ? `${n} rencontre${n > 1 ? "s" : ""}` : "";
-      // Memorise dans l'adresse : le lien se partage avec le filtre
-      history.replaceState(null, "", e ? `?equipe=${encodeURIComponent(e)}` : location.pathname);
+      // Memorise dans l'adresse : le lien se partage avec l'equipe choisie
+      if (memoriser) history.replaceState(null, "", `?equipe=${encodeURIComponent(choisi.dataset.equipe!)}`);
     };
+    onglets.forEach((o, i) => {
+      o.addEventListener("click", () => choisir(o));
+      o.addEventListener("keydown", (e) => {
+        const pas = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+        if (!pas) return;
+        const suivant = onglets[(i + pas + onglets.length) % onglets.length];
+        choisir(suivant);
+        suivant.focus();
+      });
+    });
     const demande = new URLSearchParams(location.search).get("equipe");
-    if (demande && [...choix.options].some((o) => o.value === demande)) choix.value = demande;
-    choix.addEventListener("change", filtrer);
-    filtrer();
+    choisir(onglets.find((o) => o.dataset.equipe === demande) ?? onglets[0], false);
   }
 </script>

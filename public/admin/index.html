@@ -12,6 +12,15 @@
     <style>
       [class*="CustomIconWrapper"] { text-align: center; }
 
+      /* Lien vers le guide des benevoles (/admin/guide/), en bas a gauche */
+      .lien-guide {
+        position: fixed; left: 12px; bottom: 12px; z-index: 300;
+        background: #0d0e11; color: #b4e600; text-decoration: none;
+        font: 600 13px/1 sans-serif; letter-spacing: .06em; text-transform: uppercase;
+        padding: 9px 12px; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,.25);
+      }
+      .lien-guide:hover { background: #b4e600; color: #0d0e11; }
+
       /* Decap est prevu pour un ordinateur : son editeur impose 800 px de
          large, et l'apercu se tient a cote du formulaire. Sur telephone,
          tout debordait a droite et le bouton Publier sortait de l'ecran.
@@ -41,6 +50,8 @@
     </style>
   </head>
   <body>
+    <a class="lien-guide" href="/admin/guide/" target="_blank" rel="noopener">Guide</a>
+
     <!-- Identification des benevoles, geree par Netlify -->
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 
