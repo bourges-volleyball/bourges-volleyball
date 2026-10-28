@@ -268,7 +268,8 @@ et paie sans quitter le site ; seul le paiement par carte passe par HelloAsso.
 modifier un prix dans l'administration s'applique dès la publication suivante.
 
 ### Commandes payées
-Elles se consultent sur **/admin/commandes.html**, avec le même compte que
+Elles se consultent avec le bouton **Commandes**, en haut de l'administration
+(ou sur **/admin/commandes.html**), avec le même compte que
 l'administration. Pour chaque vente :
 - le **résumé** des quantités, taille par taille : c'est la commande groupée à
   passer chez l'équipementier ;
@@ -632,7 +633,8 @@ sets** et les **forfaits** (« F », comptés 3-0) : la page Matchs les affiche
 par équipe, dans l'ordre de `POULES`.
 
 Le guide des bénévoles, lui, est une page statique : `public/admin/guide/`
-(bouton vert « Guide » dans la barre du haut de l'administration). Son PDF se régénère
+(bouton vert « Guide » dans la barre du haut de l'administration, à côté du
+bouton « Commandes »). Son PDF se régénère
 depuis le navigateur, Imprimer > Enregistrer en PDF, après toute modification.
 
 **Il n'échoue jamais bruyamment.** Si la fédération est injoignable ou change

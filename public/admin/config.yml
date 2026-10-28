@@ -388,7 +388,7 @@ collections:
   - name: "boutique"
     label: "Boutique"
     label_singular: "une vente"
-    description: "Tout ce qui se paie sur le site : équipements, adhésions, stages, tournois, buvette. Les commandes payées se consultent sur la page Commandes (adresse du site suivie de /admin/commandes.html)."
+    description: "Tout ce qui se paie sur le site : équipements, adhésions, stages, tournois, buvette. Les commandes payées se consultent avec le bouton Commandes, en haut de l'administration."
     folder: "src/content/boutique"
     create: true
     slug: "{{slug}}"

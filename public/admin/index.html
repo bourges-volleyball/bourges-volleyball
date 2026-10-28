@@ -12,24 +12,34 @@
     <style>
       [class*="CustomIconWrapper"] { text-align: center; }
 
-      /* Lien vers le guide des benevoles (/admin/guide/). Range dans la barre
-         du haut, juste avant « Nouveau », par le script en bas de page ; en
-         attendant (ecran de connexion), il flotte en haut a droite. */
-      .lien-guide {
-        position: fixed; right: 12px; top: 12px; z-index: 400;
+      /* Boutons Commandes (/admin/commandes.html) et Guide (/admin/guide/).
+         Ranges dans la barre du haut, juste avant « Nouveau », par le script
+         en bas de page ; en attendant (ecran de connexion), ils flottent en
+         haut a droite. */
+      .liens-admin { position: fixed; right: 12px; top: 12px; z-index: 400; display: flex; gap: 8px; }
+      .liens-admin.dans-barre { position: static; margin-right: 10px; }
+      .lien-admin {
         display: inline-flex; align-items: center; gap: 7px;
-        background: #b4e600; color: #0d0e11; text-decoration: none; white-space: nowrap;
+        text-decoration: none; white-space: nowrap;
         font: 700 14px/1 sans-serif; letter-spacing: .05em; text-transform: uppercase;
-        padding: 9px 14px; border-radius: 5px; box-shadow: 0 2px 8px rgba(0,0,0,.2);
+        padding: 9px 14px; border-radius: 5px; border: 2px solid #0d0e11;
+        background: #0d0e11; color: #b4e600;
       }
-      .lien-guide:hover, .lien-guide:focus-visible { background: #0d0e11; color: #b4e600; }
-      .lien-guide .rond {
+      .lien-admin:hover, .lien-admin:focus-visible { background: #fff; color: #0d0e11; }
+      .lien-admin.guide { background: #b4e600; color: #0d0e11; border-color: #b4e600; }
+      .lien-admin.guide:hover, .lien-admin.guide:focus-visible { background: #0d0e11; color: #b4e600; border-color: #0d0e11; }
+      .lien-admin .rond {
         display: grid; place-items: center; width: 18px; height: 18px; border-radius: 50%;
-        background: #0d0e11; color: #b4e600; font-size: 12px;
+        background: currentColor; font-size: 12px;
       }
-      .lien-guide:hover .rond, .lien-guide:focus-visible .rond { background: #b4e600; color: #0d0e11; }
-      .lien-guide.dans-barre { position: static; margin-right: 10px; box-shadow: none; }
-      @media (max-width: 599px) { .lien-guide .long { display: none; } }
+      .lien-admin .rond b { color: #0d0e11; }
+      .lien-admin.guide .rond b { color: #b4e600; }
+      .lien-admin.guide:hover .rond b, .lien-admin.guide:focus-visible .rond b { color: #0d0e11; }
+      .lien-admin:not(.guide):hover .rond b, .lien-admin:not(.guide):focus-visible .rond b { color: #fff; }
+      @media (max-width: 599px) {
+        .lien-admin { padding: 8px 10px; font-size: 13px; }
+        .lien-admin .long { display: none; }
+      }
 
       /* Decap est prevu pour un ordinateur : son editeur impose 800 px de
          large, et l'apercu se tient a cote du formulaire. Sur telephone,
@@ -60,22 +70,25 @@
     </style>
   </head>
   <body>
-    <a class="lien-guide" href="/admin/guide/" target="_blank" rel="noopener"><span class="rond" aria-hidden="true">?</span>Guide<span class="long">d'utilisation</span></a>
+    <nav class="liens-admin" aria-label="Commandes et guide">
+      <a class="lien-admin" href="/admin/commandes.html" target="_blank" rel="noopener"><span class="rond" aria-hidden="true"><b>€</b></span><span>Commandes<span class="long"> de la boutique</span></span></a>
+      <a class="lien-admin guide" href="/admin/guide/" target="_blank" rel="noopener"><span class="rond" aria-hidden="true"><b>?</b></span><span>Guide<span class="long"> d'utilisation</span></span></a>
+    </nav>
     <script>
-      // Le bouton Guide va dans la barre du haut de Decap des qu'elle existe,
-      // et y revient si Decap la redessine (apres une connexion par exemple).
-      // Classe [class*="AppHeaderActions"] de Decap 3.16 : si elle change, le
-      // bouton reste simplement flottant en haut a droite.
+      // Les boutons vont dans la barre du haut de Decap des qu'elle existe,
+      // et y reviennent si Decap la redessine (apres une connexion par exemple).
+      // Classe [class*="AppHeaderActions"] de Decap 3.16 : si elle change, les
+      // boutons restent simplement flottants en haut a droite.
       (function () {
-        var guide = document.querySelector(".lien-guide");
+        var liens = document.querySelector(".liens-admin");
         new MutationObserver(function () {
           var barre = document.querySelector('[class*="AppHeaderActions"]');
-          if (barre && guide.parentNode !== barre) {
-            barre.prepend(guide);
-            guide.classList.add("dans-barre");
-          } else if (!barre && guide.parentNode !== document.body) {
-            document.body.prepend(guide);
-            guide.classList.remove("dans-barre");
+          if (barre && liens.parentNode !== barre) {
+            barre.prepend(liens);
+            liens.classList.add("dans-barre");
+          } else if (!barre && liens.parentNode !== document.body) {
+            document.body.prepend(liens);
+            liens.classList.remove("dans-barre");
           }
         }).observe(document.body, { childList: true, subtree: true });
       })();
