@@ -54,7 +54,7 @@ const { surtitre, intro, chiffres, histoire, palmares, notePalmares } = (await g
             <span class="annee mono">{p.annee}</span>
             <span class="quoi">
               <b>{p.titre}</b>
-              <span class="detail">{p.detail}</span>
+              {p.detail && <span class="detail">{p.detail}</span>}
             </span>
           </li>
         ))

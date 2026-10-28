@@ -218,7 +218,7 @@ collections:
             fields:
               - { name: "annee", label: "Année ou saison", widget: "string" }
               - { name: "titre", label: "Titre remporté", widget: "string" }
-              - { name: "detail", label: "Précision", widget: "string", hint: "Par exemple : Remportée par les filles." }
+              - { name: "detail", label: "Précision", widget: "string", required: false, hint: "Facultatif. Par exemple : Remportée par les filles. Plusieurs résultats de la même saison : séparés par « · »." }
           - { name: "notePalmares", label: "Remarque sous le palmarès", widget: "text", required: false, hint: "Laissée vide, elle ne s'affiche pas." }
 
   - name: "equipes"

@@ -197,7 +197,7 @@ const pageClub = defineCollection({
     intro: z.string(),
     chiffres: z.array(z.object({ valeur: z.string(), legende: z.string() })).default([]),
     histoire: z.array(z.object({ date: z.string(), titre: z.string(), texte: z.string() })).default([]),
-    palmares: z.array(z.object({ annee: z.string(), titre: z.string(), detail: z.string() })).default([]),
+    palmares: z.array(z.object({ annee: z.string(), titre: z.string(), detail: facultatif(z.string()) })).default([]),
     notePalmares: z.string().optional(),
   }),
 });
