@@ -584,8 +584,9 @@ Netlify `HELLOASSO_API = https://api.helloasso-sandbox.com` avec ses clés.
 - [x] Vingt actualités de la saison 2025-2026, avec leurs photos, l'historique
   et le palmarès complet, repris de l'ancien site Clubeo
   (bourgesvolley.clubeo.com) en octobre 2026 ; premier album de la galerie
-  (tournoi du BVB 2026). La photo de l'actu du 10 octobre 2025, une coupure
-  du Berry Républicain, n'a pas été reprise : les droits sont au journal
+  (tournoi du BVB 2026). La coupure du Berry Républicain de l'actu du
+  10 octobre 2025 est reprise avec l'accord dont dispose le club, source
+  citée sous l'article
 - [x] Page 404
 - [x] Logos des partenaires institutionnels cliquables vers leur site
 - [x] Pages Mentions légales, Confidentialité et « Message envoyé »
