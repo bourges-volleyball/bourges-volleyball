@@ -49,10 +49,34 @@ export function verifier(campagne, demande, restantes = {}) {
       return { erreur: reste ? `Il ne reste que ${reste} place(s) pour « ${article.nom} ».` : `« ${article.nom} » est complet.` };
     }
 
+    /* Stage a la journee : chaque personne choisit son nombre de jours et ses
+       options (repas...), une option « par jour » etant comptee chaque jour. */
+    const prix = Math.round(article.prix * 100);
+    const options = article.options ?? [];
+    let montantLigne = 0;
     const details = [];
     for (let i = 0; i < quantite; i++) {
       const d = Array.isArray(l.details) ? l.details[i] ?? {} : {};
       const detail = {};
+      let jours = 1;
+      if (article.jours) {
+        jours = Number(d.jours);
+        if (!Number.isInteger(jours) || jours < 1 || jours > article.jours) {
+          return { erreur: `Choisissez le nombre de jours pour « ${article.nom} ».` };
+        }
+        detail.jours = jours;
+      }
+      let montant = prix * jours;
+      if (options.length) {
+        const choisies = Array.isArray(d.options) ? d.options : [];
+        if (choisies.some((n) => !options.some((o) => o.nom === n))) return { erreur: "Option inconnue." };
+        detail.options = options.filter((o) => choisies.includes(o.nom)).map((o) => o.nom);
+        for (const o of options) {
+          if (choisies.includes(o.nom)) montant += Math.round(o.prix * 100) * (o.parJour ? jours : 1);
+        }
+      }
+      if (article.jours || options.length) detail.montant = montant;
+      montantLigne += montant;
       if (article.tailles?.length) {
         if (!article.tailles.includes(d.taille)) return { erreur: `Choisissez une taille pour « ${article.nom} ».` };
         detail.taille = d.taille;
@@ -71,8 +95,7 @@ export function verifier(campagne, demande, restantes = {}) {
       details.push(detail);
     }
 
-    const prix = Math.round(article.prix * 100);
-    total += prix * quantite;
+    total += montantLigne;
     lignes.push({ article: article.nom, prix, quantite, details });
   }
   if (!lignes.length) return { erreur: "Votre commande est vide." };

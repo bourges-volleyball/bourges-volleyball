@@ -117,6 +117,11 @@ const boutique = defineCollection({
           photo: image().optional(),
           places: facultatif(z.number().int().min(0)),
           tailles: z.array(z.string()).optional(),
+          // Stage : le prix est celui d'une journee, chaque personne choisit de 1 a `jours` jours
+          jours: facultatif(z.number().int().min(1).max(31)),
+          options: z
+            .array(z.object({ nom: z.string(), prix: z.number().positive(), parJour: z.boolean().default(false) }))
+            .default([]),
         }),
       )
       .min(1),

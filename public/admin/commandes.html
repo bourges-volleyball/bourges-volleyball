@@ -79,17 +79,19 @@
         return e;
       }
 
-      // Une ligne par article commande : taille, participant, reponses
+      // Une ligne par article commande : taille, participant, jours et options (stage), reponses
       function unites(c) {
         var r = [];
         c.lignes.forEach(function (l) {
           l.details.forEach(function (d) {
-            r.push({ c: c, article: l.article, prix: l.prix, taille: d.taille || "", participant: d.participant || "", reponses: d.reponses || {} });
+            r.push({ c: c, article: l.article, prix: d.montant != null ? d.montant : l.prix, taille: d.taille || "", participant: d.participant || "",
+              jours: d.jours || 0, options: d.options || [], reponses: d.reponses || {} });
           });
-          if (!l.details.length) for (var i = 0; i < l.quantite; i++) r.push({ c: c, article: l.article, prix: l.prix, taille: "", participant: "", reponses: {} });
+          if (!l.details.length) for (var i = 0; i < l.quantite; i++) r.push({ c: c, article: l.article, prix: l.prix, taille: "", participant: "", jours: 0, options: [], reponses: {} });
         });
         return r;
       }
+      var jours = function (n) { return n ? n + " jour" + (n > 1 ? "s" : "") : ""; };
 
       function selection() {
         return commandes.filter(function (c) { return c.campagne === choix.value; });
@@ -97,12 +99,15 @@
 
       function afficher() {
         var liste = selection();
-        // Le resume sert a passer la commande groupee : combien de chaque article, par taille
+        // Le resume sert a passer la commande groupee : combien de chaque article, par taille.
+        // Pour un stage : combien de participants, de journees, et de chaque option (repas)
         var compte = {};
+        var ajouter = function (cle, n) { compte[cle] = (compte[cle] || 0) + n; };
         liste.forEach(function (c) {
           unites(c).forEach(function (u) {
-            var cle = u.article + (u.taille ? " - " + u.taille : "");
-            compte[cle] = (compte[cle] || 0) + 1;
+            ajouter(u.article + (u.taille ? " - " + u.taille : ""), 1);
+            if (u.jours) ajouter(u.article + " - journées", u.jours);
+            u.options.forEach(function (o) { ajouter(o, 1); });
           });
         });
         var resume = document.getElementById("resume");
@@ -123,7 +128,7 @@
           var ul = el("ul");
           unites(c).forEach(function (u) {
             var li = el("li", u.article);
-            var precisions = [u.taille, u.participant].concat(Object.keys(u.reponses).map(function (q) { return q + " : " + u.reponses[q]; })).filter(Boolean);
+            var precisions = [u.taille, u.participant, jours(u.jours)].concat(u.options, Object.keys(u.reponses).map(function (q) { return q + " : " + u.reponses[q]; })).filter(Boolean);
             if (precisions.length) li.append(el("span", " - " + precisions.join(" - ")));
             ul.append(li);
           });
@@ -148,9 +153,9 @@
         { cle: "textile-heroic-2026-2027/ex2", id: "e5f6a7b8", campagne: "textile-heroic-2026-2027", campagneNom: "Boutique textile Héroïc 2026-2027", payeeLe: "2026-10-26T09:40:00Z", statut: "payée", remis: true, total: 6397,
           payeur: { prenom: "Sam", nom: "Essai", email: "sam@exemple.fr" },
           lignes: [{ article: "T-shirt homme", prix: 1799, quantite: 2, details: [{ taille: "M" }, { taille: "S" }] }, { article: "Sac à dos", prix: 2799, quantite: 1, details: [{}] }] },
-        { cle: "stage-jeunes-toussaint-2026/ex3", id: "e9c0d1e2", campagne: "stage-jeunes-toussaint-2026", campagneNom: "Stage jeunes Toussaint 2026", payeeLe: "2026-10-20T20:05:00Z", statut: "payée", remis: false, total: 3150,
+        { cle: "stage-jeunes-toussaint-2026/ex3", id: "e9c0d1e2", campagne: "stage-jeunes-toussaint-2026", campagneNom: "Stage jeunes Toussaint 2026", payeeLe: "2026-10-20T20:05:00Z", statut: "payée", remis: false, total: 3700,
           payeur: { prenom: "Alex", nom: "Parent", email: "alex@exemple.fr" },
-          lignes: [{ article: "2 jours, hors sortie laser game", prix: 2600, quantite: 1, details: [{ participant: "Léo Parent" }] }, { article: "1 formule repas", prix: 550, quantite: 1, details: [{ participant: "Léo Parent" }] }] },
+          lignes: [{ article: "Stage, à la journée", prix: 1300, quantite: 1, details: [{ participant: "Léo Parent", jours: 2, options: ["Repas du midi"], montant: 3700 }] }] },
       ];
 
       function appel(methode, corps) {
@@ -206,13 +211,13 @@
         var liste = selection();
         var questions = [];
         liste.forEach(function (c) { unites(c).forEach(function (u) { Object.keys(u.reponses).forEach(function (q) { if (questions.indexOf(q) < 0) questions.push(q); }); }); });
-        var lignes = [["Date", "Commande", "Prénom", "Nom", "Mail", "Article", "Prix", "Taille", "Participant"].concat(questions, ["Remis"])];
+        var lignes = [["Date", "Commande", "Prénom", "Nom", "Mail", "Article", "Prix", "Taille", "Participant", "Jours", "Options"].concat(questions, ["Remis"])];
         liste.forEach(function (c) {
           unites(c).forEach(function (u) {
             lignes.push([
               new Date(c.payeeLe || c.creeLe).toLocaleString("fr-FR"), c.id.slice(0, 8).toUpperCase(),
               c.payeur.prenom, c.payeur.nom, c.payeur.email, u.article, (u.prix / 100).toFixed(2).replace(".", ","),
-              u.taille, u.participant,
+              u.taille, u.participant, u.jours || "", u.options.join(", "),
             ].concat(questions.map(function (q) { return u.reponses[q] || ""; }), [c.remis ? "oui" : "non"]));
           });
         });

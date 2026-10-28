@@ -12,7 +12,9 @@ export async function GET() {
     fermetureLe: d.fermetureLe?.toISOString(),
     nominatif: d.nominatif,
     questions: d.questions,
-    articles: d.articles.map((a) => ({ nom: a.nom, prix: a.prix, places: a.places, tailles: a.tailles })),
+    articles: d.articles.map((a) => ({
+      nom: a.nom, prix: a.prix, places: a.places, tailles: a.tailles, jours: a.jours, options: a.options,
+    })),
   }));
   return Response.json(ventes);
 }

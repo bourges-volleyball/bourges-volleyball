@@ -321,7 +321,7 @@ td{color:var(--fg-2)}
   <p>Une <strong>vente</strong>, c'est l'équivalent d'un formulaire HelloAsso : la boutique textile, une adhésion, un stage, un tournoi, la buvette. Le visiteur choisit sur le site, paie sur HelloAsso, et revient sur le site.</p>
   <figure>
     <img src="img/boutique.webp" alt="Formulaire d'une vente : nom, rayon, description, visuel, date et horaires, lieu, dates d'ouverture et de fermeture ; à droite l'aperçu." width="1920" height="1200" loading="lazy" />
-    <figcaption>Le stage de la Toussaint : chaque tarif est un article, avec son nombre de places.</figcaption>
+    <figcaption>Le formulaire d'une vente, ici le stage de la Toussaint.</figcaption>
   </figure>
   <h3>Créer une vente</h3>
   <ul>
@@ -333,12 +333,21 @@ td{color:var(--fg-2)}
   </ul>
   <h3>Les articles</h3>
   <ul>
-    <li>Un article par produit ou par tarif (« 1 jour », « 2 jours »…).</li>
+    <li>Un article par produit ou par tarif (« Adhésion jeune », « Adhésion adulte »…).</li>
     <li><strong>Prix</strong> en euros, avec un <strong>point</strong> pour les centimes : <code>17.99</code>.</li>
     <li><strong>Nombre de places</strong> : à remplir s'il y a une limite. Le site arrête les ventes quand c'est complet.</li>
     <li><strong>Tailles</strong> : séparées par des virgules, par exemple <code>S, M, L, XL</code>. L'acheteur choisit sa taille pour chaque article.</li>
     <li><strong>Photo</strong> : carrée de préférence, 600 px au moins. Elle s'agrandit au clic.</li>
   </ul>
+  <h3>Un stage à la journée</h3>
+  <p>Inutile de créer un article par formule (« 1 jour », « 2 jours », « 1 repas »…) : <strong>un seul article suffit</strong>.</p>
+  <ul>
+    <li><strong>Prix</strong> : celui d'<strong>une journée</strong>, par exemple <code>13</code>.</li>
+    <li><strong>Stage : nombre de jours</strong> : la durée du stage, par exemple <code>5</code>. Chaque participant choisit de 1 à 5 jours.</li>
+    <li><strong>Options pour chaque participant</strong> : par exemple « Repas du midi » à <code>5.5</code>, avec <strong>Comptée chaque jour</strong> cochée : un repas par jour choisi. Décochée, l'option est payée une fois (une sortie, un t-shirt).</li>
+    <li><strong>Nombre de places</strong> : le nombre d'enfants accueillis.</li>
+  </ul>
+  <p>Le parent ajoute un enfant avec <strong>+</strong>, choisit son nombre de jours, coche le repas, et le total se calcule tout seul.</p>
   <div class="attention">
     <p><b>Une vente, un seul endroit</b></p>
     <p>Quand une vente est sur le site, fermez le formulaire HelloAsso correspondant : sinon on peut commander des deux côtés, et les places d'un stage seraient vendues deux fois.</p>

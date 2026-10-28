@@ -27,7 +27,7 @@ const vente = {
   questions: d.questions,
   ouvertureLe: d.ouvertureLe?.toISOString(),
   fermetureLe: d.fermetureLe?.toISOString(),
-  articles: d.articles.map((a) => ({ nom: a.nom, prix: a.prix, tailles: a.tailles ?? [] })),
+  articles: d.articles.map((a) => ({ nom: a.nom, prix: a.prix, tailles: a.tailles ?? [], jours: a.jours, options: a.options })),
 };
 ---
 
@@ -84,12 +84,20 @@ const vente = {
                   <h3>{a.nom}</h3>
                   {a.description && <p>{a.description}</p>}
                   {a.tailles?.length ? <p class="tailles">Tailles : {a.tailles.join(" · ")}</p> : null}
+                  {a.options.length > 0 && (
+                    <p class="tailles">
+                      En option : {a.options.map((o) => `${o.nom} ${euros(o.prix)}${o.parJour ? " par jour" : ""}`).join(" · ")}
+                    </p>
+                  )}
+                  {a.jours && (
+                    <p>Ajoutez chaque participant avec +, puis choisissez son nombre de jours{a.options.length > 0 && " et ses options"}.</p>
+                  )}
                   <p class="places" data-places={i} hidden />
                 </div>
-                <p class="prix">{euros(a.prix)}</p>
+                <p class="prix">{euros(a.prix)}{a.jours && <small> / jour</small>}</p>
                 <div class="qte">
                   <button type="button" data-moins={i} aria-label={`Retirer : ${a.nom}`}>−</button>
-                  <input type="number" min="0" max="20" value="0" inputmode="numeric" data-qte={i} aria-label={`Quantité : ${a.nom}`} />
+                  <input type="number" min="0" max="20" value="0" inputmode="numeric" data-qte={i} aria-label={`${a.jours ? "Nombre de participants" : "Quantité"} : ${a.nom}`} />
                   <button type="button" data-plus={i} aria-label={`Ajouter : ${a.nom}`}>+</button>
                 </div>
                 {/* Taille, nom du participant : demandes ici, sous l'article, des qu'on l'ajoute */}
@@ -148,7 +156,13 @@ const vente = {
     questions: { libelle: string; type: "texte" | "ouinon" }[];
     ouvertureLe?: string;
     fermetureLe?: string;
-    articles: { nom: string; prix: number; tailles: string[] }[];
+    articles: {
+      nom: string;
+      prix: number;
+      tailles: string[];
+      jours?: number;
+      options: { nom: string; prix: number; parJour: boolean }[];
+    }[];
   };
 
   const form = document.querySelector<HTMLFormElement>("form[data-vente]");
@@ -173,6 +187,28 @@ const vente = {
       const n = Math.floor(Number(qtes[i].value));
       return n > 0 ? Math.min(n, Number(qtes[i].max)) : 0;
     };
+    const champ = (nom: string) =>
+      (form.elements.namedItem(nom) as HTMLInputElement | RadioNodeList | null)?.value ?? "";
+    const coche = (nom: string) => !!(form.elements.namedItem(nom) as HTMLInputElement | null)?.checked;
+    const centimes = (p: number) => Math.round(p * 100);
+
+    /* Total affiche, meme calcul que verifier() dans netlify/lib/boutique.mjs,
+       qui seul fait foi : pour chaque personne, ses jours et ses options. */
+    function calculer() {
+      let total = 0;
+      vente.articles.forEach((a, i) => {
+        for (let k = 0; k < qte(i); k++) {
+          const nom = `a${i}-${k}`;
+          const j = a.jours ? Number(champ(`${nom}-jours`)) || 0 : 1;
+          total += centimes(a.prix) * j;
+          a.options.forEach((o, m) => {
+            if (coche(`${nom}-opt${m}`)) total += centimes(o.prix) * (o.parJour ? j : 1);
+          });
+        }
+      });
+      form!.querySelector("[data-total]")!.textContent = enEuros.format(total / 100);
+      payer.disabled = total === 0;
+    }
 
     function el<K extends keyof HTMLElementTagNameMap>(
       tag: K,
@@ -192,16 +228,15 @@ const vente = {
     function dessiner() {
       const saisi = new Map<string, string>();
       form!.querySelectorAll<HTMLInputElement | HTMLSelectElement>(".unites input, .unites select").forEach((c) => {
-        if (c.type !== "radio" || (c as HTMLInputElement).checked) saisi.set(c.name, c.value);
+        const aCocher = c.type === "radio" || c.type === "checkbox";
+        if (!aCocher || (c as HTMLInputElement).checked) saisi.set(c.name, c.value);
       });
 
-      let total = 0;
       vente.articles.forEach((a, i) => {
         const n = qte(i);
-        total += Math.round(a.prix * 100) * n;
         const unites = form!.querySelector<HTMLElement>(`[data-unites-de="${i}"]`)!;
         unites.replaceChildren();
-        if (!a.tailles.length && !vente.nominatif) return;
+        if (!a.tailles.length && !vente.nominatif && !a.jours && !a.options.length) return;
 
         for (let k = 0; k < n; k++) {
           const nom = `a${i}-${k}`;
@@ -221,6 +256,27 @@ const vente = {
             const qui = el("input", { id: `${nom}-qui`, name: `${nom}-qui`, required: true, maxLength: 100 });
             qui.value = saisi.get(qui.name) ?? "";
             bloc.append(ligne(vente.qui, qui));
+          }
+          // Stage : d'abord le nom, puis ses jours et ses options, puis les questions
+          if (a.jours) {
+            const s = el(
+              "select",
+              { id: `${nom}-jours`, name: `${nom}-jours`, required: true },
+              el("option", { value: "", textContent: "Choisir…" }),
+              ...Array.from({ length: a.jours }, (_, j) =>
+                el("option", { value: String(j + 1), textContent: `${j + 1} jour${j ? "s" : ""}` }),
+              ),
+            );
+            s.value = saisi.get(s.name) ?? "";
+            bloc.append(ligne("Nombre de jours", s));
+          }
+          a.options.forEach((o, m) => {
+            const c = el("input", { type: "checkbox", name: `${nom}-opt${m}`, value: o.nom });
+            c.checked = saisi.has(c.name);
+            const prix = enEuros.format(o.prix) + (o.parJour ? " par jour" : "");
+            bloc.append(el("label", { className: "choix" }, c, `${o.nom} (${prix})`));
+          });
+          if (vente.nominatif) {
             vente.questions.forEach((q, j) => {
               const nq = `${nom}-q${j}`;
               if (q.type === "ouinon") {
@@ -241,8 +297,7 @@ const vente = {
         }
       });
 
-      form!.querySelector("[data-total]")!.textContent = enEuros.format(total / 100);
-      payer.disabled = total === 0;
+      calculer();
     }
 
     form.addEventListener("click", (e) => {
@@ -255,6 +310,7 @@ const vente = {
     });
     form.addEventListener("input", (e) => {
       if ((e.target as HTMLElement).matches("[data-qte]")) dessiner();
+      else if ((e.target as HTMLElement).closest(".unites")) calculer();
     });
 
     // Places restantes (stage, tournoi) : connues du serveur seul
@@ -278,8 +334,6 @@ const vente = {
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       erreur.hidden = true;
-      const champ = (nom: string) =>
-        (form.elements.namedItem(nom) as HTMLInputElement | RadioNodeList | null)?.value ?? "";
 
       const lignes = vente.articles.flatMap((a, i) => {
         const n = qte(i);
@@ -288,6 +342,8 @@ const vente = {
           taille: champ(`a${i}-${k}-taille`) || undefined,
           participant: champ(`a${i}-${k}-qui`) || undefined,
           reponses: Object.fromEntries(vente.questions.map((q, j) => [q.libelle, champ(`a${i}-${k}-q${j}`)])),
+          jours: a.jours ? Number(champ(`a${i}-${k}-jours`)) : undefined,
+          options: a.options.filter((_, m) => coche(`a${i}-${k}-opt${m}`)).map((o) => o.nom),
         }));
         return [{ article: a.nom, quantite: n, details }];
       });
@@ -430,6 +486,7 @@ const vente = {
   .texte .tailles { color: var(--fg); font-size: 0.85rem; letter-spacing: 0.04em; }
   .texte .places { color: var(--signal); font-weight: 600; }
   .texte .places[hidden] { display: none; }
+  .prix small { font-size: 0.9rem; font-weight: 600; color: var(--fg-2); }
   .prix {
     grid-area: prix;
     font-family: "Barlow Condensed", sans-serif;
@@ -481,7 +538,7 @@ const vente = {
     color: var(--fg-2);
     margin-bottom: 0.4rem;
   }
-  .commande :global(input:not([type="radio"])),
+  .commande :global(input:not([type="radio"], [type="checkbox"])),
   .commande :global(select) {
     width: 100%;
     background: var(--noir-2);
@@ -521,7 +578,7 @@ const vente = {
     text-transform: uppercase;
     color: var(--signal);
   }
-  .commande :global(.unite input:not([type="radio"])),
+  .commande :global(.unite input:not([type="radio"], [type="checkbox"])),
   .commande :global(.unite select) { background: var(--noir); }
 
   .visionneuse {

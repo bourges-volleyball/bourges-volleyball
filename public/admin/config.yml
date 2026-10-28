@@ -471,7 +471,7 @@ collections:
         label_singular: "un article"
         widget: "list"
         summary: "{{fields.nom}} - {{fields.prix}} €"
-        hint: "Au moins un. Pour un stage ou une adhésion, un article par tarif."
+        hint: "Au moins un. Pour une adhésion, un article par tarif. Pour un stage, un seul article suffit : le prix d'une journée, le nombre de jours et les options (repas)."
         fields:
           - { name: "nom", label: "Nom", widget: "string" }
           - { name: "description", label: "Description", widget: "string", required: false }
@@ -493,6 +493,33 @@ collections:
               required: false,
               hint: "Séparées par des virgules, par exemple : S, M, L, XL. Demandée pour chaque article commandé. Laissez vide pour un sac, une boisson, une place.",
             }
+          - {
+              name: "jours",
+              label: "Stage : nombre de jours",
+              widget: "number",
+              value_type: "int",
+              min: 1,
+              max: 31,
+              required: false,
+              hint: "Pour un stage à la journée : le prix ci-dessus est celui d'une journée, et chaque participant choisit de 1 jour à ce nombre. Laissé vide pour tout le reste.",
+            }
+          - name: "options"
+            label: "Options pour chaque participant"
+            label_singular: "une option"
+            widget: "list"
+            required: false
+            summary: "{{fields.nom}} - {{fields.prix}} €"
+            hint: "Cases à cocher proposées à chaque participant, par exemple le repas du midi."
+            fields:
+              - { name: "nom", label: "Nom", widget: "string", hint: "Par exemple : Repas du midi." }
+              - { name: "prix", label: "Prix (euros)", widget: "number", value_type: "float", step: 0.01, min: 0.5 }
+              - {
+                  name: "parJour",
+                  label: "Comptée chaque jour",
+                  widget: "boolean",
+                  default: false,
+                  hint: "Cochée : le prix est multiplié par le nombre de jours choisis (un repas par jour). Décochée : payée une seule fois.",
+                }
       - { name: "ordre", label: "Ordre", widget: "number", value_type: "int", default: 10, hint: "1 en premier dans son rayon." }
 
   - name: "evenements"

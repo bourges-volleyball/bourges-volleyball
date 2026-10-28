@@ -247,6 +247,12 @@ et paie sans quitter le site ; seul le paiement par carte passe par HelloAsso.
   de **tailles** (demandée pour chaque article commandé) et un **nombre de
   places** (le site affiche les places restantes et ferme l'article une fois
   complet).
+- **Stage à la journée** : un seul article, dont le prix est celui d'une
+  journée. Remplissez **Stage : nombre de jours** (5 pour une semaine) :
+  chaque participant choisit de 1 à 5 jours. Les **options** (repas du midi…)
+  sont des cases à cocher par participant ; cochez **Comptée chaque jour**
+  pour qu'un repas soit facturé pour chaque jour choisi. Inutile de créer un
+  article « 1 jour », « 2 jours », « 1 repas »…
 - **Demander le nom de chaque participant** : à cocher pour une adhésion, un
   stage, un tournoi. On peut ajouter des **questions** (texte ou oui/non),
   posées pour chaque participant.
