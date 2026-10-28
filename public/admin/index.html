@@ -39,15 +39,21 @@
 
       /* Barre du haut, comme l'en-tete du site */
       :root header[class*="AppHeader"] { background: #0d0e11; box-shadow: none; border-bottom: 1px solid #282c34; }
-      /* AppHeaderButton : le bouton Media, que Decap ne range pas avec les liens */
-      :root [class*="AppHeaderNavLink"], :root [class*="AppHeaderButton"] {
+      :root [class*="AppHeaderNavLink"] {
         color: #f4f4f2; font-family: "Barlow Semi Condensed", sans-serif; font-weight: 600;
         text-transform: uppercase; letter-spacing: .09em; font-size: 14px;
       }
-      :root [class*="AppHeaderNavLink"] span, :root [class*="AppHeaderButton"] span { color: inherit; }
+      :root [class*="AppHeaderNavLink"] span { color: inherit; }
       :root [class*="AppHeaderNavLink"]:hover, :root [class*="AppHeaderNavLink"].header-link-active,
-      :root [class*="AppHeaderNavLink"]:hover span, :root [class*="AppHeaderNavLink"].header-link-active span,
-      :root [class*="AppHeaderButton"]:hover, :root [class*="AppHeaderButton"]:hover span { color: #b4e600; }
+      :root [class*="AppHeaderNavLink"]:hover span, :root [class*="AppHeaderNavLink"].header-link-active span { color: #b4e600; }
+
+      /* Pas de bouton Media : une photo envoyee par la est enregistree tout
+         de suite, seule, et chaque enregistrement republie le site (15
+         credits Netlify). Ajoutee depuis le formulaire d'un contenu, elle part
+         avec lui, en une seule publication. Le bouton Media est le seul
+         <button> de la liste ; « Contenus » est un lien. */
+      :root [class*="AppHeaderNavList"] li:has(> button[class*="AppHeaderButton"]),
+      :root [class*="AppHeaderNavList"] button[class*="AppHeaderButton"] { display: none; }
       :root [class*="AppHeaderQuickNewButton"] { background: #b4e600; color: #101114; font-weight: 700; }
       :root [class*="AppHeaderQuickNewButton"]:hover { background: #96c200; color: #101114; }
       :root [class*="AppHeaderSiteLink"] { color: #9a9fa9; }

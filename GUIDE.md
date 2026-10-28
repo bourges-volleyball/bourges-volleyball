@@ -752,10 +752,14 @@ prend quatre ou cinq. Il en reste une quinzaine pour les bénévoles et les
 évolutions du site.
 
 **Quand les crédits sont épuisés**, Netlify bloque les publications jusqu'au
-mois suivant, et peut mettre le site entier en pause. D'où trois règles :
+mois suivant, et peut mettre le site entier en pause. D'où quatre règles :
 
 - **regrouper les modifications** avant de cliquer sur « Publier » (un album
   complet, une vente complète, pas photo par photo) ;
+- **ajouter les photos depuis le formulaire** du contenu (« Choisir une
+  image ») : elles partent avec lui, en une seule publication. Le bouton
+  « Media » de Decap, qui enregistrait chaque photo seule, a été retiré de la
+  barre du haut (`public/admin/index.html`) ;
 - **regarder la jauge** de temps en temps : Netlify, *Team → Usage & billing* ;
 - **laisser l'alerte de commande éteinte**, et ne pas passer la mise à jour
   FFVolley à tous les jours.
