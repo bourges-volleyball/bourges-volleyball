@@ -190,10 +190,13 @@ importants : ce sont eux qui font fonctionner le sélecteur d'âge de la page
 
 L'**ordre d'affichage** classe les équipes sur le site, du plus jeune au plus âgé.
 
-La **photo d'équipe** sert deux fois : en fond de la carte sur la page Équipes,
-et en tête de la fiche. Format paysage, 1600 px de large minimum. Le site
-l'assombrit automatiquement pour que le texte reste lisible — comme les photos
-du diaporama d'accueil.
+La **photo d'équipe** sert deux fois. En tête de la fiche, elle s'affiche à
+côté du titre et des infos (entraînements, gymnase, tarif), sans être
+assombrie : une photo de groupe presque carrée est seulement recadrée en 4:3,
+en perdant un peu de plafond et de sol, jamais les joueurs ; une photo plus
+large reste entière. Sur la page Équipes, elle sert de fond assombri à la carte
+de l'équipe, recadrée vers le haut pour garder les visages. Une photo de groupe
+en largeur, 1600 px minimum, convient le mieux.
 
 La **présentation** est un texte libre affiché sur la fiche. Elle sert quand
 un groupe ne tient pas dans les champs prévus — par exemple l'Ufolep, qui
