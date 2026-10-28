@@ -80,6 +80,13 @@ export async function albums(limite?: number) {
   return limite ? liste.slice(0, limite) : liste;
 }
 
+/* Vignette d'une actualite (listes, accueil, partage) : la photo de une, a
+   defaut la premiere des autres photos. Une affiche n'est jamais recadree :
+   « affiche » ne vaut que pour la photo de une. */
+type Actu = Awaited<ReturnType<typeof actus>>[number];
+export const vignette = (a: Actu) => a.data.image ?? a.data.photos[0]?.photo;
+export const vignetteAffiche = (a: Actu) => !!a.data.image && a.data.affiche;
+
 export async function actus(limite?: number) {
   const liste = (await getCollection("actus"))
     .filter((a) => !a.data.brouillon)

@@ -91,7 +91,8 @@ const mosaique = album?.data.photos.slice(0, nbPhotos >= 5 ? 5 : nbPhotos >= 3 ?
      a partir de 760 px, la grande a gauche sur deux rangees. */
   .album { display: grid; gap: 1rem; text-decoration: none; }
   .mosaique { display: grid; gap: 0.5rem; grid-template-columns: 1fr 1fr; }
-  .mosaique :global(img) { width: 100%; height: 100%; aspect-ratio: 4 / 3; object-fit: cover; display: block; transition: opacity 0.2s; }
+  /* 30 % : sur une photo de personnes debout, on garde les tetes */
+  .mosaique :global(img) { width: 100%; height: 100%; aspect-ratio: 4 / 3; object-fit: cover; object-position: 50% 30%; display: block; transition: opacity 0.2s; }
   .mosaique :global(img:first-child) { grid-column: 1 / -1; }
   .mosaique[data-n="1"] { grid-template-columns: 1fr; }
   .mosaique[data-n="2"] :global(img:first-child) { grid-column: auto; }

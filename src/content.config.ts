@@ -5,6 +5,11 @@ import { glob } from "astro/loaders";
    « javascript: » executerait du code chez le visiteur qui clique dessus. */
 const lienWeb = z.string().regex(/^https?:\/\//i, "L'adresse doit commencer par https://");
 
+/* Decap enregistre parfois un champ facultatif laisse vide sous forme de "" :
+   on le traite comme absent, sinon une date vide devient « Invalid Date ». */
+const facultatif = <T extends z.ZodTypeAny>(t: T) =>
+  z.preprocess((v) => (v === "" || v === null ? undefined : v), t.optional());
+
 /* Ces schemas sont le contrat entre le site et l'interface d'administration.
    Toute modification ici doit être repercutee dans public/admin/config.yml,
    sinon les bénévoles pourront saisir un champ que le site ignorera. */
@@ -20,6 +25,9 @@ const actus = defineCollection({
     image: image().optional(),
     // Affiche des reseaux sociaux : jamais recadree, ouvrable en grand
     affiche: z.boolean().default(false),
+    // Photos en grille sous le texte (resultats, tournoi...), comme un album.
+    // Sans photo de une, la premiere sert de vignette (lib/donnees : vignette)
+    photos: z.array(z.object({ photo: image(), legende: facultatif(z.string()) })).default([]),
     brouillon: z.boolean().default(false),
   }),
 });
@@ -81,11 +89,6 @@ const partenaires = defineCollection({
   }),
 });
 
-
-/* Decap enregistre parfois un champ facultatif laisse vide sous forme de "" :
-   on le traite comme absent, sinon une date vide devient « Invalid Date ». */
-const facultatif = <T extends z.ZodTypeAny>(t: T) =>
-  z.preprocess((v) => (v === "" || v === null ? undefined : v), t.optional());
 
 /* Boutique : une fiche par vente, comme un formulaire HelloAsso (textile,
    adhesion, stage, tournoi, buvette). Le site prend la commande, HelloAsso

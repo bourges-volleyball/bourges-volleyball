@@ -169,7 +169,12 @@ d'exemple**, signalées comme telles. Les vraies n'existent qu'en ligne, où
 tournent la connexion et les fonctions Netlify.
 
 ### Actualités
-Publier un article : titre, date, résumé, photo de une, texte.
+Publier un article : titre, date, résumé, photo de une, autres photos, texte.
+Les **autres photos** (12 au plus) s'affichent en grille sous le texte et
+s'ouvrent en grand d'un clic, comme dans un album : c'est le format des
+résultats du week-end, avec les photos des équipes. Sans photo de une, la
+première sert de vignette. Une photo de groupe se met plutôt là qu'en photo
+de une : la une est recadrée en bandeau large, qui couperait les têtes.
 Le **résumé** s'affiche sous le titre, sur la page Actualités et en tête de l'article : deux lignes suffisent. L'accueil, lui, ne montre que la date et le titre des trois derniers articles, dans le panneau « À la une ».
 La case **Brouillon** permet de préparer un article sans le publier.
 
@@ -576,6 +581,11 @@ Netlify `HELLOASSO_API = https://api.helloasso-sandbox.com` avec ses clés.
 
 - [x] Créneaux, gymnases et tarifs réels de la saison 2026-2027
 - [x] Trois actualités réelles, tirées de l'Instagram et de HelloAsso
+- [x] Vingt actualités de la saison 2025-2026, avec leurs photos, l'historique
+  et le palmarès complet, repris de l'ancien site Clubeo
+  (bourgesvolley.clubeo.com) en octobre 2026 ; premier album de la galerie
+  (tournoi du BVB 2026). La photo de l'actu du 10 octobre 2025, une coupure
+  du Berry Républicain, n'a pas été reprise : les droits sont au journal
 - [x] Page 404
 - [x] Logos des partenaires institutionnels cliquables vers leur site
 - [x] Pages Mentions légales, Confidentialité et « Message envoyé »

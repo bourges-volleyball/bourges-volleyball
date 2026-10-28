@@ -71,6 +71,17 @@ collections:
           default: false,
           hint: "Cochée, l'image n'est jamais recadrée : elle apparaît en entier, et s'ouvre en grand d'un clic dans l'article.",
         }
+      - name: "photos"
+        label: "Autres photos"
+        label_singular: "photo"
+        widget: "list"
+        required: false
+        max: 12
+        summary: "{{fields.legende | default('Photo sans légende')}}"
+        hint: "Facultatif : des photos en grille sous le texte (équipes, match, tournoi), qui s'ouvrent en grand d'un clic. 12 au plus ; pour davantage, faites un album dans la Galerie. Sans photo de une, la première sert de vignette. Uniquement des photos dont les personnes (ou leurs parents) ont accepté la diffusion."
+        fields:
+          - { name: "photo", label: "Photo", widget: "image", media_library: { config: { max_file_size: 6000000 } } }
+          - { name: "legende", label: "Légende", widget: "string", required: false, hint: "Facultative. Elle sert aussi aux personnes aveugles." }
       - {
           name: "brouillon",
           label: "Brouillon",
@@ -588,7 +599,7 @@ collections:
         label_singular: "photo"
         widget: "list"
         max: 40
-        summary: "{{fields.legende}}"
+        summary: "{{fields.legende | default('Photo sans légende')}}"
         hint: "40 au plus, la première sert de couverture. Une photo de téléphone d'origine (2 à 5 Mo) convient ; au-delà de 6 Mo, elle est refusée. Pas de photos passées par WhatsApp. Uniquement des photos dont les personnes (ou leurs parents) ont accepté la diffusion."
         fields:
           - { name: "photo", label: "Photo", widget: "image", media_library: { config: { max_file_size: 6000000 } } }

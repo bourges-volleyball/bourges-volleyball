@@ -4,10 +4,11 @@
    seul de les convertir en WebP et d'en produire plusieurs tailles. */
 import { Image, Picture } from "astro:assets";
 import { getEntry } from "astro:content";
-import { diaporama } from "../lib/donnees";
+import type { CollectionEntry } from "astro:content";
+import { diaporama, vignette, vignetteAffiche } from "../lib/donnees";
 
 interface Props {
-  actus?: { id: string; data: { titre: string; date: Date; image?: ImageMetadata; affiche?: boolean } }[];
+  actus?: CollectionEntry<"actus">[];
 }
 const { actus = [] } = Astro.props;
 
@@ -64,7 +65,7 @@ const t = (await getEntry("pageAccueil", "accueil"))!.data;
             {actus.map((a) => (
               <li>
                 <a href={`/actus/${a.id}/`}>
-                  {a.data.image && <Image class:list={{ affiche: a.data.affiche }} src={a.data.image} alt="" widths={[64, 128]} sizes="64px" />}
+                  {vignette(a) && <Image class:list={{ affiche: vignetteAffiche(a) }} src={vignette(a)!} alt="" widths={[64, 128]} sizes="64px" />}
                   <time datetime={a.data.date.toISOString().slice(0, 10)}>
                     {a.data.date.toLocaleDateString("fr-FR", {
                       day: "numeric",

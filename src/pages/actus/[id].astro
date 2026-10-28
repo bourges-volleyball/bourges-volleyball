@@ -2,7 +2,8 @@
 import Base from "../../layouts/Base.astro";
 import { render } from "astro:content";
 import { Image, getImage } from "astro:assets";
-import { actus } from "../../lib/donnees";
+import Photos from "../../components/Photos.astro";
+import { actus, vignette } from "../../lib/donnees";
 
 export async function getStaticPaths() {
   const liste = await actus();
@@ -16,7 +17,8 @@ const autres = (await actus()).filter((a) => a.id !== actu.id).slice(0, 3);
 
 const img = actu.data.image;
 // Partage sur les reseaux : un JPEG de 1200 px, format que tous acceptent
-const partage = img && (await getImage({ src: img, width: Math.min(1200, img.width), format: "jpg" }));
+const vig = vignette(actu);
+const partage = vig && (await getImage({ src: vig, width: Math.min(1200, vig.width), format: "jpg" }));
 // Affiche ouverte en grand : WebP pleine definition (plafonnee a 2400 px)
 const grande = img && actu.data.affiche && (await getImage({ src: img, width: Math.min(2400, img.width), format: "webp" }));
 ---
@@ -52,6 +54,13 @@ const grande = img && actu.data.affiche && (await getImage({ src: img, width: Ma
     }
 
     <div class="corps wrap"><Content /></div>
+    {
+      actu.data.photos.length > 0 && (
+        <div class="photos wrap">
+          <Photos photos={actu.data.photos} />
+        </div>
+      )
+    }
   </article>
 
   {
@@ -137,6 +146,8 @@ const grande = img && actu.data.affiche && (await getImage({ src: img, width: Ma
     margin: 1.5rem 0; padding-left: 1rem;
     border-left: 3px solid var(--signal); color: var(--fg-2);
   }
+  /* Meme colonne que le texte (meme taille de police : 68ch y vaut autant) */
+  .photos { max-width: 68ch; font-size: var(--s2); padding-bottom: clamp(1.75rem, 4vw, 2.75rem); }
   .suite { border-top: 1px solid var(--hair); }
   .autres { list-style: none; padding: 0; margin: 0; display: grid; }
   .autres li { border-top: 1px solid var(--hair); }
