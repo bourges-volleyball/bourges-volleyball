@@ -244,9 +244,10 @@ const liens = [
       }
     });
 
-    // Repasser en affichage bureau doit refermer le menu, sinon il reste
+    // Repasser en affichage bureau (au-dela du seuil du CSS ci-dessus, 1180 px)
+    // doit refermer le menu, sinon il reste
     // ouvert et invisible, et le bouton se desynchronise.
-    const large = matchMedia("(min-width: 981px)");
+    const large = matchMedia("(min-width: 1181px)");
     large.addEventListener("change", (e) => {
       if (e.matches) basculer(false);
     });

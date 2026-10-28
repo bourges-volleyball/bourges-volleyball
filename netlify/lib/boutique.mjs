@@ -24,11 +24,19 @@ export function ouverte(c, maintenant = Date.now()) {
 
 const texte = (v, max) => (typeof v === "string" ? v.trim().slice(0, max) : "");
 
+/* Stage : les jours sont des dates (AAAA-MM-JJ). Un jour se reserve
+   jusqu'au soir meme, comme une vente jusqu'au soir de sa fermeture. */
+const jourPasse = (j, maintenant) => Date.parse(j) + JOUR <= maintenant;
+export const jourEnClair = (j) =>
+  new Date(j).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", timeZone: "UTC" });
+/** Cle des places restantes d'un jour de stage, partagee avec la page de la vente. */
+export const cleJour = (article, jour) => `${article} / ${jour}`;
+
 /** Verifie une commande et calcule son montant en centimes.
  *  `restantes` : places encore libres par article (voir placesRestantes).
  *  Renvoie { erreur } ou { total, lignes, payeur }. */
-export function verifier(campagne, demande, restantes = {}) {
-  if (!campagne || !ouverte(campagne)) return { erreur: "Cette vente est fermée." };
+export function verifier(campagne, demande, restantes = {}, maintenant = Date.now()) {
+  if (!campagne || !ouverte(campagne, maintenant)) return { erreur: "Cette vente est fermée." };
 
   const p = demande?.payeur ?? {};
   const payeur = { prenom: texte(p.prenom, 50), nom: texte(p.nom, 50), email: texte(p.email, 80) };
@@ -49,23 +57,28 @@ export function verifier(campagne, demande, restantes = {}) {
       return { erreur: reste ? `Il ne reste que ${reste} place(s) pour « ${article.nom} ».` : `« ${article.nom} » est complet.` };
     }
 
-    /* Stage a la journee : chaque personne choisit son nombre de jours et ses
-       options (repas, sortie...). Une option « par jour » est comptee chaque
-       jour ; une option « offerte des N jours » est gratuite a partir de N jours. */
+    /* Stage a la journee : chaque personne coche ses jours et ses options
+       (repas, sortie...). Une option « par jour » est comptee chaque jour
+       coche ; une option « offerte des N jours » est gratuite a partir de N
+       jours ; une option liee a un jour (la sortie du mercredi) demande ce jour. */
     const prix = Math.round(article.prix * 100);
     const options = article.options ?? [];
+    const calendrier = article.jours ?? [];
     let montantLigne = 0;
     const details = [];
     for (let i = 0; i < quantite; i++) {
       const d = Array.isArray(l.details) ? l.details[i] ?? {} : {};
       const detail = {};
       let jours = 1;
-      if (article.jours) {
-        jours = Number(d.jours);
-        if (!Number.isInteger(jours) || jours < 1 || jours > article.jours) {
-          return { erreur: `Choisissez le nombre de jours pour « ${article.nom} ».` };
+      if (calendrier.length) {
+        const coches = Array.isArray(d.jours) ? d.jours : [];
+        if (!coches.length || coches.some((j) => !calendrier.includes(j))) {
+          return { erreur: `Cochez au moins un jour pour « ${article.nom} ».` };
         }
-        detail.jours = jours;
+        detail.jours = calendrier.filter((j) => coches.includes(j));
+        const passe = detail.jours.find((j) => jourPasse(j, maintenant));
+        if (passe) return { erreur: `Le ${jourEnClair(passe)} est passé : décochez-le.` };
+        jours = detail.jours.length;
       }
       let montant = prix * jours;
       if (options.length) {
@@ -73,7 +86,11 @@ export function verifier(campagne, demande, restantes = {}) {
         if (choisies.some((n) => !options.some((o) => o.nom === n))) return { erreur: "Option inconnue." };
         detail.options = options.filter((o) => choisies.includes(o.nom)).map((o) => o.nom);
         for (const o of options) {
-          if (!choisies.includes(o.nom) || (o.offerteDes && jours >= o.offerteDes)) continue;
+          if (!choisies.includes(o.nom)) continue;
+          if (o.jour && !detail.jours?.includes(o.jour)) {
+            return { erreur: `« ${o.nom} » a lieu le ${jourEnClair(o.jour)} : cochez ce jour pour la choisir.` };
+          }
+          if (o.offerteDes && jours >= o.offerteDes) continue;
           montant += Math.round(o.prix * 100) * (o.parJour ? jours : 1);
         }
       }
@@ -97,6 +114,15 @@ export function verifier(campagne, demande, restantes = {}) {
       details.push(detail);
     }
 
+    // Places d'un stage : comptees jour par jour
+    for (const j of calendrier) {
+      const reste = restantes[cleJour(article.nom, j)];
+      const n = details.filter((d) => d.jours.includes(j)).length;
+      if (reste !== undefined && n > reste) {
+        return { erreur: reste ? `Il ne reste que ${reste} place(s) le ${jourEnClair(j)}.` : `Le ${jourEnClair(j)} est complet.` };
+      }
+    }
+
     total += montantLigne;
     lignes.push({ article: article.nom, prix, quantite, details });
   }
@@ -117,7 +143,9 @@ export async function catalogue(origine) {
    paiement HelloAsso expire au bout de 15. */
 const retient = (c) => c.statut === "payée" || Date.now() - Date.parse(c.creeLe) < 20 * 60000;
 
-/** Places encore libres, pour les seuls articles qui ont un nombre de places. */
+/** Places encore libres, pour les seuls articles qui ont un nombre de places.
+ *  Pour un stage, une entree par jour (cleJour) : le nombre de places est
+ *  celui d'une journee. */
 export async function placesRestantes(campagne) {
   const limites = campagne.articles.filter((a) => a.places != null);
   if (!limites.length) return {};
@@ -130,9 +158,19 @@ export async function placesRestantes(campagne) {
   for (const { key } of blobs) {
     const c = await s.get(key, { type: "json" });
     if (!c || !retient(c)) continue;
-    for (const l of c.lignes) pris[l.article] = (pris[l.article] ?? 0) + l.quantite;
+    for (const l of c.lignes) {
+      pris[l.article] = (pris[l.article] ?? 0) + l.quantite;
+      for (const d of l.details ?? []) {
+        for (const j of Array.isArray(d.jours) ? d.jours : []) pris[cleJour(l.article, j)] = (pris[cleJour(l.article, j)] ?? 0) + 1;
+      }
+    }
   }
-  return Object.fromEntries(limites.map((a) => [a.nom, Math.max(0, a.places - (pris[a.nom] ?? 0))]));
+  const libres = (cle, places) => Math.max(0, places - (pris[cle] ?? 0));
+  return Object.fromEntries(
+    limites.flatMap((a) =>
+      a.jours?.length ? a.jours.map((j) => [cleJour(a.nom, j), libres(cleJour(a.nom, j), a.places)]) : [[a.nom, libres(a.nom, a.places)]],
+    ),
+  );
 }
 
 /* ---- HelloAsso ---------------------------------------------------------
@@ -171,10 +209,34 @@ export async function helloasso(chemin, corps) {
   return r.json();
 }
 
+/* Alerte au club : une commande vient d'etre payee. Passe par un formulaire
+   Netlify cache (« commande-payee », dans src/pages/boutique/paiement.astro) :
+   Netlify envoie chaque envoi par mail aux adresses choisies dans
+   Forms > Form notifications. Seulement si ALERTE_COMMANDES vaut « oui » :
+   selon l'offre Netlify, un envoi de formulaire peut consommer des credits.
+   Ni nom ni adresse : le detail se lit sur la page Commandes. */
+export async function alerter(c, site) {
+  if (process.env.ALERTE_COMMANDES !== "oui" || !site) return;
+  const r = await fetch(new URL("/", site), {
+    method: "POST",
+    headers: { "content-type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      "form-name": "commande-payee",
+      vente: c.campagneNom,
+      montant: `${(c.total / 100).toFixed(2).replace(".", ",")} €`,
+      commande: c.id.slice(0, 8).toUpperCase(),
+      articles: c.lignes.map((l) => `${l.quantite} × ${l.article}`).join(", "),
+      voir: new URL("/admin/commandes.html", site).href,
+    }),
+  });
+  if (!r.ok) console.error(`Alerte de commande refusee : ${r.status}`);
+}
+
 /** Demande a HelloAsso si la commande a ete payee, et l'enregistre si oui.
  *  C'est la seule source de verite : ni le retour du visiteur sur le site,
- *  ni le contenu d'une notification ne suffisent a marquer une commande payee. */
-export async function confirmer(cle) {
+ *  ni le contenu d'une notification ne suffisent a marquer une commande payee.
+ *  `site` : l'adresse du site, pour prevenir le club (alerter). */
+export async function confirmer(cle, site) {
   const s = store();
   const c = await s.get(cle, { type: "json" });
   if (!c || c.statut === "payée" || !c.checkoutIntentId) return c;
@@ -184,6 +246,8 @@ export async function confirmer(cle) {
     c.payeeLe = new Date().toISOString();
     c.commandeHelloAsso = intention.order.id;
     await s.setJSON(cle, c);
+    // Une seule fois : la commande est desormais « payée », confirmer() s'arrete plus haut
+    await alerter(c, site).catch((e) => console.error(e));
   }
   return c;
 }

@@ -4,9 +4,9 @@
 > Plusieurs partis pris ont changé en cours de route, après arbitrage :
 > la direction artistique est passée du noir et blanc éditorial à un registre
 > **sombre avec un accent vert lime**, le sélecteur d'âge a quitté l'accueil
-> pour la page « Nous rejoindre », et le flux Instagram comme la galerie
-> photo n'ont pas été réalisés. En revanche, une **boutique**, un **agenda**
-> et une **récupération automatique du calendrier FFVolley** ont été ajoutés.
+> pour la page « Nous rejoindre », et le flux Instagram n'a pas été réalisé.
+> En revanche, une **boutique**, un **agenda**, une **galerie photo** et une
+> **récupération automatique du calendrier FFVolley** ont été ajoutés.
 >
 > **La documentation à jour est [GUIDE.md](GUIDE.md).** Ce fichier n'est
 > conservé que pour garder trace des intentions de départ.

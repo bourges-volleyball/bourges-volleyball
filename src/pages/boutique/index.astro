@@ -54,7 +54,7 @@ const prixMin = (c: (typeof ouverts)[number]) => Math.min(...c.data.articles.map
                     <span class="prix">
                       {c.data.articles.length > 1 && "Dès "}
                       {euros(prixMin(c))}
-                      {c.data.articles.some((a) => a.jours) && " / jour"}
+                      {c.data.articles.some((a) => a.jours.length) && " / jour"}
                     </span>
                     {c.data.fermetureLe && <span class="limite">Jusqu’au {dateLongue(c.data.fermetureLe)}</span>}
                   </p>

@@ -1,8 +1,10 @@
 ---
 import Base from "../layouts/Base.astro";
+import { getEntry } from "astro:content";
 import { equipes } from "../lib/donnees";
 
 const liste = await equipes();
+const ecoles = (await getEntry("pageEcoles", "ecoles-de-sport"))?.data;
 
 /* Les âges proposés sont déduits des équipes, pas fixés à la main :
    proposer un âge qu'aucun groupe n'accueille ouvrait la page sur un vide.
@@ -97,6 +99,28 @@ const defaut = AGE_PLANCHER;
       </p>
     </div>
   </section>
+
+  {
+    ecoles && ecoles.creneaux.length > 0 && (
+      <section class="section wrap" id="ecoles-de-sport">
+        <div class="section-head"><h2>{ecoles.titre}</h2></div>
+        <p class="intro-ecoles">{ecoles.intro}</p>
+        <ul class="ecoles">
+          {ecoles.creneaux.map((e) => (
+            <li>
+              <p class="pour">{e.public}</p>
+              <p class="quand">{e.jour} <b class="mono">{e.horaire}</b></p>
+              <p class="ou">{e.lieu}</p>
+              <p class="quoi">{e.activite}</p>
+            </li>
+          ))}
+        </ul>
+        <p class="note">
+          {ecoles.inscription} <a class="lien" href="/contact/?sujet=ecole-de-sport">Écrivez-nous</a>
+        </p>
+      </section>
+    )
+  }
 
   <section class="section wrap" id="inscription">
     <div class="section-head"><h2>Comment s&rsquo;inscrire</h2></div>
@@ -196,6 +220,19 @@ const defaut = AGE_PLANCHER;
     color: var(--signal);
   }
   .aucun { background: var(--noir-2); padding: 1.5rem; margin: 0; color: var(--fg-2); }
+
+  .intro-ecoles { max-width: 62ch; margin: 0 0 1.5rem; color: var(--fg-2); font-size: var(--s2); }
+  .ecoles {
+    list-style: none; padding: 0; margin: 0 0 1.25rem; display: grid; gap: 1px;
+    background: var(--hair); border: 1px solid var(--hair);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  }
+  .ecoles li { background: var(--noir-2); padding: 1.25rem 1.4rem; display: grid; gap: 0.35rem; align-content: start; }
+  .ecoles p { margin: 0; }
+  .pour { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 1.8rem; text-transform: uppercase; line-height: 1; color: var(--signal); }
+  .quand { font-weight: 600; font-size: var(--s2); }
+  .ou { font-family: "Barlow Semi Condensed", sans-serif; font-size: var(--s0); letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg-2); }
+  .quoi { color: var(--fg-2); }
 
   .etapes {
     list-style: none; counter-reset: etape; padding: 0; margin: 0;

@@ -7,7 +7,7 @@
 
 import { confirmer, cleValide } from "../lib/boutique.mjs";
 
-export default async (req) => {
+export default async (req, context) => {
   let campagne, commande;
   if (req.method === "POST") {
     const n = await req.json().catch(() => null);
@@ -22,10 +22,13 @@ export default async (req) => {
 
   const cle = `${campagne}/${commande}`;
   if (!cleValide(cle)) return Response.json({ statut: "inconnue" }, { status: 404 });
-  const c = await confirmer(cle);
+  const c = await confirmer(cle, context?.site?.url ?? new URL(req.url).origin);
   if (!c) return Response.json({ statut: "inconnue" }, { status: 404 });
 
-  // Ni nom ni adresse : seulement de quoi afficher le recapitulatif
+  /* Ni le nom ni l'adresse du payeur : seulement de quoi afficher le
+     recapitulatif. Les participants (et leurs jours, tailles, options), que
+     le payeur vient de saisir, n'y sont qu'avec l'identifiant de la commande,
+     impossible a deviner. */
   return Response.json({
     statut: c.statut,
     ref: c.id.slice(0, 8).toUpperCase(),
@@ -33,6 +36,16 @@ export default async (req) => {
     categorie: c.categorie,
     vente: c.campagneNom,
     total: c.total,
-    lignes: c.lignes.map((l) => ({ article: l.article, quantite: l.quantite })),
+    lignes: c.lignes.map((l) => ({
+      article: l.article,
+      quantite: l.quantite,
+      details: (l.details ?? []).map((d) => ({
+        participant: d.participant,
+        taille: d.taille,
+        jours: d.jours,
+        options: d.options,
+        montant: d.montant,
+      })),
+    })),
   });
 };

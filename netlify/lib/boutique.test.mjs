@@ -1,7 +1,7 @@
 // Verification du calcul des commandes : npm test
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { verifier, ouverte } from "./boutique.mjs";
+import { verifier, ouverte, alerter } from "./boutique.mjs";
 
 const stage = {
   id: "stage",
@@ -43,26 +43,37 @@ test("refus : places, taille, nom, question, quantite, doublon", () => {
   assert.match(verifier(stage, { payeur, lignes: [] }).erreur, /vide/);
 });
 
-test("stage a la journee : jours et options par personne", () => {
+test("stage : jours coches, options par jour, sortie liee a un jour", () => {
+  const semaine = ["2099-10-26", "2099-10-27", "2099-10-28", "2099-10-29", "2099-10-30"];
   const journees = {
     ...stage,
     articles: [{
       nom: "Stage",
       prix: 13,
-      jours: 5,
-      options: [{ nom: "Repas", prix: 5.5, parJour: true }, { nom: "Sortie", prix: 10, offerteDes: 5 }],
+      places: 24,
+      jours: semaine,
+      options: [{ nom: "Repas", prix: 5.5, parJour: true }, { nom: "Sortie", prix: 10, jour: "2099-10-28", offerteDes: 5 }],
     }],
   };
-  const sam = { ...jeune, jours: 3, options: ["Repas", "Repas", "Sortie"] };
-  const lou = { ...jeune, participant: "Lou Martin", jours: 5, options: ["Sortie"] };
+  // Ordre et doublons du navigateur ignores : on garde l'ordre du calendrier
+  const sam = { ...jeune, jours: ["2099-10-28", "2099-10-26", "2099-10-28"], options: ["Repas", "Sortie"] };
+  const lou = { ...jeune, participant: "Lou Martin", jours: semaine, options: ["Sortie"] };
   const r = verifier(journees, { payeur, lignes: [{ article: "Stage", quantite: 2, details: [sam, lou] }] });
   assert.equal(r.erreur, undefined);
-  // Sortie payee a 3 jours, offerte a 5 jours
-  assert.equal(r.total, 3 * 1300 + 3 * 550 + 1000 + 5 * 1300);
-  assert.deepEqual(r.lignes[0].details.map((d) => [d.jours, d.options, d.montant]), [[3, ["Repas", "Sortie"], 6550], [5, ["Sortie"], 6500]]);
-  const un = (d) => verifier(journees, { payeur, lignes: [{ article: "Stage", quantite: 1, details: [d] }] }).erreur;
-  for (const jours of [0, 6, 2.5, undefined]) assert.match(un({ ...jeune, jours }), /nombre de jours/);
-  assert.match(un({ ...jeune, jours: 1, options: ["Piscine"] }), /Option inconnue/);
+  // Sortie payee a 2 jours, offerte a 5 jours
+  assert.equal(r.total, 2 * 1300 + 2 * 550 + 1000 + 5 * 1300);
+  assert.deepEqual(r.lignes[0].details[0].jours, ["2099-10-26", "2099-10-28"]);
+  assert.deepEqual(r.lignes[0].details.map((d) => d.montant), [4700, 6500]);
+
+  const un = (d, restantes) => verifier(journees, { payeur, lignes: [{ article: "Stage", quantite: 1, details: [d] }] }, restantes).erreur;
+  for (const jours of [[], undefined, ["2099-11-02"]]) assert.match(un({ ...jeune, jours }), /au moins un jour/);
+  assert.match(un({ ...jeune, jours: ["2099-10-26"], options: ["Sortie"] }), /cochez ce jour/);
+  assert.match(un({ ...jeune, jours: ["2099-10-26"], options: ["Piscine"] }), /Option inconnue/);
+  assert.match(un({ ...jeune, jours: ["2099-10-27"] }, { "Stage / 2099-10-27": 0 }), /complet/);
+  assert.equal(un({ ...jeune, jours: ["2099-10-26"] }, { "Stage / 2099-10-27": 0 }), undefined);
+  const passe = { ...journees, articles: [{ ...journees.articles[0], jours: ["2020-01-06", ...semaine] }] };
+  const vieux = verifier(passe, { payeur, lignes: [{ article: "Stage", quantite: 1, details: [{ ...jeune, jours: ["2020-01-06"] }] }] });
+  assert.match(vieux.erreur, /passé/);
 });
 
 test("ouverte jusqu'au soir de la date de fermeture", () => {
@@ -72,4 +83,34 @@ test("ouverte jusqu'au soir de la date de fermeture", () => {
   assert.ok(!ouverte(c, Date.parse("2026-09-30T12:00:00Z")));
   assert.ok(ouverte({}, Date.now()));
   assert.match(verifier({ ...stage, fermetureLe: "2020-01-01" }, { payeur, lignes: [] }).erreur, /fermée/);
+});
+
+test("alerte au club : seulement si activee, sans nom ni adresse", async () => {
+  const envois = [];
+  const avant = globalThis.fetch;
+  globalThis.fetch = async (url, o) => (envois.push({ url: String(url), corps: new URLSearchParams(o.body) }), { ok: true });
+  const c = {
+    id: "e9c0d1e2-0000-4000-8000-000000000000",
+    campagneNom: "Stage",
+    total: 6000,
+    payeur,
+    lignes: [{ article: "Stage, à la journée", quantite: 2, details: [] }],
+  };
+  try {
+    delete process.env.ALERTE_COMMANDES;
+    await alerter(c, "https://exemple.fr");
+    assert.equal(envois.length, 0);
+    process.env.ALERTE_COMMANDES = "oui";
+    await alerter(c, "https://exemple.fr");
+    assert.equal(envois[0].url, "https://exemple.fr/");
+    const corps = Object.fromEntries(envois[0].corps);
+    assert.equal(corps["form-name"], "commande-payee");
+    assert.equal(corps.montant, "60,00 €");
+    assert.equal(corps.commande, "E9C0D1E2");
+    assert.equal(corps.articles, "2 × Stage, à la journée");
+    assert.ok(!JSON.stringify(corps).includes("alex@exemple.fr"));
+  } finally {
+    globalThis.fetch = avant;
+    delete process.env.ALERTE_COMMANDES;
+  }
 });

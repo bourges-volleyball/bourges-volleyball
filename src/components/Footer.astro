@@ -1,5 +1,9 @@
 ---
+import { getCollection } from "astro:content";
+
 const annee = new Date().getFullYear();
+// Pas d'album : pas de lien vers une galerie vide
+const aDesAlbums = (await getCollection("galerie")).length > 0;
 ---
 
 <footer>
@@ -25,6 +29,7 @@ const annee = new Date().getFullYear();
           <li><a href="/boutique/">Boutique</a></li>
           <li><a href="/equipes/">Les équipes</a></li>
           <li><a href="/matchs/">Matchs et résultats</a></li>
+          {aDesAlbums && <li><a href="/galerie/">Galerie photos</a></li>}
           <li><a href="/partenaires/">Devenir partenaire</a></li>
         </ul>
       </div>

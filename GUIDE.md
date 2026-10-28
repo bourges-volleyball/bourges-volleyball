@@ -174,7 +174,7 @@ Le **résumé** s'affiche sous le titre, sur la page Actualités et en tête de 
 La case **Brouillon** permet de préparer un article sans le publier.
 
 ### Textes des pages
-Deux fiches, que l'on modifie mais que l'on ne peut pas supprimer :
+Trois fiches, que l'on modifie mais que l'on ne peut pas supprimer :
 
 - **Accueil : texte du haut** — le bandeau, le grand titre (le dernier mot
   s'affiche en vert), la phrase en gras et le texte qui la suit. Gardez le
@@ -182,6 +182,10 @@ Deux fiches, que l'on modifie mais que l'on ne peut pas supprimer :
 - **Le club : histoire et palmarès** — la présentation, les chiffres clés,
   les étapes de l'histoire et les titres. Chaque liste se complète avec
   « Ajouter », et se réordonne en faisant glisser les éléments.
+- **Écoles de sport de la Ville** — les créneaux du dispositif « Faites du
+  sport à Bourges » qui se déroulent avec le club (soft volley seniors le
+  mardi, jeunes le vendredi). Ils s'affichent sur la page Nous rejoindre ;
+  sans créneau, la rubrique disparaît.
 
 ### Équipes
 Une fiche par groupe, et **chaque équipe a sa propre page** sur le site. Les champs **Âge minimum** et **Âge maximum** sont
@@ -254,13 +258,15 @@ et paie sans quitter le site ; seul le paiement par carte passe par HelloAsso.
   places** (le site affiche les places restantes et ferme l'article une fois
   complet).
 - **Stage à la journée** : un seul article, dont le prix est celui d'une
-  journée. Remplissez **Stage : nombre de jours** (5 pour une semaine) :
-  chaque participant choisit de 1 à 5 jours. Les **options** (repas du midi…)
-  sont des cases à cocher par participant ; cochez **Comptée chaque jour**
-  pour qu'un repas soit facturé pour chaque jour choisi, et remplissez
-  **Offerte à partir de** (5) pour une sortie gratuite aux inscrits de la
-  semaine, comme le laser game. Inutile de créer un
-  article « 1 jour », « 2 jours », « 1 repas »…
+  journée. Dans **Jours du stage**, ajoutez chaque jour avec sa date : chaque
+  participant coche les jours où il vient, et un jour passé se ferme le soir
+  même. Le **nombre de places** est alors celui d'une journée : le site compte
+  les places jour par jour et ferme un jour complet. Les **options** (repas du
+  midi…) sont des cases à cocher par participant ; **Comptée chaque jour** fait
+  payer un repas par jour coché, **Seulement le** réserve une sortie à un jour
+  précis (le laser game du mercredi ne se coche qu'avec le mercredi), et
+  **Offerte à partir de** (5) la rend gratuite aux inscrits de la semaine.
+  Inutile de créer un article « 1 jour », « 2 jours », « 1 repas »…
 - **Demander le nom de chaque participant** : à cocher pour une adhésion, un
   stage, un tournoi. On peut ajouter des **questions** (texte ou oui/non),
   posées pour chaque participant.
@@ -281,9 +287,41 @@ l'administration. Pour chaque vente :
 - un bouton **Exporter (Excel)** : une ligne par article, avec les tailles, les
   participants et leurs réponses.
 
+Pour un stage, le résumé donne le nombre d'enfants **chaque jour**, et le
+nombre de repas et de sorties.
+
 Un remboursement se fait dans l'espace HelloAsso du club, rubrique
 *Suivi des paiements* : toutes les ventes du site y apparaissent sous le nom
 « Checkout ».
+
+#### Être prévenu par mail à chaque commande payée (une fois)
+
+À chaque commande payée, le site peut envoyer au club un mail court : la
+vente, le montant, le numéro de commande et un lien vers la page Commandes.
+Ni le nom ni l'adresse de l'acheteur n'y figurent. Il passe par les
+formulaires Netlify, comme le formulaire de contact. Pour l'activer :
+
+1. Netlify, *Site configuration → Environment variables* :
+   `ALERTE_COMMANDES` = `oui`.
+2. *Forms* : après la publication suivante, un formulaire
+   **commande-payee** apparaît. *Form notifications → Add notification →
+   Email notification*, formulaire **commande-payee**, et l'adresse du club.
+3. Faire un achat test (le sirop à 1 €) : le mail doit arriver.
+
+> **Avant d'activer, vérifier l'offre Netlify.** Selon l'offre, un envoi de
+> formulaire peut être limité ou consommer des crédits, comme les
+> publications. En période d'adhésions, cela peut faire beaucoup d'envois.
+> Sans la variable, rien n'est envoyé.
+
+### Galerie
+Un **album** par événement : un titre, une date, quelques mots si l'on veut,
+et ses photos (chacune peut avoir une légende). La première photo sert de
+couverture. Les albums s'affichent sur la page **/galerie/**, le plus récent
+en premier, et chaque photo s'ouvre en grand d'un clic. Le lien « Galerie
+photos » n'apparaît en pied de page qu'à partir du premier album.
+
+Comme pour le diaporama : des photos d'origine, et l'accord des personnes
+photographiées — des parents pour un enfant.
 
 ### Partenaires
 Trois niveaux : principal, officiel, institutionnel. Le partenaire principal
@@ -473,10 +511,6 @@ et les données structurées lues par Google (`src/layouts/Base.astro`).
 
 ### Pistes
 
-- [ ] **Les écoles de sport n'apparaissent nulle part.** Le planning réserve
-  deux créneaux au dispositif de la Ville : séniors en soft volley le mardi
-  de 17h à 18h, jeunes le vendredi à la même heure. Une actualité en parle,
-  mais ce n'est ni une équipe ni une rubrique.
 - [ ] **La liste des équipes Ufolep engagées.** Le club en aligne plusieurs
   en départemental du Cher ; la fiche Ufolep décrit les deux sections mais ne
   les nomme pas, faute de la liste. À compléter dans le champ Présentation.
@@ -523,6 +557,11 @@ Netlify `HELLOASSO_API = https://api.helloasso-sandbox.com` avec ses clés.
 - [x] Filtre par équipe sur la page Matchs
 - [x] Toutes les images optimisées (WebP, plusieurs tailles)
 - [x] Polices servies par le site, plus aucun appel à Google
+- [x] Écoles de sport de la Ville sur la page Nous rejoindre
+- [x] Galerie photos gérée depuis l'administration
+- [x] Stage : jours cochés un par un, places par jour, sortie liée à un jour
+- [x] Récapitulatif détaillé après paiement, alerte mail possible au club
+- [x] Administration et page Commandes aux couleurs du site
 
 ## 7. Sécurité : ce qui protège le site, et ce qui reste à surveiller
 

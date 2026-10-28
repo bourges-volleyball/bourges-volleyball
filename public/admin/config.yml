@@ -25,6 +25,9 @@ site_url: "https://bourges-volleyball.netlify.app"
 # Chaque enregistrement cree une version : rien n'est jamais perdu.
 publish_mode: simple
 
+# label_singular : avec article pour une rubrique (« + une actualité »), sans
+# article pour une liste dans une fiche, que Decap affiche « 1 article » et
+# « Ajouter article » (avec un article, on lisait « 1 un article »).
 collections:
   - name: "actus"
     label: "Actualités"
@@ -162,6 +165,26 @@ collections:
           - { name: "motFort", label: "Mot en vert, à la fin de la 2e ligne", widget: "string", hint: "Un seul mot, deux au plus." }
           - { name: "accroche", label: "Phrase en gras sous le titre", widget: "text" }
           - { name: "texte", label: "Texte sous la phrase en gras", widget: "text" }
+      - name: "ecoles-de-sport"
+        label: "Écoles de sport de la Ville"
+        file: "src/content/pages/ecoles-de-sport.md"
+        fields:
+          - { name: "titre", label: "Titre de la rubrique", widget: "string" }
+          - { name: "intro", label: "Présentation", widget: "text" }
+          - name: "creneaux"
+            label: "Créneaux"
+            label_singular: "créneau"
+            widget: "list"
+            required: false
+            summary: "{{fields.public}} - {{fields.jour}} {{fields.horaire}}"
+            hint: "Affichés sur la page Nous rejoindre. Sans créneau, la rubrique disparaît."
+            fields:
+              - { name: "public", label: "Pour qui", widget: "string", hint: "Par exemple : Seniors, Jeunes." }
+              - { name: "activite", label: "Ce qu'on y fait", widget: "string" }
+              - { name: "jour", label: "Jour", widget: "string" }
+              - { name: "horaire", label: "Horaire", widget: "string", hint: "Par exemple : 17h00 – 18h00." }
+              - { name: "lieu", label: "Lieu", widget: "string" }
+          - { name: "inscription", label: "Comment s'inscrire", widget: "string", hint: "Par exemple : Pour s'inscrire ou se renseigner : (le lien « Écrivez-nous » vers la page Contact suit)." }
       - name: "le-club"
         label: "Le club : histoire et palmarès"
         file: "src/content/pages/le-club.md"
@@ -170,7 +193,7 @@ collections:
           - { name: "intro", label: "Présentation du club", widget: "text" }
           - name: "chiffres"
             label: "Chiffres clés"
-            label_singular: "un chiffre"
+            label_singular: "chiffre"
             widget: "list"
             summary: "{{fields.valeur}} {{fields.legende}}"
             hint: "Quatre chiffres tombent juste sur ordinateur."
@@ -179,7 +202,7 @@ collections:
               - { name: "legende", label: "Légende", widget: "string" }
           - name: "histoire"
             label: "Notre histoire"
-            label_singular: "une étape"
+            label_singular: "étape"
             widget: "list"
             summary: "{{fields.date}} - {{fields.titre}}"
             hint: "Dans l'ordre chronologique. On réordonne en faisant glisser les étapes."
@@ -189,7 +212,7 @@ collections:
               - { name: "texte", label: "Texte", widget: "text" }
           - name: "palmares"
             label: "Palmarès"
-            label_singular: "un titre"
+            label_singular: "titre"
             widget: "list"
             summary: "{{fields.annee}} - {{fields.titre}}"
             fields:
@@ -240,6 +263,7 @@ collections:
         }
       - name: "creneaux"
         label: "Créneaux d'entraînement"
+        label_singular: "créneau"
         widget: "list"
         summary: "{{fields.jour}} {{fields.horaire}}"
         fields:
@@ -262,6 +286,7 @@ collections:
         }
       - name: "effectif"
         label: "Effectif"
+        label_singular: "joueur"
         widget: "list"
         required: false
         summary: "{{fields.numero}} {{fields.nom}} {{fields.poste}}"
@@ -452,7 +477,7 @@ collections:
         }
       - name: "questions"
         label: "Questions pour chaque participant"
-        label_singular: "une question"
+        label_singular: "question"
         widget: "list"
         required: false
         summary: "{{fields.libelle}}"
@@ -468,10 +493,10 @@ collections:
             }
       - name: "articles"
         label: "Articles ou tarifs"
-        label_singular: "un article"
+        label_singular: "article"
         widget: "list"
         summary: "{{fields.nom}} - {{fields.prix}} €"
-        hint: "Au moins un. Pour une adhésion, un article par tarif. Pour un stage, un seul article suffit : le prix d'une journée, le nombre de jours et les options (repas)."
+        hint: "Au moins un. Pour une adhésion, un article par tarif. Pour un stage, un seul article suffit : le prix d'une journée, les jours du stage et les options (repas, sortie)."
         fields:
           - { name: "nom", label: "Nom", widget: "string" }
           - { name: "description", label: "Description", widget: "string", required: false }
@@ -484,7 +509,7 @@ collections:
               value_type: "int",
               min: 0,
               required: false,
-              hint: "Laissé vide : pas de limite. Rempli, l'article affiche les places restantes et se ferme une fois complet.",
+              hint: "Laissé vide : pas de limite. Rempli, l'article affiche les places restantes et se ferme une fois complet. Pour un stage : places par jour.",
             }
           - {
               name: "tailles",
@@ -493,19 +518,18 @@ collections:
               required: false,
               hint: "Séparées par des virgules, par exemple : S, M, L, XL. Demandée pour chaque article commandé. Laissez vide pour un sac, une boisson, une place.",
             }
-          - {
-              name: "jours",
-              label: "Stage : nombre de jours",
-              widget: "number",
-              value_type: "int",
-              min: 1,
-              max: 31,
-              required: false,
-              hint: "Pour un stage à la journée : le prix ci-dessus est celui d'une journée, et chaque participant choisit de 1 jour à ce nombre. Laissé vide pour tout le reste.",
-            }
+          - name: "jours"
+            label: "Jours du stage"
+            label_singular: "jour"
+            widget: "list"
+            required: false
+            # Deplies : la date se lit et se change sans ouvrir chaque jour
+            collapsed: false
+            hint: "Pour un stage à la journée : ajoutez chaque jour du stage. Le prix ci-dessus est alors celui d'une journée, et le nombre de places celui d'une journée. Chaque participant coche ses jours ; un jour passé se ferme tout seul. Laissé vide pour tout le reste."
+            field: { name: "jour", label: "Jour", widget: "datetime", date_format: "DD/MM/YYYY", time_format: false, format: "YYYY-MM-DD" }
           - name: "options"
             label: "Options pour chaque participant"
-            label_singular: "une option"
+            label_singular: "option"
             widget: "list"
             required: false
             summary: "{{fields.nom}} - {{fields.prix}} €"
@@ -529,7 +553,43 @@ collections:
                   required: false,
                   hint: "Par exemple 5 : l'option est gratuite pour un participant inscrit 5 jours. Laissé vide : toujours payante.",
                 }
+              - {
+                  name: "jour",
+                  label: "Seulement le",
+                  widget: "datetime",
+                  date_format: "DD/MM/YYYY",
+                  time_format: false,
+                  format: "YYYY-MM-DD",
+                  required: false,
+                  hint: "Pour une sortie qui a lieu un jour précis (le laser game du mercredi) : l'option ne se coche que si ce jour est choisi. Laissé vide : tous les jours.",
+                }
       - { name: "ordre", label: "Ordre", widget: "number", value_type: "int", default: 10, hint: "1 en premier dans son rayon." }
+
+  - name: "galerie"
+    label: "Galerie"
+    label_singular: "un album"
+    description: "Un album par événement : tournoi, match, stage, soirée. Les albums s'affichent sur la page Galerie, le plus récent en premier."
+    folder: "src/content/galerie"
+    create: true
+    slug: "{{year}}-{{month}}-{{slug}}"
+    summary: "{{date}} - {{titre}}"
+    sortable_fields: ["date", "titre"]
+    # Images optimisees par le site : rangees dans src/images/galerie
+    media_folder: "../../images/galerie"
+    public_folder: "../../images/galerie"
+    fields:
+      - { name: "titre", label: "Titre de l'album", widget: "string", hint: "Par exemple : Tournoi Octobre rose 2026." }
+      - { name: "date", label: "Date", widget: "datetime", date_format: "DD/MM/YYYY", time_format: false, format: "YYYY-MM-DD" }
+      - { name: "description", label: "Quelques mots", widget: "text", required: false }
+      - name: "photos"
+        label: "Photos"
+        label_singular: "photo"
+        widget: "list"
+        summary: "{{fields.legende}}"
+        hint: "La première sert de couverture. Envoyez les photos d'origine, pas celles passées par WhatsApp. Uniquement des photos dont les personnes (ou leurs parents) ont accepté la diffusion."
+        fields:
+          - { name: "photo", label: "Photo", widget: "image" }
+          - { name: "legende", label: "Légende", widget: "string", required: false, hint: "Facultative. Elle sert aussi aux personnes aveugles." }
 
   - name: "evenements"
     label: "Agenda"
@@ -595,7 +655,7 @@ collections:
         fields:
           - name: "poules"
             label: "Équipes suivies"
-            label_singular: "une équipe"
+            label_singular: "équipe"
             widget: "list"
             summary: "{{fields.equipe}}"
             hint: "Une ligne par équipe engagée en championnat FFVolley. L'ordre est celui des onglets de la page Matchs."

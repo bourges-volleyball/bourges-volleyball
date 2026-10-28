@@ -10,7 +10,7 @@ import { store, confirmer } from "../lib/boutique.mjs";
 const HEURE = 3600000;
 const CONSERVATION = 365 * 24 * HEURE;
 
-export default async () => {
+export default async (req, context) => {
   const s = store();
   const { blobs } = await s.list();
   for (const { key } of blobs) {
@@ -18,7 +18,7 @@ export default async () => {
     if (!c) continue;
     const age = Date.now() - Date.parse(c.creeLe);
     if (c.statut !== "payée" && age > HEURE) {
-      c = (await confirmer(key).catch((e) => (console.error(e), c))) ?? c;
+      c = (await confirmer(key, context?.site?.url).catch((e) => (console.error(e), c))) ?? c;
     }
     if ((c.statut !== "payée" && age > 48 * HEURE) || age > CONSERVATION) await s.delete(key);
   }

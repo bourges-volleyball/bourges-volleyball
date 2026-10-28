@@ -22,6 +22,16 @@ import Base from "../../layouts/Base.astro";
     <p class="actions">
       <a class="btn" href="/boutique/" data-retour><span>Retour à la boutique</span></a>
     </p>
+    {/* Jamais affiche : le serveur le remplit a chaque commande payee (alerter()
+        dans netlify/lib/boutique.mjs), et Netlify l'envoie par mail au club */}
+    <form name="commande-payee" method="POST" data-netlify="true" netlify-honeypot="bot-field" hidden>
+      <input name="vente" />
+      <input name="montant" />
+      <input name="commande" />
+      <input name="articles" />
+      <input name="voir" />
+      <input name="bot-field" />
+    </form>
   </section>
 </Base>
 
@@ -30,6 +40,32 @@ import Base from "../../layouts/Base.astro";
   const p = new URLSearchParams(location.search);
   const campagne = p.get("campagne") ?? "";
   const adresse = `/.netlify/functions/paiement?campagne=${encodeURIComponent(campagne)}&commande=${encodeURIComponent(p.get("commande") ?? "")}`;
+
+  type Detail = { participant?: string; taille?: string; jours?: string[] | number; options?: string[]; montant?: number };
+  const enEuros = new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" });
+  const jour = (j: string) =>
+    new Date(j).toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short", timeZone: "UTC" });
+
+  /* Une ligne par article, et dessous une par personne ou par exemplaire :
+     taille, jours du stage, options. Ce que le parent verifie d'un coup d'oeil. */
+  function ligne(l: { article: string; quantite: number; details?: Detail[] }) {
+    const li = document.createElement("li");
+    li.append(Object.assign(document.createElement("b"), { textContent: `${l.quantite} × ${l.article}` }));
+    const precis = (l.details ?? [])
+      .map((d) => {
+        const jours = Array.isArray(d.jours) ? d.jours.map(jour).join(", ") : d.jours ? `${d.jours} jour(s)` : "";
+        const quoi = [d.taille, jours, ...(d.options ?? [])].filter(Boolean).join(" · ");
+        const texte = [d.participant, quoi].filter(Boolean).join(" : ");
+        return texte && texte + (d.montant != null && l.quantite > 1 ? ` (${enEuros.format(d.montant / 100)})` : "");
+      })
+      .filter(Boolean);
+    if (precis.length) {
+      const ul = document.createElement("ul");
+      ul.append(...precis.map((t) => Object.assign(document.createElement("li"), { textContent: t })));
+      li.append(ul);
+    }
+    return li;
+  }
 
   function dire(titre: string, texte: string) {
     $("[data-titre]").textContent = titre;
@@ -54,14 +90,8 @@ import Base from "../../layouts/Base.astro";
         `Commande ${c.ref}, payée le ` +
         new Date(c.payeeLe).toLocaleString("fr-FR", { dateStyle: "long", timeStyle: "short" });
       $("[data-vente]").textContent = c.vente;
-      $("[data-lignes]").replaceChildren(
-        ...c.lignes.map((l: { article: string; quantite: number }) =>
-          Object.assign(document.createElement("li"), { textContent: `${l.quantite} × ${l.article}` }),
-        ),
-      );
-      $("[data-total]").textContent = new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(
-        c.total / 100,
-      );
+      $("[data-lignes]").replaceChildren(...c.lignes.map(ligne));
+      $("[data-total]").textContent = enEuros.format(c.total / 100);
       $("[data-recap]").hidden = false;
       return;
     }
@@ -111,7 +141,9 @@ import Base from "../../layouts/Base.astro";
     text-transform: uppercase;
     color: var(--signal);
   }
-  .recap ul { margin: 0; padding-left: 1.1rem; color: var(--fg-2); }
+  .recap ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 0.6rem; }
+  .recap :global(li b) { font-weight: 600; }
+  .recap :global(li ul) { list-style: none; display: grid; margin-top: 0.25rem; gap: 0.15rem; padding-left: 1rem; border-left: 2px solid var(--hair); color: var(--fg-2); }
   .total { margin: 0; }
   .total strong {
     font-family: "Barlow Condensed", sans-serif;

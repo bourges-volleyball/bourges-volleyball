@@ -197,13 +197,13 @@ td{color:var(--fg-2)}
   <h3>Message « Git Gateway Error »</h3>
   <p>Votre ancienne connexion est restée en mémoire dans le navigateur. Ouvrez l'administration dans une <strong>fenêtre de navigation privée</strong> et reconnectez-vous, ou videz le cache du navigateur.</p>
   <h3>Le guide, à tout moment</h3>
-  <p>Une fois connecté, le bouton vert <strong>Guide</strong>, en haut à droite de l'administration, rouvre cette page. Le bouton noir <strong>Commandes</strong>, juste à côté, ouvre les commandes de la boutique.</p>
+  <p>Une fois connecté, le bouton vert <strong>Guide</strong>, en haut à droite de l'administration, rouvre cette page. Le bouton <strong>Commandes</strong>, juste à côté, ouvre les commandes de la boutique.</p>
 </section>
 
 <section id="rubriques" class="wrap">
   <p class="eyebrow">03</p>
   <h2>Les rubriques</h2>
-  <p>Une fois connecté, la colonne de gauche liste les rubriques du site. Cliquez sur l'une d'elles pour voir son contenu, ou sur le bouton foncé en haut à droite pour en ajouter.</p>
+  <p>Une fois connecté, la colonne de gauche liste les rubriques du site. Cliquez sur l'une d'elles pour voir son contenu, ou sur le bouton vert en haut à droite pour en ajouter.</p>
   <figure>
     <img src="img/rubriques.webp" alt="Écran principal : la liste des rubriques à gauche, les actualités au centre et le bouton « + une actualité »." width="1920" height="1200" loading="lazy" />
     <figcaption>L'écran principal, rubrique Actualités ouverte.</figcaption>
@@ -213,11 +213,12 @@ td{color:var(--fg-2)}
     <tbody>
       <tr><td>Actualités</td><td>Les articles de la page Actualités et de l'accueil.</td></tr>
       <tr><td>Photos de l'accueil</td><td>Les grandes photos qui défilent en haut de l'accueil.</td></tr>
-      <tr><td>Textes des pages</td><td>Le texte d'accueil, l'histoire et le palmarès du club.</td></tr>
+      <tr><td>Textes des pages</td><td>Le texte d'accueil, l'histoire et le palmarès du club, les écoles de sport de la Ville.</td></tr>
       <tr><td>Équipes</td><td>Chaque équipe : créneaux, coach, tarif, photo, effectif.</td></tr>
       <tr><td>Matchs</td><td>Seulement les matchs hors FFVolley : Ufolep, coupes, amicaux.</td></tr>
       <tr><td>Partenaires</td><td>Les logos et liens des partenaires.</td></tr>
       <tr><td>Boutique</td><td>Les ventes : équipements, adhésions, stages, tournois, buvette.</td></tr>
+      <tr><td>Galerie</td><td>Les albums photo : un par tournoi, match, stage ou soirée.</td></tr>
       <tr><td>Agenda</td><td>Les événements du club : tournois, stages, assemblée générale, soirées.</td></tr>
       <tr><td>Réglages</td><td>Une fois par saison : les poules FFVolley suivies (voir la partie 8).</td></tr>
     </tbody>
@@ -347,11 +348,13 @@ td{color:var(--fg-2)}
   <p>Inutile de créer un article par formule (« 1 jour », « 2 jours », « 1 repas »…) : <strong>un seul article suffit</strong>.</p>
   <ul>
     <li><strong>Prix</strong> : celui d'<strong>une journée</strong>, par exemple <code>13</code>.</li>
-    <li><strong>Stage : nombre de jours</strong> : la durée du stage, par exemple <code>5</code>. Chaque participant choisit de 1 à 5 jours.</li>
-    <li><strong>Options pour chaque participant</strong> : par exemple « Repas du midi » à <code>5.5</code>, avec <strong>Comptée chaque jour</strong> cochée : un repas par jour choisi. Décochée, l'option est payée une fois (une sortie, un t-shirt). <strong>Offerte à partir de</strong> <code>5</code> la rend gratuite pour un enfant inscrit les 5 jours, comme le laser game.</li>
-    <li><strong>Nombre de places</strong> : le nombre d'enfants accueillis.</li>
+    <li><strong>Jours du stage</strong> : ajoutez chaque jour, avec sa date (du lundi au vendredi pour une semaine). Chaque enfant coche les jours où il vient. Un jour passé se ferme tout seul le soir même.</li>
+    <li><strong>Nombre de places</strong> : le nombre d'enfants accueillis <strong>par jour</strong>. Le site affiche les places restantes jour par jour, et ferme un jour complet.</li>
+    <li><strong>Options pour chaque participant</strong> : par exemple « Repas du midi » à <code>5.5</code>, avec <strong>Comptée chaque jour</strong> cochée : un repas par jour coché. Décochée, l'option est payée une fois (une sortie, un t-shirt).</li>
+    <li><strong>Seulement le</strong> : pour une sortie qui a lieu un jour précis, comme le laser game du mercredi. L'option ne se coche que si ce jour est coché.</li>
+    <li><strong>Offerte à partir de</strong> <code>5</code> : l'option devient gratuite pour un enfant inscrit 5 jours.</li>
   </ul>
-  <p>Le parent ajoute un enfant avec <strong>+</strong>, choisit son nombre de jours, coche le repas ou la sortie, et le total se calcule tout seul.</p>
+  <p>Le parent ajoute un enfant avec <strong>+</strong>, coche ses jours, puis le repas ou la sortie, et le total se calcule tout seul. Après le paiement, le récapitulatif reprend chaque enfant avec ses jours et ses options.</p>
   <div class="attention">
     <p><b>Une vente, un seul endroit</b></p>
     <p>Quand une vente est sur le site, fermez le formulaire HelloAsso correspondant : sinon on peut commander des deux côtés, et les places d'un stage seraient vendues deux fois.</p>
@@ -361,14 +364,14 @@ td{color:var(--fg-2)}
 <section id="commandes" class="wrap">
   <p class="eyebrow">10</p>
   <h2>Les commandes payées</h2>
-  <p>Elles se consultent sur une page à part : le bouton noir <strong>Commandes</strong>, en haut de l'administration à côté du Guide, l'ouvre dans un nouvel onglet. Son adresse : celle du site suivie de <span class="adresse">/admin/commandes.html</span>. Connectez-vous avec le même compte que l'administration.</p>
+  <p>Elles se consultent sur une page à part : le bouton <strong>Commandes</strong>, en haut de l'administration à côté du Guide, l'ouvre dans un nouvel onglet. Son adresse : celle du site suivie de <span class="adresse">/admin/commandes.html</span>. Connectez-vous avec le même compte que l'administration.</p>
   <figure>
     <img src="img/commandes.webp" alt="Page Commandes : choix de la vente, total à commander par article et taille, puis la liste des commandes payées avec une case Remis." width="1920" height="1200" loading="lazy" />
     <figcaption>Ici des commandes d'exemple. En ligne, la page montre les vraies commandes.</figcaption>
   </figure>
   <ul>
     <li><strong>Choisissez la vente</strong> dans la liste en haut.</li>
-    <li><strong>À commander ou à préparer</strong> : le total par article et par taille, prêt pour la commande groupée chez l'équipementier.</li>
+    <li><strong>À commander ou à préparer</strong> : le total par article et par taille, prêt pour la commande groupée chez l'équipementier. Pour un stage : le nombre d'enfants chaque jour, et le nombre de repas et de sorties.</li>
     <li>Dessous, chaque commande payée : nom, e-mail, articles, montant. Cochez <strong>Remis</strong> quand l'acheteur a reçu sa commande.</li>
     <li><strong>Exporter (Excel)</strong> télécharge la liste, par exemple pour les inscrits d'un stage.</li>
   </ul>
@@ -377,6 +380,7 @@ td{color:var(--fg-2)}
     <p>Ces listes contiennent des noms, des e-mails, parfois des téléphones. Ne les transférez qu'aux personnes qui en ont besoin, et supprimez les fichiers exportés quand ils ne servent plus. Le site efface lui-même les commandes au bout d'un an.</p>
   </div>
   <p class="discret">Un remboursement se fait dans l'espace HelloAsso du club, rubrique des paiements.</p>
+  <p class="discret">Le club peut aussi recevoir <strong>un e-mail à chaque commande payée</strong> (la vente, le montant, le numéro) : c'est un réglage à faire une fois sur Netlify par le responsable du site.</p>
 </section>
 
 <section id="autres" class="wrap">
@@ -386,7 +390,8 @@ td{color:var(--fg-2)}
     <li><strong>Équipes</strong> : en début de saison, mettez à jour les créneaux, le coach, le tarif et la photo. L'effectif (joueurs, postes, numéros) est facultatif.</li>
     <li><strong>Photo d'équipe</strong> : une photo de groupe, en largeur de préférence, 1600 px au moins. Elle s'affiche en tête de la fiche, à côté des infos de l'équipe. Une photo presque carrée est légèrement recadrée (un peu de plafond et de sol en moins) ; les joueurs restent toujours visibles.</li>
     <li><strong>Partenaires</strong> : nom, niveau (principal, officiel, institutionnel), lien et logo. Un logo en PNG à fond transparent rend mieux.</li>
-    <li><strong>Textes des pages</strong> : le texte du haut de l'accueil, l'histoire et le palmarès du club.</li>
+    <li><strong>Textes des pages</strong> : le texte du haut de l'accueil, l'histoire et le palmarès du club, et les <strong>écoles de sport de la Ville</strong> (créneaux affichés sur la page Nous rejoindre ; sans créneau, la rubrique disparaît).</li>
+    <li><strong>Galerie</strong> : un album par événement, avec un titre, une date et ses photos. La première photo sert de couverture. Chaque photo s'ouvre en grand d'un clic. Le lien « Galerie photos » apparaît en bas du site dès le premier album. Comme ailleurs : des photos d'origine, et l'accord des personnes photographiées (des parents pour un enfant).</li>
   </ul>
 </section>
 

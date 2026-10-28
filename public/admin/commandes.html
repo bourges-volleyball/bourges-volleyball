@@ -225,13 +225,18 @@
         c.lignes.forEach(function (l) {
           l.details.forEach(function (d) {
             r.push({ c: c, article: l.article, prix: d.montant != null ? d.montant : l.prix, taille: d.taille || "", participant: d.participant || "",
-              jours: d.jours || 0, options: d.options || [], reponses: d.reponses || {} });
+              jours: d.jours || [], options: d.options || [], reponses: d.reponses || {} });
           });
-          if (!l.details.length) for (var i = 0; i < l.quantite; i++) r.push({ c: c, article: l.article, prix: l.prix, taille: "", participant: "", jours: 0, options: [], reponses: {} });
+          if (!l.details.length) for (var i = 0; i < l.quantite; i++) r.push({ c: c, article: l.article, prix: l.prix, taille: "", participant: "", jours: [], options: [], reponses: {} });
         });
         return r;
       }
-      var jours = function (n) { return n ? n + " jour" + (n > 1 ? "s" : "") : ""; };
+      // Jours d'un stage : des dates AAAA-MM-JJ (un nombre pour les commandes du 28 octobre 2026)
+      var jour = function (j) { return new Date(j).toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short", timeZone: "UTC" }); };
+      var jours = function (j) {
+        if (Array.isArray(j)) return j.map(jour).join(", ");
+        return j ? j + " jour" + (j > 1 ? "s" : "") : "";
+      };
 
       function selection() {
         return commandes.filter(function (c) { return c.campagne === choix.value; });
@@ -240,19 +245,21 @@
       function afficher() {
         var liste = selection();
         // Le resume sert a passer la commande groupee : combien de chaque article, par taille.
-        // Pour un stage : combien de participants, de journees, et de chaque option (repas)
+        // Pour un stage : combien d'enfants chaque jour, et de chaque option (repas)
         var compte = {};
         var ajouter = function (cle, n) { compte[cle] = (compte[cle] || 0) + n; };
         liste.forEach(function (c) {
           unites(c).forEach(function (u) {
-            ajouter(u.article + (u.taille ? " - " + u.taille : ""), 1);
-            if (u.jours) ajouter(u.article + " - journées", u.jours);
+            if (Array.isArray(u.jours) && u.jours.length) {
+              u.jours.forEach(function (j) { ajouter(j + "|" + u.article + " - " + jour(j), 1); });
+            } else ajouter(u.article + (u.taille ? " - " + u.taille : ""), 1);
             u.options.forEach(function (o) { ajouter(o, 1); });
           });
         });
         var resume = document.getElementById("resume");
+        // Les jours en tete, dans l'ordre du calendrier (cle prefixee par la date)
         resume.replaceChildren.apply(resume, Object.keys(compte).sort().map(function (k) {
-          var d = el("div"); d.append(el("span", k), el("b", String(compte[k]))); return d;
+          var d = el("div"); d.append(el("span", k.split("|").pop()), el("b", String(compte[k]))); return d;
         }));
         if (!liste.length) resume.append(el("div", "Aucune commande payée pour cette vente.", "vide"));
 
@@ -298,9 +305,9 @@
         { cle: "textile-heroic-2026-2027/ex2", id: "e5f6a7b8", campagne: "textile-heroic-2026-2027", campagneNom: "Boutique textile Héroïc 2026-2027", payeeLe: "2026-10-26T09:40:00Z", statut: "payée", remis: true, total: 6397,
           payeur: { prenom: "Sam", nom: "Essai", email: "sam@exemple.fr" },
           lignes: [{ article: "T-shirt homme", prix: 1799, quantite: 2, details: [{ taille: "M" }, { taille: "S" }] }, { article: "Sac à dos", prix: 2799, quantite: 1, details: [{}] }] },
-        { cle: "stage-jeunes-toussaint-2026/ex3", id: "e9c0d1e2", campagne: "stage-jeunes-toussaint-2026", campagneNom: "Stage jeunes Toussaint 2026", payeeLe: "2026-10-20T20:05:00Z", statut: "payée", remis: false, total: 3700,
+        { cle: "stage-jeunes-toussaint-2026/ex3", id: "e9c0d1e2", campagne: "stage-jeunes-toussaint-2026", campagneNom: "Stage jeunes Toussaint 2026", payeeLe: "2026-10-20T20:05:00Z", statut: "payée", remis: false, total: 4700,
           payeur: { prenom: "Alex", nom: "Parent", email: "alex@exemple.fr" },
-          lignes: [{ article: "Stage, à la journée", prix: 1300, quantite: 1, details: [{ participant: "Léo Parent", jours: 2, options: ["Repas du midi"], montant: 3700 }] }] },
+          lignes: [{ article: "Stage, à la journée", prix: 1300, quantite: 1, details: [{ participant: "Léo Parent", jours: ["2026-10-28", "2026-10-30"], options: ["Repas du midi", "Sortie laser game"], montant: 4700 }] }] },
       ];
 
       function appel(methode, corps) {
@@ -362,7 +369,7 @@
             lignes.push([
               new Date(c.payeeLe || c.creeLe).toLocaleString("fr-FR"), c.id.slice(0, 8).toUpperCase(),
               c.payeur.prenom, c.payeur.nom, c.payeur.email, u.article, (u.prix / 100).toFixed(2).replace(".", ","),
-              u.taille, u.participant, u.jours || "", u.options.join(", "),
+              u.taille, u.participant, jours(u.jours), u.options.join(", "),
             ].concat(questions.map(function (q) { return u.reponses[q] || ""; }), [c.remis ? "oui" : "non"]));
           });
         });

@@ -117,8 +117,9 @@ const boutique = defineCollection({
           photo: image().optional(),
           places: facultatif(z.number().int().min(0)),
           tailles: z.array(z.string()).optional(),
-          // Stage : le prix est celui d'une journee, chaque personne choisit de 1 a `jours` jours
-          jours: facultatif(z.number().int().min(1).max(31)),
+          // Stage : le prix est celui d'une journee, chaque personne coche ses jours
+          // parmi ceux-ci ; « places » est alors le nombre de places par jour
+          jours: z.array(z.coerce.date()).default([]),
           options: z
             .array(
               z.object({
@@ -127,6 +128,8 @@ const boutique = defineCollection({
                 parJour: z.boolean().default(false),
                 // Gratuite pour qui choisit au moins ce nombre de jours
                 offerteDes: facultatif(z.number().int().min(1)),
+                // Liee a un jour du stage (la sortie du mercredi) : demande ce jour
+                jour: facultatif(z.coerce.date()),
               }),
             )
             .default([]),
@@ -199,6 +202,33 @@ const pageClub = defineCollection({
   }),
 });
 
+/* Galerie : un album par evenement (tournoi, match, stage...). Les photos
+   sont optimisees par Astro comme celles des actualites. */
+const galerie = defineCollection({
+  loader: glob({ pattern: "**/*.md", base: "./src/content/galerie" }),
+  schema: ({ image }) => z.object({
+    titre: z.string(),
+    date: z.coerce.date(),
+    description: facultatif(z.string()),
+    photos: z.array(z.object({ photo: image(), legende: facultatif(z.string()) })).min(1),
+  }),
+});
+
+/* Ecoles de sport de la Ville (dispositif « Faites du sport a Bourges ») :
+   ni une equipe ni une adhesion du club, d'ou une rubrique a part, sur la
+   page Nous rejoindre. Sans creneau, la rubrique disparait. */
+const pageEcoles = defineCollection({
+  loader: glob({ pattern: "ecoles-de-sport.md", base: "./src/content/pages" }),
+  schema: z.object({
+    titre: z.string(),
+    intro: z.string(),
+    creneaux: z
+      .array(z.object({ public: z.string(), activite: z.string(), jour: z.string(), horaire: z.string(), lieu: z.string() }))
+      .default([]),
+    inscription: z.string(),
+  }),
+});
+
 export const collections = {
-  actus, equipes, matchs, partenaires, boutique, evenements, diaporama, pageAccueil, pageClub,
+  actus, equipes, matchs, partenaires, boutique, evenements, diaporama, pageAccueil, pageClub, pageEcoles, galerie,
 };

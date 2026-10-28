@@ -20,8 +20,12 @@ const grandes = await Promise.all(
 
 /* Ce dont le script a besoin pour poser les questions et afficher le total.
    Les prix ne servent qu'a l'affichage : le serveur recalcule tout. */
-const detailOption = (o: { parJour: boolean; offerteDes?: number }) =>
-  (o.parJour ? " par jour" : "") + (o.offerteDes ? `, offerte pour ${o.offerteDes} jours` : "");
+const jourIso = (j: Date) => j.toISOString().slice(0, 10);
+const enClair = (j: Date) => j.toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", timeZone: "UTC" });
+const detailOption = (o: { parJour: boolean; offerteDes?: number; jour?: Date }) =>
+  (o.parJour ? " par jour" : "") +
+  (o.jour ? ` le ${enClair(o.jour)}` : "") +
+  (o.offerteDes ? `, offerte pour ${o.offerteDes} jours` : "");
 
 const vente = {
   id: c.id,
@@ -30,7 +34,20 @@ const vente = {
   questions: d.questions,
   ouvertureLe: d.ouvertureLe?.toISOString(),
   fermetureLe: d.fermetureLe?.toISOString(),
-  articles: d.articles.map((a) => ({ nom: a.nom, prix: a.prix, tailles: a.tailles ?? [], jours: a.jours, options: a.options })),
+  articles: d.articles.map((a) => ({
+    nom: a.nom,
+    prix: a.prix,
+    tailles: a.tailles ?? [],
+    jours: a.jours.map(jourIso),
+    options: a.options.map((o) => ({
+      nom: o.nom,
+      prix: o.prix,
+      parJour: o.parJour,
+      offerteDes: o.offerteDes,
+      jour: o.jour && jourIso(o.jour),
+      detail: detailOption(o),
+    })),
+  })),
 };
 ---
 
@@ -92,15 +109,15 @@ const vente = {
                       En option : {a.options.map((o) => `${o.nom} ${euros(o.prix)}${detailOption(o)}`).join(" · ")}
                     </p>
                   )}
-                  {a.jours && (
-                    <p>Ajoutez chaque participant avec +, puis choisissez son nombre de jours{a.options.length > 0 && " et ses options"}.</p>
+                  {a.jours.length > 0 && (
+                    <p>Ajoutez chaque participant avec +, puis cochez ses jours{a.options.length > 0 && " et ses options"}.</p>
                   )}
                   <p class="places" data-places={i} hidden />
                 </div>
-                <p class="prix">{euros(a.prix)}{a.jours && <small> / jour</small>}</p>
+                <p class="prix">{euros(a.prix)}{a.jours.length > 0 && <small> / jour</small>}</p>
                 <div class="qte">
                   <button type="button" data-moins={i} aria-label={`Retirer : ${a.nom}`}>−</button>
-                  <input type="number" min="0" max="20" value="0" inputmode="numeric" data-qte={i} aria-label={`${a.jours ? "Nombre de participants" : "Quantité"} : ${a.nom}`} />
+                  <input type="number" min="0" max="20" value="0" inputmode="numeric" data-qte={i} aria-label={`${a.jours.length ? "Nombre de participants" : "Quantité"} : ${a.nom}`} />
                   <button type="button" data-plus={i} aria-label={`Ajouter : ${a.nom}`}>+</button>
                 </div>
                 {/* Taille, nom du participant : demandes ici, sous l'article, des qu'on l'ajoute */}
@@ -163,8 +180,8 @@ const vente = {
       nom: string;
       prix: number;
       tailles: string[];
-      jours?: number;
-      options: { nom: string; prix: number; parJour: boolean; offerteDes?: number }[];
+      jours: string[];
+      options: { nom: string; prix: number; parJour: boolean; offerteDes?: number; jour?: string; detail: string }[];
     }[];
   };
 
@@ -195,6 +212,14 @@ const vente = {
     const coche = (nom: string) => !!(form.elements.namedItem(nom) as HTMLInputElement | null)?.checked;
     const centimes = (p: number) => Math.round(p * 100);
 
+    // Stage : jours en AAAA-MM-JJ, reservables jusqu'au soir meme
+    const passe = (j: string) => Date.parse(j) + 86400000 <= maintenant;
+    const court = (j: string) => new Date(j).toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", timeZone: "UTC" });
+    const joursCoches = (a: Vente["articles"][number], nom: string) => a.jours.filter((_, n) => coche(`${nom}-j${n}`));
+    // Places restantes, une fois connues ; pour un stage, une par jour (cleJour dans netlify/lib/boutique.mjs)
+    const restantes: Record<string, number> = {};
+    const cleJour = (article: string, jour: string) => `${article} / ${jour}`;
+
     /* Total affiche, meme calcul que verifier() dans netlify/lib/boutique.mjs,
        qui seul fait foi : pour chaque personne, ses jours et ses options. */
     function calculer() {
@@ -202,10 +227,17 @@ const vente = {
       vente.articles.forEach((a, i) => {
         for (let k = 0; k < qte(i); k++) {
           const nom = `a${i}-${k}`;
-          const j = a.jours ? Number(champ(`${nom}-jours`)) || 0 : 1;
+          const coches = a.jours.length ? joursCoches(a, nom) : [];
+          const j = a.jours.length ? coches.length : 1;
           total += centimes(a.prix) * j;
           a.options.forEach((o, m) => {
-            if (!coche(`${nom}-opt${m}`) || (o.offerteDes && j >= o.offerteDes)) return;
+            const c = form!.elements.namedItem(`${nom}-opt${m}`) as HTMLInputElement | null;
+            // Une sortie liee a un jour ne se coche que si ce jour l'est
+            if (c && o.jour) {
+              c.disabled = !coches.includes(o.jour);
+              if (c.disabled) c.checked = false;
+            }
+            if (!c?.checked || (o.offerteDes && j >= o.offerteDes)) return;
             total += centimes(o.prix) * (o.parJour ? j : 1);
           });
         }
@@ -240,7 +272,7 @@ const vente = {
         const n = qte(i);
         const unites = form!.querySelector<HTMLElement>(`[data-unites-de="${i}"]`)!;
         unites.replaceChildren();
-        if (!a.tailles.length && !vente.nominatif && !a.jours && !a.options.length) return;
+        if (!a.tailles.length && !vente.nominatif && !a.jours.length && !a.options.length) return;
 
         for (let k = 0; k < n; k++) {
           const nom = `a${i}-${k}`;
@@ -262,24 +294,19 @@ const vente = {
             bloc.append(ligne(vente.qui, qui));
           }
           // Stage : d'abord le nom, puis ses jours et ses options, puis les questions
-          if (a.jours) {
-            const s = el(
-              "select",
-              { id: `${nom}-jours`, name: `${nom}-jours`, required: true },
-              el("option", { value: "", textContent: "Choisir…" }),
-              ...Array.from({ length: a.jours }, (_, j) =>
-                el("option", { value: String(j + 1), textContent: `${j + 1} jour${j ? "s" : ""}` }),
-              ),
-            );
-            s.value = saisi.get(s.name) ?? "";
-            bloc.append(ligne("Nombre de jours", s));
+          if (a.jours.length) {
+            const cases = a.jours.map((j, n) => {
+              const complet = restantes[cleJour(a.nom, j)] === 0;
+              const c = el("input", { type: "checkbox", name: `${nom}-j${n}`, value: j, disabled: passe(j) || complet });
+              c.checked = !c.disabled && saisi.has(c.name);
+              return el("label", { className: "choix" }, c, court(j) + (passe(j) ? " (passé)" : complet ? " (complet)" : ""));
+            });
+            bloc.append(el("fieldset", { className: "ouinon" }, el("legend", { textContent: "Jours" }), ...cases));
           }
           a.options.forEach((o, m) => {
             const c = el("input", { type: "checkbox", name: `${nom}-opt${m}`, value: o.nom });
             c.checked = saisi.has(c.name);
-            const prix =
-              enEuros.format(o.prix) + (o.parJour ? " par jour" : "") + (o.offerteDes ? `, offerte pour ${o.offerteDes} jours` : "");
-            bloc.append(el("label", { className: "choix" }, c, `${o.nom} (${prix})`));
+            bloc.append(el("label", { className: "choix" }, c, `${o.nom} (${enEuros.format(o.prix)}${o.detail})`));
           });
           if (vente.nominatif) {
             vente.questions.forEach((q, j) => {
@@ -321,16 +348,29 @@ const vente = {
     // Places restantes (stage, tournoi) : connues du serveur seul
     fetch(`/.netlify/functions/commande?campagne=${encodeURIComponent(vente.id)}`)
       .then((r) => (r.ok ? r.json() : {}))
-      .then((restantes: Record<string, number>) => {
+      .then((r: Record<string, number>) => {
+        Object.assign(restantes, r);
         vente.articles.forEach((a, i) => {
+          const info = form.querySelector<HTMLElement>(`[data-places="${i}"]`)!;
+          const fermer = (oui: boolean) => {
+            qtes[i].disabled = oui;
+            form.querySelector<HTMLButtonElement>(`[data-plus="${i}"]`)!.disabled = oui;
+          };
+          if (a.jours.length) {
+            const aVenir = a.jours.filter((j) => !passe(j) && restantes[cleJour(a.nom, j)] !== undefined);
+            if (!aVenir.length) return;
+            info.hidden = false;
+            info.textContent =
+              "Places restantes : " + aVenir.map((j) => `${court(j)} : ${restantes[cleJour(a.nom, j)] || "complet"}`).join(" · ");
+            fermer(aVenir.every((j) => restantes[cleJour(a.nom, j)] === 0));
+            return;
+          }
           const reste = restantes[a.nom];
           if (reste === undefined) return;
-          const info = form.querySelector<HTMLElement>(`[data-places="${i}"]`)!;
           info.hidden = false;
           info.textContent = reste === 0 ? "Complet" : `${reste} place${reste > 1 ? "s" : ""} restante${reste > 1 ? "s" : ""}`;
           qtes[i].max = String(Math.min(20, reste));
-          qtes[i].disabled = reste === 0;
-          form.querySelector<HTMLButtonElement>(`[data-plus="${i}"]`)!.disabled = reste === 0;
+          fermer(reste === 0);
         });
         dessiner();
       })
@@ -347,7 +387,7 @@ const vente = {
           taille: champ(`a${i}-${k}-taille`) || undefined,
           participant: champ(`a${i}-${k}-qui`) || undefined,
           reponses: Object.fromEntries(vente.questions.map((q, j) => [q.libelle, champ(`a${i}-${k}-q${j}`)])),
-          jours: a.jours ? Number(champ(`a${i}-${k}-jours`)) : undefined,
+          jours: a.jours.length ? joursCoches(a, `a${i}-${k}`) : undefined,
           options: a.options.filter((_, m) => coche(`a${i}-${k}-opt${m}`)).map((o) => o.nom),
         }));
         return [{ article: a.nom, quantite: n, details }];
@@ -608,6 +648,8 @@ const vente = {
   .commande :global(.ouinon > legend) { float: left; width: 100%; }
   .commande :global(.choix) { display: inline-flex; align-items: center; gap: 0.45rem; cursor: pointer; }
   .commande :global(.choix input) { accent-color: var(--signal); width: 1.15rem; height: 1.15rem; flex-shrink: 0; }
+  /* Jour passe ou complet, sortie dont le jour n'est pas coche */
+  .commande :global(.choix:has(input:disabled)) { opacity: 0.45; cursor: default; }
 
   .payer {
     display: grid;
