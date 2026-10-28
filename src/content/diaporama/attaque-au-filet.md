@@ -1,5 +1,5 @@
 ---
-photo: ../../images/diaporama/whatsapp-image-2026-10-28-at-13.59.232.jpeg
+photo: ../../images/diaporama/9413fdef-044f-40e6-9bd2-52a23bd70fe6.jpg
 alt: Attaque au filet lors d'un match
 ordre: 1
 ---
