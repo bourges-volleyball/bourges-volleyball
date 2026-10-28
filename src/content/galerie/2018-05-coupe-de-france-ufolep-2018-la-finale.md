@@ -1,0 +1,46 @@
+---
+titre: "Coupe de France Ufolep 2018 : la finale"
+date: 2018-05-23
+description: "Finale de la Coupe de France excellence masculine : Combronde – Entente Bourges-Saint-Doulchard, 3-0. L'Entente termine deuxième de France."
+photos:
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-finale-01.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-finale-02.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-finale-03.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-finale-04.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-finale-05.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-finale-06.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-finale-07.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-finale-08.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-finale-09.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-finale-10.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-finale-11.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-finale-12.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-finale-13.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-finale-14.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-finale-15.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-finale-16.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-finale-17.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-finale-18.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-finale-19.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-finale-20.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-finale-21.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-finale-22.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-finale-23.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-finale-24.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-finale-25.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-finale-26.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-finale-27.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-finale-28.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-finale-29.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-finale-30.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-finale-31.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-finale-32.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-finale-33.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-finale-34.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-finale-35.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-finale-36.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-finale-37.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-finale-38.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-finale-39.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-finale-40.jpg
+---

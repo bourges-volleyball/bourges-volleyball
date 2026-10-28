@@ -1,0 +1,37 @@
+---
+titre: "Coupe de France Ufolep : les garçons face à Châteauroux"
+date: 2014-11-28
+photos:
+  - photo: ../../images/galerie/2014-11-coupe-de-france-ufolep-les-garcons-face-a-chateauroux-01.jpg
+  - photo: ../../images/galerie/2014-11-coupe-de-france-ufolep-les-garcons-face-a-chateauroux-02.jpg
+  - photo: ../../images/galerie/2014-11-coupe-de-france-ufolep-les-garcons-face-a-chateauroux-03.jpg
+  - photo: ../../images/galerie/2014-11-coupe-de-france-ufolep-les-garcons-face-a-chateauroux-04.jpg
+  - photo: ../../images/galerie/2014-11-coupe-de-france-ufolep-les-garcons-face-a-chateauroux-05.jpg
+  - photo: ../../images/galerie/2014-11-coupe-de-france-ufolep-les-garcons-face-a-chateauroux-06.jpg
+  - photo: ../../images/galerie/2014-11-coupe-de-france-ufolep-les-garcons-face-a-chateauroux-07.jpg
+  - photo: ../../images/galerie/2014-11-coupe-de-france-ufolep-les-garcons-face-a-chateauroux-08.jpg
+  - photo: ../../images/galerie/2014-11-coupe-de-france-ufolep-les-garcons-face-a-chateauroux-09.jpg
+  - photo: ../../images/galerie/2014-11-coupe-de-france-ufolep-les-garcons-face-a-chateauroux-10.jpg
+  - photo: ../../images/galerie/2014-11-coupe-de-france-ufolep-les-garcons-face-a-chateauroux-11.jpg
+  - photo: ../../images/galerie/2014-11-coupe-de-france-ufolep-les-garcons-face-a-chateauroux-12.jpg
+  - photo: ../../images/galerie/2014-11-coupe-de-france-ufolep-les-garcons-face-a-chateauroux-13.jpg
+  - photo: ../../images/galerie/2014-11-coupe-de-france-ufolep-les-garcons-face-a-chateauroux-14.jpg
+  - photo: ../../images/galerie/2014-11-coupe-de-france-ufolep-les-garcons-face-a-chateauroux-15.jpg
+  - photo: ../../images/galerie/2014-11-coupe-de-france-ufolep-les-garcons-face-a-chateauroux-16.jpg
+  - photo: ../../images/galerie/2014-11-coupe-de-france-ufolep-les-garcons-face-a-chateauroux-17.jpg
+  - photo: ../../images/galerie/2014-11-coupe-de-france-ufolep-les-garcons-face-a-chateauroux-18.jpg
+  - photo: ../../images/galerie/2014-11-coupe-de-france-ufolep-les-garcons-face-a-chateauroux-19.jpg
+  - photo: ../../images/galerie/2014-11-coupe-de-france-ufolep-les-garcons-face-a-chateauroux-20.jpg
+  - photo: ../../images/galerie/2014-11-coupe-de-france-ufolep-les-garcons-face-a-chateauroux-21.jpg
+  - photo: ../../images/galerie/2014-11-coupe-de-france-ufolep-les-garcons-face-a-chateauroux-22.jpg
+  - photo: ../../images/galerie/2014-11-coupe-de-france-ufolep-les-garcons-face-a-chateauroux-23.jpg
+  - photo: ../../images/galerie/2014-11-coupe-de-france-ufolep-les-garcons-face-a-chateauroux-24.jpg
+  - photo: ../../images/galerie/2014-11-coupe-de-france-ufolep-les-garcons-face-a-chateauroux-25.jpg
+  - photo: ../../images/galerie/2014-11-coupe-de-france-ufolep-les-garcons-face-a-chateauroux-26.jpg
+  - photo: ../../images/galerie/2014-11-coupe-de-france-ufolep-les-garcons-face-a-chateauroux-27.jpg
+  - photo: ../../images/galerie/2014-11-coupe-de-france-ufolep-les-garcons-face-a-chateauroux-28.jpg
+  - photo: ../../images/galerie/2014-11-coupe-de-france-ufolep-les-garcons-face-a-chateauroux-29.jpg
+  - photo: ../../images/galerie/2014-11-coupe-de-france-ufolep-les-garcons-face-a-chateauroux-30.jpg
+  - photo: ../../images/galerie/2014-11-coupe-de-france-ufolep-les-garcons-face-a-chateauroux-31.jpg
+  - photo: ../../images/galerie/2014-11-coupe-de-france-ufolep-les-garcons-face-a-chateauroux-32.jpg
+---

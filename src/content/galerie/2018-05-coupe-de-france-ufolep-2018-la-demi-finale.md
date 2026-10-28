@@ -1,0 +1,46 @@
+---
+titre: "Coupe de France Ufolep 2018 : la demi-finale"
+date: 2018-05-23
+description: "L'Entente Bourges-Saint-Doulchard bat Longuenesse 3-2 et file en finale."
+photos:
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-demi-finale-01.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-demi-finale-02.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-demi-finale-03.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-demi-finale-04.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-demi-finale-05.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-demi-finale-06.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-demi-finale-07.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-demi-finale-08.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-demi-finale-09.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-demi-finale-10.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-demi-finale-11.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-demi-finale-12.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-demi-finale-13.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-demi-finale-14.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-demi-finale-15.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-demi-finale-16.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-demi-finale-17.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-demi-finale-18.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-demi-finale-19.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-demi-finale-20.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-demi-finale-21.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-demi-finale-22.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-demi-finale-23.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-demi-finale-24.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-demi-finale-25.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-demi-finale-26.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-demi-finale-27.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-demi-finale-28.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-demi-finale-29.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-demi-finale-30.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-demi-finale-31.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-demi-finale-32.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-demi-finale-33.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-demi-finale-34.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-demi-finale-35.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-demi-finale-36.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-demi-finale-37.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-demi-finale-38.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-demi-finale-39.jpg
+  - photo: ../../images/galerie/2018-05-coupe-de-france-ufolep-2018-la-demi-finale-40.jpg
+---

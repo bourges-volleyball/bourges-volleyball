@@ -1,0 +1,31 @@
+---
+titre: "Coupe de France Ufolep féminine 2013"
+date: 2013-05-19
+description: "Les filles vont jusqu'en demi-finale de la Coupe de France honneur."
+photos:
+  - photo: ../../images/galerie/2013-05-coupe-de-france-ufolep-feminine-2013-01.jpg
+  - photo: ../../images/galerie/2013-05-coupe-de-france-ufolep-feminine-2013-02.jpg
+  - photo: ../../images/galerie/2013-05-coupe-de-france-ufolep-feminine-2013-03.jpg
+  - photo: ../../images/galerie/2013-05-coupe-de-france-ufolep-feminine-2013-04.jpg
+  - photo: ../../images/galerie/2013-05-coupe-de-france-ufolep-feminine-2013-05.jpg
+  - photo: ../../images/galerie/2013-05-coupe-de-france-ufolep-feminine-2013-06.jpg
+  - photo: ../../images/galerie/2013-05-coupe-de-france-ufolep-feminine-2013-07.jpg
+  - photo: ../../images/galerie/2013-05-coupe-de-france-ufolep-feminine-2013-08.jpg
+  - photo: ../../images/galerie/2013-05-coupe-de-france-ufolep-feminine-2013-09.jpg
+  - photo: ../../images/galerie/2013-05-coupe-de-france-ufolep-feminine-2013-10.jpg
+  - photo: ../../images/galerie/2013-05-coupe-de-france-ufolep-feminine-2013-11.jpg
+  - photo: ../../images/galerie/2013-05-coupe-de-france-ufolep-feminine-2013-12.jpg
+  - photo: ../../images/galerie/2013-05-coupe-de-france-ufolep-feminine-2013-13.jpg
+  - photo: ../../images/galerie/2013-05-coupe-de-france-ufolep-feminine-2013-14.jpg
+  - photo: ../../images/galerie/2013-05-coupe-de-france-ufolep-feminine-2013-15.jpg
+  - photo: ../../images/galerie/2013-05-coupe-de-france-ufolep-feminine-2013-16.jpg
+  - photo: ../../images/galerie/2013-05-coupe-de-france-ufolep-feminine-2013-17.jpg
+  - photo: ../../images/galerie/2013-05-coupe-de-france-ufolep-feminine-2013-18.jpg
+  - photo: ../../images/galerie/2013-05-coupe-de-france-ufolep-feminine-2013-19.jpg
+  - photo: ../../images/galerie/2013-05-coupe-de-france-ufolep-feminine-2013-20.jpg
+  - photo: ../../images/galerie/2013-05-coupe-de-france-ufolep-feminine-2013-21.jpg
+  - photo: ../../images/galerie/2013-05-coupe-de-france-ufolep-feminine-2013-22.jpg
+  - photo: ../../images/galerie/2013-05-coupe-de-france-ufolep-feminine-2013-23.jpg
+  - photo: ../../images/galerie/2013-05-coupe-de-france-ufolep-feminine-2013-24.jpg
+  - photo: ../../images/galerie/2013-05-coupe-de-france-ufolep-feminine-2013-25.jpg
+---

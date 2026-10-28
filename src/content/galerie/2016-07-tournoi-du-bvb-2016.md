@@ -1,0 +1,46 @@
+---
+titre: "Tournoi du BVB 2016"
+date: 2016-07-01
+description: "Le tournoi d'été du club, sur l'herbe. Une sélection de 40 photos."
+photos:
+  - photo: ../../images/galerie/2016-07-tournoi-du-bvb-2016-01.jpg
+  - photo: ../../images/galerie/2016-07-tournoi-du-bvb-2016-02.jpg
+  - photo: ../../images/galerie/2016-07-tournoi-du-bvb-2016-03.jpg
+  - photo: ../../images/galerie/2016-07-tournoi-du-bvb-2016-04.jpg
+  - photo: ../../images/galerie/2016-07-tournoi-du-bvb-2016-05.jpg
+  - photo: ../../images/galerie/2016-07-tournoi-du-bvb-2016-06.jpg
+  - photo: ../../images/galerie/2016-07-tournoi-du-bvb-2016-07.jpg
+  - photo: ../../images/galerie/2016-07-tournoi-du-bvb-2016-08.jpg
+  - photo: ../../images/galerie/2016-07-tournoi-du-bvb-2016-09.jpg
+  - photo: ../../images/galerie/2016-07-tournoi-du-bvb-2016-10.jpg
+  - photo: ../../images/galerie/2016-07-tournoi-du-bvb-2016-11.jpg
+  - photo: ../../images/galerie/2016-07-tournoi-du-bvb-2016-12.jpg
+  - photo: ../../images/galerie/2016-07-tournoi-du-bvb-2016-13.jpg
+  - photo: ../../images/galerie/2016-07-tournoi-du-bvb-2016-14.jpg
+  - photo: ../../images/galerie/2016-07-tournoi-du-bvb-2016-15.jpg
+  - photo: ../../images/galerie/2016-07-tournoi-du-bvb-2016-16.jpg
+  - photo: ../../images/galerie/2016-07-tournoi-du-bvb-2016-17.jpg
+  - photo: ../../images/galerie/2016-07-tournoi-du-bvb-2016-18.jpg
+  - photo: ../../images/galerie/2016-07-tournoi-du-bvb-2016-19.jpg
+  - photo: ../../images/galerie/2016-07-tournoi-du-bvb-2016-20.jpg
+  - photo: ../../images/galerie/2016-07-tournoi-du-bvb-2016-21.jpg
+  - photo: ../../images/galerie/2016-07-tournoi-du-bvb-2016-22.jpg
+  - photo: ../../images/galerie/2016-07-tournoi-du-bvb-2016-23.jpg
+  - photo: ../../images/galerie/2016-07-tournoi-du-bvb-2016-24.jpg
+  - photo: ../../images/galerie/2016-07-tournoi-du-bvb-2016-25.jpg
+  - photo: ../../images/galerie/2016-07-tournoi-du-bvb-2016-26.jpg
+  - photo: ../../images/galerie/2016-07-tournoi-du-bvb-2016-27.jpg
+  - photo: ../../images/galerie/2016-07-tournoi-du-bvb-2016-28.jpg
+  - photo: ../../images/galerie/2016-07-tournoi-du-bvb-2016-29.jpg
+  - photo: ../../images/galerie/2016-07-tournoi-du-bvb-2016-30.jpg
+  - photo: ../../images/galerie/2016-07-tournoi-du-bvb-2016-31.jpg
+  - photo: ../../images/galerie/2016-07-tournoi-du-bvb-2016-32.jpg
+  - photo: ../../images/galerie/2016-07-tournoi-du-bvb-2016-33.jpg
+  - photo: ../../images/galerie/2016-07-tournoi-du-bvb-2016-34.jpg
+  - photo: ../../images/galerie/2016-07-tournoi-du-bvb-2016-35.jpg
+  - photo: ../../images/galerie/2016-07-tournoi-du-bvb-2016-36.jpg
+  - photo: ../../images/galerie/2016-07-tournoi-du-bvb-2016-37.jpg
+  - photo: ../../images/galerie/2016-07-tournoi-du-bvb-2016-38.jpg
+  - photo: ../../images/galerie/2016-07-tournoi-du-bvb-2016-39.jpg
+  - photo: ../../images/galerie/2016-07-tournoi-du-bvb-2016-40.jpg
+---

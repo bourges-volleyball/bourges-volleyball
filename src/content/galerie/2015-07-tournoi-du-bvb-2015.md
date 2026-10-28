@@ -1,0 +1,46 @@
+---
+titre: "Tournoi du BVB 2015"
+date: 2015-07-10
+description: "Sur l'herbe, puis au gymnase. Une sélection de 40 photos."
+photos:
+  - photo: ../../images/galerie/2015-07-tournoi-du-bvb-2015-01.jpg
+  - photo: ../../images/galerie/2015-07-tournoi-du-bvb-2015-02.jpg
+  - photo: ../../images/galerie/2015-07-tournoi-du-bvb-2015-03.jpg
+  - photo: ../../images/galerie/2015-07-tournoi-du-bvb-2015-04.jpg
+  - photo: ../../images/galerie/2015-07-tournoi-du-bvb-2015-05.jpg
+  - photo: ../../images/galerie/2015-07-tournoi-du-bvb-2015-06.jpg
+  - photo: ../../images/galerie/2015-07-tournoi-du-bvb-2015-07.jpg
+  - photo: ../../images/galerie/2015-07-tournoi-du-bvb-2015-08.jpg
+  - photo: ../../images/galerie/2015-07-tournoi-du-bvb-2015-09.jpg
+  - photo: ../../images/galerie/2015-07-tournoi-du-bvb-2015-10.jpg
+  - photo: ../../images/galerie/2015-07-tournoi-du-bvb-2015-11.jpg
+  - photo: ../../images/galerie/2015-07-tournoi-du-bvb-2015-12.jpg
+  - photo: ../../images/galerie/2015-07-tournoi-du-bvb-2015-13.jpg
+  - photo: ../../images/galerie/2015-07-tournoi-du-bvb-2015-14.jpg
+  - photo: ../../images/galerie/2015-07-tournoi-du-bvb-2015-15.jpg
+  - photo: ../../images/galerie/2015-07-tournoi-du-bvb-2015-16.jpg
+  - photo: ../../images/galerie/2015-07-tournoi-du-bvb-2015-17.jpg
+  - photo: ../../images/galerie/2015-07-tournoi-du-bvb-2015-18.jpg
+  - photo: ../../images/galerie/2015-07-tournoi-du-bvb-2015-19.jpg
+  - photo: ../../images/galerie/2015-07-tournoi-du-bvb-2015-20.jpg
+  - photo: ../../images/galerie/2015-07-tournoi-du-bvb-2015-21.jpg
+  - photo: ../../images/galerie/2015-07-tournoi-du-bvb-2015-22.jpg
+  - photo: ../../images/galerie/2015-07-tournoi-du-bvb-2015-23.jpg
+  - photo: ../../images/galerie/2015-07-tournoi-du-bvb-2015-24.jpg
+  - photo: ../../images/galerie/2015-07-tournoi-du-bvb-2015-25.jpg
+  - photo: ../../images/galerie/2015-07-tournoi-du-bvb-2015-26.jpg
+  - photo: ../../images/galerie/2015-07-tournoi-du-bvb-2015-27.jpg
+  - photo: ../../images/galerie/2015-07-tournoi-du-bvb-2015-28.jpg
+  - photo: ../../images/galerie/2015-07-tournoi-du-bvb-2015-29.jpg
+  - photo: ../../images/galerie/2015-07-tournoi-du-bvb-2015-30.jpg
+  - photo: ../../images/galerie/2015-07-tournoi-du-bvb-2015-31.jpg
+  - photo: ../../images/galerie/2015-07-tournoi-du-bvb-2015-32.jpg
+  - photo: ../../images/galerie/2015-07-tournoi-du-bvb-2015-33.jpg
+  - photo: ../../images/galerie/2015-07-tournoi-du-bvb-2015-34.jpg
+  - photo: ../../images/galerie/2015-07-tournoi-du-bvb-2015-35.jpg
+  - photo: ../../images/galerie/2015-07-tournoi-du-bvb-2015-36.jpg
+  - photo: ../../images/galerie/2015-07-tournoi-du-bvb-2015-37.jpg
+  - photo: ../../images/galerie/2015-07-tournoi-du-bvb-2015-38.jpg
+  - photo: ../../images/galerie/2015-07-tournoi-du-bvb-2015-39.jpg
+  - photo: ../../images/galerie/2015-07-tournoi-du-bvb-2015-40.jpg
+---

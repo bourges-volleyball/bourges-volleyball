@@ -342,12 +342,16 @@ GitHub**, puis convertie par le site en petites versions (vignette, grand
 format) à chaque publication ; les visiteurs ne téléchargent que ces versions
 allégées (quelques centaines de Ko). Les limites à surveiller sont donc :
 
-- **le dépôt GitHub**, qui devrait rester sous 1 Go (au 28 octobre 2026 :
-  environ 40 Mo). Un album de 30 photos de téléphone en ajoute 60 à 150 ;
+- **le dépôt GitHub**, qui devrait rester sous 1 Go (fin octobre 2026,
+  après la reprise des albums de Clubeo : environ 120 Mo). Un album de
+  30 photos de téléphone en ajoute 60 à 150 Mo ;
 - **les crédits Netlify** : la bande passante des visiteurs s'y ajoute aux
   publications. À regarder dans *Usage* sur Netlify après les premiers
   albums ;
-- **la durée de construction**, qui s'allonge avec le nombre de photos.
+- **la durée de construction**, qui s'allonge avec le nombre de photos :
+  un peu plus d'une minute pour les quelque 500 photos de fin octobre 2026,
+  quand Netlify n'a rien en cache ; bien moins ensuite, les photos déjà
+  converties étant gardées d'une publication à l'autre.
 
 D'où deux garde-fous dans l'administration : **6 Mo au plus par photo**
 (au-delà, l'envoi est refusé) et **40 photos par album**. Mieux vaut
@@ -587,6 +591,11 @@ Netlify `HELLOASSO_API = https://api.helloasso-sandbox.com` avec ses clés.
   (tournoi du BVB 2026). La coupure du Berry Républicain de l'actu du
   10 octobre 2025 est reprise avec l'accord dont dispose le club, source
   citée sous l'article
+- [x] 25 anciens albums de Clubeo (2005 à 2021) repris dans la galerie : au
+  plus 40 photos par album, les plus nettes, réparties sur tout l'événement
+  (le tournoi 2016 en comptait 431). Deux albums laissés de côté : « que
+  dire ???? » (une photo sans légende) et « histoire de volley » (deux
+  dessins dont l'auteur est inconnu)
 - [x] Page 404
 - [x] Logos des partenaires institutionnels cliquables vers leur site
 - [x] Pages Mentions légales, Confidentialité et « Message envoyé »
