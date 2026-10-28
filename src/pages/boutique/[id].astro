@@ -20,6 +20,9 @@ const grandes = await Promise.all(
 
 /* Ce dont le script a besoin pour poser les questions et afficher le total.
    Les prix ne servent qu'a l'affichage : le serveur recalcule tout. */
+const detailOption = (o: { parJour: boolean; offerteDes?: number }) =>
+  (o.parJour ? " par jour" : "") + (o.offerteDes ? `, offerte pour ${o.offerteDes} jours` : "");
+
 const vente = {
   id: c.id,
   nominatif: d.nominatif,
@@ -86,7 +89,7 @@ const vente = {
                   {a.tailles?.length ? <p class="tailles">Tailles : {a.tailles.join(" · ")}</p> : null}
                   {a.options.length > 0 && (
                     <p class="tailles">
-                      En option : {a.options.map((o) => `${o.nom} ${euros(o.prix)}${o.parJour ? " par jour" : ""}`).join(" · ")}
+                      En option : {a.options.map((o) => `${o.nom} ${euros(o.prix)}${detailOption(o)}`).join(" · ")}
                     </p>
                   )}
                   {a.jours && (
@@ -161,7 +164,7 @@ const vente = {
       prix: number;
       tailles: string[];
       jours?: number;
-      options: { nom: string; prix: number; parJour: boolean }[];
+      options: { nom: string; prix: number; parJour: boolean; offerteDes?: number }[];
     }[];
   };
 
@@ -202,7 +205,8 @@ const vente = {
           const j = a.jours ? Number(champ(`${nom}-jours`)) || 0 : 1;
           total += centimes(a.prix) * j;
           a.options.forEach((o, m) => {
-            if (coche(`${nom}-opt${m}`)) total += centimes(o.prix) * (o.parJour ? j : 1);
+            if (!coche(`${nom}-opt${m}`) || (o.offerteDes && j >= o.offerteDes)) return;
+            total += centimes(o.prix) * (o.parJour ? j : 1);
           });
         }
       });
@@ -273,7 +277,8 @@ const vente = {
           a.options.forEach((o, m) => {
             const c = el("input", { type: "checkbox", name: `${nom}-opt${m}`, value: o.nom });
             c.checked = saisi.has(c.name);
-            const prix = enEuros.format(o.prix) + (o.parJour ? " par jour" : "");
+            const prix =
+              enEuros.format(o.prix) + (o.parJour ? " par jour" : "") + (o.offerteDes ? `, offerte pour ${o.offerteDes} jours` : "");
             bloc.append(el("label", { className: "choix" }, c, `${o.nom} (${prix})`));
           });
           if (vente.nominatif) {
@@ -602,7 +607,7 @@ const vente = {
   .commande :global(.ouinon) { display: flex; flex-wrap: wrap; gap: 0.4rem 1.5rem; }
   .commande :global(.ouinon > legend) { float: left; width: 100%; }
   .commande :global(.choix) { display: inline-flex; align-items: center; gap: 0.45rem; cursor: pointer; }
-  .commande :global(.choix input) { accent-color: var(--signal); width: 1.15rem; height: 1.15rem; }
+  .commande :global(.choix input) { accent-color: var(--signal); width: 1.15rem; height: 1.15rem; flex-shrink: 0; }
 
   .payer {
     display: grid;

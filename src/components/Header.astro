@@ -31,6 +31,8 @@ const liens = [
       }
     </nav>
 
+    {/* Pour les benevoles : la connexion se fait sur invitation seulement */}
+    <a class="admin-head" href="/admin/" rel="nofollow"><span>Admin</span></a>
     <a class="cta-head" href="/nous-rejoindre/"><span>Nous rejoindre</span></a>
 
     <button
@@ -56,6 +58,7 @@ const liens = [
       ))
     }
     <a class="mobile-cta" href="/nous-rejoindre/">Nous rejoindre</a>
+    <a class="mobile-admin" href="/admin/" rel="nofollow">Administration du site</a>
   </nav>
 </header>
 
@@ -117,6 +120,25 @@ const liens = [
   .cta-head span { display: inline-block; transform: skewX(10deg); }
   .cta-head:hover { background: var(--signal-fonce); }
 
+  /* Acces des benevoles a l'administration : meme forme, en creux */
+  .admin-head {
+    text-decoration: none;
+    border: 1px solid var(--hair);
+    color: var(--fg-2);
+    font-family: "Barlow Semi Condensed", sans-serif;
+    font-weight: 600;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: calc(0.5rem - 1px) 0.8rem;
+    transform: skewX(-10deg);
+    display: inline-block;
+    transition: border-color 0.12s, color 0.12s;
+    flex: none;
+  }
+  .admin-head span { display: inline-block; transform: skewX(10deg); }
+  .admin-head:hover { border-color: var(--signal); color: var(--signal); }
+
   /* Bouton du menu mobile : 44 px de cote, la cible tactile minimale */
   .burger {
     display: none;
@@ -143,15 +165,16 @@ const liens = [
 
   .mobile { display: none; }
 
-  /* 1100 px : le menu complet demande environ 1050 px (logo + 8 liens + bouton),
-     marges comprises. En dessous, il passait sur deux lignes.
-     Au-dessus de 1100 px on affichait un menu burger a des visiteurs
-     qui avaient largement la place pour la navigation entiere. */
-  @media (max-width: 1100px) {
+  /* 1180 px : le menu complet demande environ 1120 px (logo + 8 liens + Admin
+     + Nous rejoindre), marges comprises. En dessous, il passait sur deux
+     lignes. Au-dela, on affichait un menu burger a des visiteurs qui avaient
+     largement la place pour la navigation entiere. */
+  @media (max-width: 1180px) {
     .bureau { display: none; }
     .burger { display: grid; }
     /* Le bouton d'inscription reste visible : c'est la raison d'etre du site */
     .cta-head { font-size: 0.72rem; padding: 0.45rem 0.7rem; }
+    .admin-head { font-size: 0.72rem; padding: calc(0.45rem - 1px) 0.6rem; }
     .mark span { font-size: 1.1rem; }
 
     .mobile {
@@ -178,6 +201,18 @@ const liens = [
       color: var(--sur-signal);
       border-bottom: 0;
     }
+    .mobile .mobile-admin {
+      font-family: "Barlow Semi Condensed", sans-serif;
+      font-weight: 600;
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      color: var(--fg-2);
+    }
+  }
+
+  /* Sur petit telephone, l'acces admin reste dans le menu */
+  @media (max-width: 560px) {
+    .admin-head { display: none; }
   }
 
   @media (max-width: 420px) {

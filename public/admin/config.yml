@@ -520,6 +520,15 @@ collections:
                   default: false,
                   hint: "Cochée : le prix est multiplié par le nombre de jours choisis (un repas par jour). Décochée : payée une seule fois.",
                 }
+              - {
+                  name: "offerteDes",
+                  label: "Offerte à partir de (jours)",
+                  widget: "number",
+                  value_type: "int",
+                  min: 1,
+                  required: false,
+                  hint: "Par exemple 5 : l'option est gratuite pour un participant inscrit 5 jours. Laissé vide : toujours payante.",
+                }
       - { name: "ordre", label: "Ordre", widget: "number", value_type: "int", default: 10, hint: "1 en premier dans son rayon." }
 
   - name: "evenements"

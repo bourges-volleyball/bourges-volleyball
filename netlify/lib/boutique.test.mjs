@@ -46,14 +46,20 @@ test("refus : places, taille, nom, question, quantite, doublon", () => {
 test("stage a la journee : jours et options par personne", () => {
   const journees = {
     ...stage,
-    articles: [{ nom: "Stage", prix: 13, jours: 5, options: [{ nom: "Repas", prix: 5.5, parJour: true }, { nom: "Sortie", prix: 10 }] }],
+    articles: [{
+      nom: "Stage",
+      prix: 13,
+      jours: 5,
+      options: [{ nom: "Repas", prix: 5.5, parJour: true }, { nom: "Sortie", prix: 10, offerteDes: 5 }],
+    }],
   };
-  const sam = { ...jeune, jours: 3, options: ["Repas", "Repas"] };
+  const sam = { ...jeune, jours: 3, options: ["Repas", "Repas", "Sortie"] };
   const lou = { ...jeune, participant: "Lou Martin", jours: 5, options: ["Sortie"] };
   const r = verifier(journees, { payeur, lignes: [{ article: "Stage", quantite: 2, details: [sam, lou] }] });
   assert.equal(r.erreur, undefined);
-  assert.equal(r.total, 3 * 1300 + 3 * 550 + (5 * 1300 + 1000));
-  assert.deepEqual(r.lignes[0].details.map((d) => [d.jours, d.options, d.montant]), [[3, ["Repas"], 5550], [5, ["Sortie"], 7500]]);
+  // Sortie payee a 3 jours, offerte a 5 jours
+  assert.equal(r.total, 3 * 1300 + 3 * 550 + 1000 + 5 * 1300);
+  assert.deepEqual(r.lignes[0].details.map((d) => [d.jours, d.options, d.montant]), [[3, ["Repas", "Sortie"], 6550], [5, ["Sortie"], 6500]]);
   const un = (d) => verifier(journees, { payeur, lignes: [{ article: "Stage", quantite: 1, details: [d] }] }).erreur;
   for (const jours of [0, 6, 2.5, undefined]) assert.match(un({ ...jeune, jours }), /nombre de jours/);
   assert.match(un({ ...jeune, jours: 1, options: ["Piscine"] }), /Option inconnue/);

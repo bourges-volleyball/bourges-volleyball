@@ -50,7 +50,8 @@ export function verifier(campagne, demande, restantes = {}) {
     }
 
     /* Stage a la journee : chaque personne choisit son nombre de jours et ses
-       options (repas...), une option « par jour » etant comptee chaque jour. */
+       options (repas, sortie...). Une option « par jour » est comptee chaque
+       jour ; une option « offerte des N jours » est gratuite a partir de N jours. */
     const prix = Math.round(article.prix * 100);
     const options = article.options ?? [];
     let montantLigne = 0;
@@ -72,7 +73,8 @@ export function verifier(campagne, demande, restantes = {}) {
         if (choisies.some((n) => !options.some((o) => o.nom === n))) return { erreur: "Option inconnue." };
         detail.options = options.filter((o) => choisies.includes(o.nom)).map((o) => o.nom);
         for (const o of options) {
-          if (choisies.includes(o.nom)) montant += Math.round(o.prix * 100) * (o.parJour ? jours : 1);
+          if (!choisies.includes(o.nom) || (o.offerteDes && jours >= o.offerteDes)) continue;
+          montant += Math.round(o.prix * 100) * (o.parJour ? jours : 1);
         }
       }
       if (article.jours || options.length) detail.montant = montant;

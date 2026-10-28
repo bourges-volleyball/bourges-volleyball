@@ -120,7 +120,15 @@ const boutique = defineCollection({
           // Stage : le prix est celui d'une journee, chaque personne choisit de 1 a `jours` jours
           jours: facultatif(z.number().int().min(1).max(31)),
           options: z
-            .array(z.object({ nom: z.string(), prix: z.number().positive(), parJour: z.boolean().default(false) }))
+            .array(
+              z.object({
+                nom: z.string(),
+                prix: z.number().positive(),
+                parJour: z.boolean().default(false),
+                // Gratuite pour qui choisit au moins ce nombre de jours
+                offerteDes: facultatif(z.number().int().min(1)),
+              }),
+            )
             .default([]),
         }),
       )

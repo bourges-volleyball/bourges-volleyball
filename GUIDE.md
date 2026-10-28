@@ -125,8 +125,9 @@ de redirection DNS. Il faut aussi changer l'adresse dans **deux fichiers** :
 
 ## 2. Pour les bénévoles : modifier le site
 
-Tout se passe sur **votre-site.fr/admin/**. Se connecter avec le mail et le
-mot de passe reçus par invitation.
+Tout se passe sur **votre-site.fr/admin/**, que le bouton **Admin** du haut
+du site ouvre directement (dans le menu sur téléphone). Se connecter avec le
+mail et le mot de passe reçus par invitation.
 
 **Les bénévoles n'ont pas de compte GitHub et n'en auront jamais besoin.**
 Ils s'identifient avec un mail et un mot de passe ; c'est Git Gateway qui
@@ -251,7 +252,9 @@ et paie sans quitter le site ; seul le paiement par carte passe par HelloAsso.
   journée. Remplissez **Stage : nombre de jours** (5 pour une semaine) :
   chaque participant choisit de 1 à 5 jours. Les **options** (repas du midi…)
   sont des cases à cocher par participant ; cochez **Comptée chaque jour**
-  pour qu'un repas soit facturé pour chaque jour choisi. Inutile de créer un
+  pour qu'un repas soit facturé pour chaque jour choisi, et remplissez
+  **Offerte à partir de** (5) pour une sortie gratuite aux inscrits de la
+  semaine, comme le laser game. Inutile de créer un
   article « 1 jour », « 2 jours », « 1 repas »…
 - **Demander le nom de chaque participant** : à cocher pour une adhésion, un
   stage, un tournoi. On peut ajouter des **questions** (texte ou oui/non),
@@ -627,7 +630,7 @@ sets** et les **forfaits** (« F », comptés 3-0) : la page Matchs les affiche
 par équipe, dans l'ordre de `POULES`.
 
 Le guide des bénévoles, lui, est une page statique : `public/admin/guide/`
-(lien « Guide » en bas à gauche de l'administration). Son PDF se régénère
+(bouton vert « Guide » dans la barre du haut de l'administration). Son PDF se régénère
 depuis le navigateur, Imprimer > Enregistrer en PDF, après toute modification.
 
 **Il n'échoue jamais bruyamment.** Si la fédération est injoignable ou change
