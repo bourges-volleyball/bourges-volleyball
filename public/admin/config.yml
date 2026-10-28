@@ -258,7 +258,7 @@ collections:
           label: "Photo d'équipe",
           widget: "image",
           required: false,
-          hint: "Format paysage. Elle sert de fond à la carte de l'équipe et en tête de sa fiche.",
+          hint: "Une photo de groupe, en largeur de préférence. Elle s'affiche en entier en tête de la fiche de l'équipe, et sert de fond à sa carte sur la page Les équipes.",
         }
       - name: "effectif"
         label: "Effectif"

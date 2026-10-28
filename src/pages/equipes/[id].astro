@@ -32,15 +32,31 @@ const derniers = joues.filter(sien).slice(0, 3);
   description={`${d.nom} du Bourges Volley-Ball : ${d.niveau}, créneaux, gymnase et effectif.`}
   image={partage?.src}
 >
-  <section class="entete">
-    {d.photo && <Image class="fond" src={d.photo} alt="" widths={[640, 960, 1280, 1600, 1920]} sizes="100vw" loading="eager" fetchpriority="high" />}
+  {/* Une photo d'equipe ne se recadre pas : en bandeau, on perdait les tetes
+      ou le premier rang. Elle s'affiche donc entiere, a cote du titre, sur
+      un fond flou tire d'elle-meme. */}
+  <section class:list={["entete", { "avec-photo": d.photo }]}>
+    {d.photo && <Image class="fond" src={d.photo} alt="" widths={[480]} sizes="100vw" loading="eager" />}
     <span class="voile" aria-hidden="true"></span>
     <div class="wrap entete-in">
-      <p class="niveau">{d.niveau}</p>
-      <h1>{d.nom}</h1>
-      <p class="ages">
-        De {d.ageMin} à {d.ageMax === 99 ? "99" : d.ageMax} ans
-      </p>
+      <div>
+        <p class="niveau">{d.niveau}</p>
+        <h1>{d.nom}</h1>
+        <p class="ages">
+          De {d.ageMin} à {d.ageMax === 99 ? "99" : d.ageMax} ans
+        </p>
+      </div>
+      {d.photo && (
+        <Image
+          class="photo"
+          src={d.photo}
+          alt={`L’équipe ${d.nom}`}
+          widths={[480, 720, 960, 1280, 1600]}
+          sizes="(min-width: 860px) 58vw, 100vw"
+          loading="eager"
+          fetchpriority="high"
+        />
+      )}
     </div>
   </section>
 
@@ -177,13 +193,22 @@ const derniers = joues.filter(sien).slice(0, 3);
   .presentation :global(strong) { color: var(--fg); }
   .presentation :global(a) { color: var(--signal); }
 
-  /* Meme traitement photographique que le hero et les cartes */
   .entete { position: relative; overflow: hidden; min-height: clamp(240px, 38vh, 380px); display: grid; align-items: end; }
+  /* Le fond n'est qu'une ambiance : la photo floutee et assombrie. Agrandie
+     un peu pour que le flou ne laisse pas de bord clair. */
   .fond { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
-    filter: brightness(0.62) contrast(1.05) saturate(0.82); }
+    filter: blur(28px) brightness(0.42) saturate(0.8); transform: scale(1.15); }
   .voile { position: absolute; inset: 0;
     background: linear-gradient(to top, rgba(9,10,13,0.95) 0%, rgba(9,10,13,0.6) 45%, rgba(9,10,13,0.2) 100%); }
   .entete-in { position: relative; padding-block: clamp(1.75rem, 5vw, 3rem); width: 100%; }
+  .avec-photo .entete-in { display: grid; gap: clamp(1.25rem, 3vw, 2.5rem); align-items: end; }
+  @media (min-width: 860px) {
+    .avec-photo .entete-in { grid-template-columns: minmax(0, 1fr) minmax(0, 1.45fr); }
+  }
+  /* Toute la photo, a ses proportions : ni recadree ni deformee */
+  .photo { display: block; width: auto; height: auto; max-width: 100%; max-height: min(68vh, 560px);
+    justify-self: end; border: 1px solid var(--hair); box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45); }
+  @media (max-width: 859px) { .photo { justify-self: center; max-height: none; } }
   .niveau { margin: 0 0 0.4rem; font-family: "Barlow Semi Condensed", sans-serif; font-weight: 600;
     font-size: var(--s0); letter-spacing: 0.16em; text-transform: uppercase; color: var(--signal); }
   .entete h1 { font-size: clamp(2.4rem, 8vw, 5rem); }
