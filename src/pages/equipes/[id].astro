@@ -13,6 +13,10 @@ const { equipe } = Astro.props;
 const d = equipe.data;
 // Partage sur les reseaux : JPEG de 1200 px au plus
 const partage = d.photo && (await getImage({ src: d.photo, width: Math.min(1200, d.photo.width), format: "jpg" }));
+// Une photo plus haute que le 4:3 (presque carree) est un peu recadree en
+// largeur : on perd du plafond et du sol, pas les joueurs. Une photo deja
+// large reste entiere.
+const recadree = d.photo && d.photo.width / d.photo.height < 4 / 3;
 
 /* Texte libre de la fiche. Sert par exemple a detailler les equipes
    engagees quand un groupe en aligne plusieurs. Vide, rien ne s'affiche. */
@@ -32,14 +36,14 @@ const derniers = joues.filter(sien).slice(0, 3);
   description={`${d.nom} du Bourges Volley-Ball : ${d.niveau}, créneaux, gymnase et effectif.`}
   image={partage?.src}
 >
-  {/* Une photo d'equipe ne se recadre pas : en bandeau, on perdait les tetes
-      ou le premier rang. Elle s'affiche donc entiere, a cote du titre, sur
-      un fond flou tire d'elle-meme. */}
+  {/* Une photo d'equipe ne se recadre pas en bandeau : on perdait les tetes
+      ou le premier rang. Elle s'affiche presque entiere, sur un fond flou tire
+      d'elle-meme, et les infos de l'equipe occupent la colonne d'a cote. */}
   <section class:list={["entete", { "avec-photo": d.photo }]}>
     {d.photo && <Image class="fond" src={d.photo} alt="" widths={[480]} sizes="100vw" loading="eager" />}
     <span class="voile" aria-hidden="true"></span>
     <div class="wrap entete-in">
-      <div>
+      <div class="titre">
         <p class="niveau">{d.niveau}</p>
         <h1>{d.nom}</h1>
         <p class="ages">
@@ -48,48 +52,47 @@ const derniers = joues.filter(sien).slice(0, 3);
       </div>
       {d.photo && (
         <Image
-          class="photo"
+          class:list={["photo", { recadree }]}
           src={d.photo}
           alt={`L’équipe ${d.nom}`}
           widths={[480, 720, 960, 1280, 1600]}
-          sizes="(min-width: 860px) 58vw, 100vw"
+          sizes="(min-width: 1000px) 58vw, 100vw"
           loading="eager"
           fetchpriority="high"
         />
       )}
+      <div class="infos">
+        <dl class="faits">
+          <div>
+            <dt>Entraînements</dt>
+            <dd>
+              {d.creneaux.map((c) => (
+                <span class="creneau">{c.jour} <b class="mono">{c.horaire}</b></span>
+              ))}
+            </dd>
+          </div>
+          <div>
+            <dt>Gymnase</dt>
+            <dd>{d.gymnase}</dd>
+          </div>
+          {/* Pas d'encadrant renseigne : on masque la ligne plutot que
+              d'afficher un « À préciser » qui fait inacheve. */}
+          {d.coach && (
+            <div>
+              <dt>Encadrement</dt>
+              <dd>{d.coach}</dd>
+            </div>
+          )}
+          <div>
+            <dt>Saison complète</dt>
+            <dd>{d.tarif} €<span class="precision">licence et assurance comprises</span></dd>
+          </div>
+        </dl>
+        <a class="btn" href={`/nous-rejoindre/?age=${d.ageMin}#resultats`}>
+          <span>Essayer cette équipe</span>
+        </a>
+      </div>
     </div>
-  </section>
-
-  <section class="section wrap">
-    <dl class="faits">
-      <div>
-        <dt>Entraînements</dt>
-        <dd>
-          {d.creneaux.map((c) => (
-            <span class="creneau">{c.jour} <b class="mono">{c.horaire}</b></span>
-          ))}
-        </dd>
-      </div>
-      <div>
-        <dt>Gymnase</dt>
-        <dd>{d.gymnase}</dd>
-      </div>
-      {/* Pas d'encadrant renseigne : on masque la ligne plutot que
-          d'afficher un « À préciser » qui fait inacheve. */}
-      {d.coach && (
-        <div>
-          <dt>Encadrement</dt>
-          <dd>{d.coach}</dd>
-        </div>
-      )}
-      <div>
-        <dt>Saison complète</dt>
-        <dd>{d.tarif} €<span class="precision">licence et assurance comprises</span></dd>
-      </div>
-    </dl>
-    <a class="btn" href={`/nous-rejoindre/?age=${d.ageMin}#resultats`}>
-      <span>Essayer cette équipe</span>
-    </a>
   </section>
 
   {
@@ -200,27 +203,42 @@ const derniers = joues.filter(sien).slice(0, 3);
     filter: blur(28px) brightness(0.42) saturate(0.8); transform: scale(1.15); }
   .voile { position: absolute; inset: 0;
     background: linear-gradient(to top, rgba(9,10,13,0.95) 0%, rgba(9,10,13,0.6) 45%, rgba(9,10,13,0.2) 100%); }
-  .entete-in { position: relative; padding-block: clamp(1.75rem, 5vw, 3rem); width: 100%; }
-  .avec-photo .entete-in { display: grid; gap: clamp(1.25rem, 3vw, 2.5rem); align-items: end; }
-  @media (min-width: 860px) {
-    .avec-photo .entete-in { grid-template-columns: minmax(0, 1fr) minmax(0, 1.45fr); }
+  /* Sur telephone : titre, photo, puis les infos. Sur ordinateur : la photo
+     a droite, le titre en haut a gauche et les infos en bas a gauche. */
+  .entete-in { position: relative; padding-block: clamp(1.75rem, 5vw, 3rem); width: 100%;
+    display: grid; gap: clamp(1.25rem, 3vw, 2.25rem); grid-template-areas: "titre" "photo" "infos"; }
+  .titre { grid-area: titre; }
+  .infos { grid-area: infos; display: grid; justify-items: start; }
+  @media (min-width: 1000px) {
+    .avec-photo .entete-in {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
+      grid-template-rows: auto 1fr;
+      grid-template-areas: "titre photo" "infos photo";
+      column-gap: clamp(2rem, 4vw, 3.5rem);
+    }
+    .avec-photo .infos { align-self: end; }
+    .avec-photo .faits { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
   /* Toute la photo, a ses proportions : ni recadree ni deformee */
-  .photo { display: block; width: auto; height: auto; max-width: 100%; max-height: min(68vh, 560px);
-    justify-self: end; border: 1px solid var(--hair); box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45); }
-  @media (max-width: 859px) { .photo { justify-self: center; max-height: none; } }
+  .photo { grid-area: photo; display: block; width: auto; height: auto; max-width: 100%; max-height: min(72vh, 600px);
+    justify-self: end; align-self: start; border: 1px solid var(--hair); box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45); }
+  @media (max-width: 999px) { .photo { justify-self: center; max-height: 80vh; } }
+  /* 60 % : on garde un peu plus le bas (les pieds du premier rang) que le
+     haut, ou il n'y a souvent que le plafond */
+  .photo.recadree { width: 100%; max-height: none; aspect-ratio: 4 / 3; object-fit: cover; object-position: 50% 60%; }
   .niveau { margin: 0 0 0.4rem; font-family: "Barlow Semi Condensed", sans-serif; font-weight: 600;
     font-size: var(--s0); letter-spacing: 0.16em; text-transform: uppercase; color: var(--signal); }
   .entete h1 { font-size: clamp(2.4rem, 8vw, 5rem); }
   .ages { margin: 0.6rem 0 0; color: var(--fg-2);
     font-family: "Barlow Semi Condensed", sans-serif; letter-spacing: 0.08em; text-transform: uppercase; font-size: var(--s0); }
 
-  .faits { margin: 0 0 1.5rem; display: grid; gap: 1.4rem;
+  .faits { margin: 0 0 1.5rem; display: grid; gap: 1.4rem; width: 100%;
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
   dt { font-family: "Barlow Semi Condensed", sans-serif; font-size: var(--s0);
     letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg-2); margin-bottom: 0.35rem; }
   dd { margin: 0; font-weight: 600; font-size: var(--s2); line-height: 1.35; }
   .creneau { display: block; font-weight: 500; }
+  .creneau b { white-space: nowrap; }
   .precision { display: block; font-family: "Barlow Semi Condensed", sans-serif;
     font-weight: 400; font-size: var(--s1); color: var(--fg-2); }
 
