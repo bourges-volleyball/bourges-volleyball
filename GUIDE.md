@@ -579,7 +579,9 @@ Netlify `HELLOASSO_API = https://api.helloasso-sandbox.com` avec ses clés.
 - [x] Galerie photos gérée depuis l'administration
 - [x] Stage : jours cochés un par un, places par jour, sortie liée à un jour
 - [x] Récapitulatif détaillé après paiement, alerte mail possible au club
-- [x] Administration et page Commandes aux couleurs du site
+- [x] Administration et page Commandes aux couleurs du site, utilisables sur
+  tablette et téléphone (colonne des collections entière, barre du haut sans
+  débordement)
 
 ## 7. Sécurité : ce qui protège le site, et ce qui reste à surveiller
 

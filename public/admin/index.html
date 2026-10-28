@@ -39,13 +39,15 @@
 
       /* Barre du haut, comme l'en-tete du site */
       :root header[class*="AppHeader"] { background: #0d0e11; box-shadow: none; border-bottom: 1px solid #282c34; }
-      :root [class*="AppHeaderNavLink"] {
+      /* AppHeaderButton : le bouton Media, que Decap ne range pas avec les liens */
+      :root [class*="AppHeaderNavLink"], :root [class*="AppHeaderButton"] {
         color: #f4f4f2; font-family: "Barlow Semi Condensed", sans-serif; font-weight: 600;
         text-transform: uppercase; letter-spacing: .09em; font-size: 14px;
       }
-      :root [class*="AppHeaderNavLink"] span { color: inherit; }
+      :root [class*="AppHeaderNavLink"] span, :root [class*="AppHeaderButton"] span { color: inherit; }
       :root [class*="AppHeaderNavLink"]:hover, :root [class*="AppHeaderNavLink"].header-link-active,
-      :root [class*="AppHeaderNavLink"]:hover span, :root [class*="AppHeaderNavLink"].header-link-active span { color: #b4e600; }
+      :root [class*="AppHeaderNavLink"]:hover span, :root [class*="AppHeaderNavLink"].header-link-active span,
+      :root [class*="AppHeaderButton"]:hover, :root [class*="AppHeaderButton"]:hover span { color: #b4e600; }
       :root [class*="AppHeaderQuickNewButton"] { background: #b4e600; color: #101114; font-weight: 700; }
       :root [class*="AppHeaderQuickNewButton"]:hover { background: #96c200; color: #101114; }
       :root [class*="AppHeaderSiteLink"] { color: #9a9fa9; }
@@ -57,6 +59,14 @@
       }
       :root [class*="CollectionTopNewButton"]:hover, :root [class*="LoginButton"]:hover,
       :root [class*="PublishButton"]:hover { background: #96c200; color: #101114; }
+
+      /* Colonne des collections : Decap la fige a l'ecran et la limite a
+         « 100vh - 112 px ». Sur tablette, 100vh mesure l'ecran barre
+         d'adresse du navigateur cachee : quand elle est affichee, le bas de
+         la colonne (Reglages) passait sous le bord de l'ecran, sans moyen d'y
+         descendre. 100svh : la hauteur visible, barre affichee. Un navigateur
+         trop ancien pour svh garde la regle de Decap. */
+      :root [class*="SidebarContainer"] { max-height: calc(100svh - 112px); }
 
       /* Rubrique ouverte dans la colonne de gauche : le lime du site, en
          version foncee sur fond clair, ou le lime pur ne se lirait pas */
@@ -98,9 +108,23 @@
       .lien-admin.guide .rond b { color: #b4e600; }
       .lien-admin.guide:hover .rond b, .lien-admin.guide:focus-visible .rond b { color: #0d0e11; }
       .lien-admin:not(.guide):hover .rond b, .lien-admin:not(.guide):focus-visible .rond b { color: #f4f4f2; }
+      /* Libelles longs (« de la boutique », « d'utilisation ») sur grand
+         ecran seulement : sur tablette, la barre debordait a droite et le
+         menu du compte (Se deconnecter) sortait de l'ecran. Pour la meme
+         raison, l'adresse du site s'efface sous 960 px. */
+      @media (max-width: 1199px) {
+        .lien-admin .long { display: none; }
+      }
+      @media (max-width: 959px) {
+        :root [class*="AppHeaderSiteLink"] { display: none; }
+      }
       @media (max-width: 599px) {
         .lien-admin { padding: 8px 10px; font-size: 13px; }
-        .lien-admin .long { display: none; }
+      }
+      /* Telephone : « Ajout rapide » laisse sa place au menu du compte.
+         Chaque rubrique garde son propre bouton « + ... ». */
+      @media (max-width: 479px) {
+        :root [class*="AppHeaderQuickNewButton"] { display: none; }
       }
 
       /* Decap est prevu pour un ordinateur : son editeur impose 800 px de
