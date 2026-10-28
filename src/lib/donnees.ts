@@ -75,6 +75,11 @@ export async function matchs() {
   return { joues, aVenir, prochain: aVenir[0] ?? null };
 }
 
+export async function albums(limite?: number) {
+  const liste = (await getCollection("galerie")).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+  return limite ? liste.slice(0, limite) : liste;
+}
+
 export async function actus(limite?: number) {
   const liste = (await getCollection("actus"))
     .filter((a) => !a.data.brouillon)

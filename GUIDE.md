@@ -319,8 +319,12 @@ formulaires Netlify, comme le formulaire de contact. Pour l'activer :
 Un **album** par événement : un titre, une date, quelques mots si l'on veut,
 et ses photos (chacune peut avoir une légende). La première photo sert de
 couverture. Les albums s'affichent sur la page **/galerie/**, le plus récent
-en premier, et chaque photo s'ouvre en grand d'un clic. Le lien « Galerie
-photos » n'apparaît en pied de page qu'à partir du premier album.
+en premier, et chaque photo s'ouvre en grand d'un clic. Le dernier album
+apparaît aussi sur l'accueil, en bloc « Dernières photos » : ses cinq
+premières photos (ou trois, s'il en a moins de cinq), dans l'ordre de
+l'album. Mettre les plus belles en tête. Le lien « Galerie » du menu, le
+bloc de l'accueil et le lien du pied de page n'apparaissent qu'à partir du
+premier album.
 
 Comme pour le diaporama : des photos d'origine, et l'accord des personnes
 photographiées — des parents pour un enfant.

@@ -1,6 +1,10 @@
 ---
+import { getCollection } from "astro:content";
+
 const ici = Astro.url.pathname;
 const actif = (href: string) => (href === "/" ? ici === "/" : ici.startsWith(href));
+// Pas d'album : pas de lien vers une galerie vide (de meme dans le pied de page)
+const aDesAlbums = (await getCollection("galerie")).length > 0;
 
 const liens = [
   { href: "/le-club/", texte: "Le club" },
@@ -9,6 +13,7 @@ const liens = [
   { href: "/matchs/", texte: "Matchs" },
   { href: "/boutique/", texte: "Boutique" },
   { href: "/actus/", texte: "Actus" },
+  ...(aDesAlbums ? [{ href: "/galerie/", texte: "Galerie" }] : []),
   { href: "/partenaires/", texte: "Partenaires" },
   { href: "/contact/", texte: "Contact" },
 ];
@@ -165,11 +170,11 @@ const liens = [
 
   .mobile { display: none; }
 
-  /* 1180 px : le menu complet demande environ 1120 px (logo + 8 liens + Admin
-     + Nous rejoindre), marges comprises. En dessous, il passait sur deux
-     lignes. Au-dela, on affichait un menu burger a des visiteurs qui avaient
-     largement la place pour la navigation entiere. */
-  @media (max-width: 1180px) {
+  /* 1240 px : le menu complet demande environ 1210 px (logo + 9 liens, Galerie
+     comprise, + Admin + Nous rejoindre), marges comprises. En dessous, il
+     passait sur deux lignes. Au-dela, on affichait un menu burger a des
+     visiteurs qui avaient largement la place pour la navigation entiere. */
+  @media (max-width: 1240px) {
     .bureau { display: none; }
     .burger { display: grid; }
     /* Le bouton d'inscription reste visible : c'est la raison d'etre du site */
@@ -244,10 +249,10 @@ const liens = [
       }
     });
 
-    // Repasser en affichage bureau (au-dela du seuil du CSS ci-dessus, 1180 px)
+    // Repasser en affichage bureau (au-dela du seuil du CSS ci-dessus, 1240 px)
     // doit refermer le menu, sinon il reste
     // ouvert et invisible, et le bouton se desynchronise.
-    const large = matchMedia("(min-width: 1181px)");
+    const large = matchMedia("(min-width: 1241px)");
     large.addEventListener("change", (e) => {
       if (e.matches) basculer(false);
     });

@@ -3,10 +3,9 @@
    premiere photo de l'album en couverture. */
 import Base from "../../layouts/Base.astro";
 import { Image } from "astro:assets";
-import { getCollection } from "astro:content";
-import { FUSEAU } from "../../lib/donnees";
+import { albums as lesAlbums, FUSEAU } from "../../lib/donnees";
 
-const albums = (await getCollection("galerie")).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const albums = await lesAlbums();
 const quand = (d: Date) => d.toLocaleDateString("fr-FR", { month: "long", year: "numeric", timeZone: FUSEAU });
 ---
 
