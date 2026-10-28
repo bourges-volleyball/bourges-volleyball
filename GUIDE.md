@@ -319,7 +319,10 @@ formulaires Netlify, comme le formulaire de contact. Pour l'activer :
 Un **album** par événement : un titre, une date, quelques mots si l'on veut,
 et ses photos (chacune peut avoir une légende). La première photo sert de
 couverture. Les albums s'affichent sur la page **/galerie/**, le plus récent
-en premier, et chaque photo s'ouvre en grand d'un clic. Le dernier album
+en premier, et chaque photo s'ouvre en grand d'un clic. Le bouton **Lancer
+le diaporama** d'un album fait défiler ses photos seules, quatre secondes
+chacune, en plein écran quand le navigateur le permet (pas sur iPhone) :
+pratique sur un écran à la buvette ou en soirée. Le dernier album
 apparaît aussi sur l'accueil, en bloc « Dernières photos » : ses cinq
 premières photos (ou trois, s'il en a moins de cinq), dans l'ordre de
 l'album. Mettre les plus belles en tête. Le lien « Galerie » du menu, le

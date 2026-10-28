@@ -1,6 +1,8 @@
 ---
 /* Un album : les photos en grille, chacune s'ouvre en grand d'un clic.
-   Fleches du clavier ou boutons pour passer a la suivante, Echap pour fermer. */
+   Fleches du clavier ou boutons pour passer a la suivante, Echap pour fermer.
+   Mode diaporama : les photos defilent seules, en plein ecran quand le
+   navigateur le permet (pas sur iPhone). */
 import Base from "../../layouts/Base.astro";
 import { Image, getImage } from "astro:assets";
 import { getCollection } from "astro:content";
@@ -25,6 +27,13 @@ const quand = d.date.toLocaleDateString("fr-FR", { day: "numeric", month: "long"
     <p class="eyebrow"><a href="/galerie/">Galerie</a> · {quand}</p>
     <h1>{d.titre}</h1>
     {d.description && <p>{d.description}</p>}
+    {
+      d.photos.length > 1 && (
+        <p class="lancer">
+          <button type="button" class="btn" data-diaporama><span>▶ Lancer le diaporama</span></button>
+        </p>
+      )
+    }
   </section>
 
   <section class="section wrap">
@@ -48,6 +57,7 @@ const quand = d.date.toLocaleDateString("fr-FR", { day: "numeric", month: "long"
         <button type="button" class="btn ghost" data-pas="-1" aria-label="Photo précédente"><span>←</span></button>
         <span class="compteur"></span>
         <button type="button" class="btn ghost" data-pas="1" aria-label="Photo suivante"><span>→</span></button>
+        <button type="button" class="btn ghost" data-lecture aria-pressed="false"><span>▶ Diaporama</span></button>
         <button type="button" class="btn" data-fermer><span>Fermer</span></button>
       </div>
     </dialog>
@@ -59,27 +69,71 @@ const quand = d.date.toLocaleDateString("fr-FR", { day: "numeric", month: "long"
   const vignettes = [...document.querySelectorAll<HTMLButtonElement>(".vignette")];
   if (visionneuse && vignettes.length) {
     const img = visionneuse.querySelector("img")!;
+    const lecture = visionneuse.querySelector<HTMLButtonElement>("[data-lecture]")!;
+    const DUREE = 4000; // temps de chaque photo en diaporama, en millisecondes
     let courante = 0;
+    let minuteur: ReturnType<typeof setInterval> | undefined;
+
+    // Fondu a chaque photo (coupe si le visiteur a demande moins d'animations)
+    const prete = () => img.classList.add("prete");
+    img.addEventListener("load", prete);
+    img.addEventListener("error", prete);
+
     const montrer = (i: number) => {
       courante = (i + vignettes.length) % vignettes.length;
       const v = vignettes[courante];
+      img.classList.remove("prete");
       img.src = v.dataset.grande!;
+      if (img.complete) prete();
       img.alt = v.dataset.legende!;
       visionneuse.querySelector(".legende")!.textContent = v.dataset.legende!;
       visionneuse.querySelector(".compteur")!.textContent = `${courante + 1} / ${vignettes.length}`;
+      // La suivante se charge pendant qu'on regarde celle-ci
+      new Image().src = vignettes[(courante + 1) % vignettes.length].dataset.grande!;
     };
+
+    const lire = (oui: boolean) => {
+      clearInterval(minuteur);
+      minuteur = oui ? setInterval(() => montrer(courante + 1), DUREE) : undefined;
+      lecture.setAttribute("aria-pressed", String(oui));
+      lecture.firstElementChild!.textContent = oui ? "❚❚ Pause" : "▶ Diaporama";
+    };
+    // Une photo choisie a la main reste affichee le temps complet
+    const aLaMain = (i: number) => {
+      montrer(i);
+      if (minuteur !== undefined) lire(true);
+    };
+
     vignettes.forEach((v, i) => v.addEventListener("click", () => (montrer(i), visionneuse.showModal())));
+    document.querySelector("[data-diaporama]")?.addEventListener("click", () => {
+      const ouvrir = () => {
+        montrer(0);
+        visionneuse.showModal();
+        lire(true);
+      };
+      // Le plein ecran d'abord, la visionneuse ensuite : ouverte avant, elle
+      // passerait sous la page. Refuse ou absent (iPhone) : sans plein ecran.
+      const pleinEcran = document.documentElement.requestFullscreen?.();
+      if (pleinEcran) pleinEcran.then(ouvrir, ouvrir);
+      else ouvrir();
+    });
     visionneuse.addEventListener("click", (e) => {
       const b = (e.target as HTMLElement).closest<HTMLButtonElement>("button");
-      if (b?.dataset.pas) montrer(courante + Number(b.dataset.pas));
+      if (b?.dataset.pas) aLaMain(courante + Number(b.dataset.pas));
+      else if (b === lecture) lire(minuteur === undefined);
       else if (b?.hasAttribute("data-fermer") || e.target === visionneuse) visionneuse.close();
     });
     visionneuse.addEventListener("keydown", (e) => {
-      if (e.key === "ArrowRight") montrer(courante + 1);
-      if (e.key === "ArrowLeft") montrer(courante - 1);
+      if (e.key === "ArrowRight") aLaMain(courante + 1);
+      if (e.key === "ArrowLeft") aLaMain(courante - 1);
     });
-    // Une seule photo : pas de precedente ni de suivante
-    if (vignettes.length === 1) visionneuse.querySelectorAll<HTMLElement>("[data-pas], .compteur").forEach((e) => (e.hidden = true));
+    // Fermer arrete le diaporama et quitte le plein ecran
+    visionneuse.addEventListener("close", () => {
+      lire(false);
+      if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+    });
+    // Une seule photo : pas de precedente, de suivante ni de diaporama
+    if (vignettes.length === 1) visionneuse.querySelectorAll<HTMLElement>("[data-pas], [data-lecture], .compteur").forEach((e) => (e.hidden = true));
   }
 </script>
 
@@ -103,7 +157,11 @@ const quand = d.date.toLocaleDateString("fr-FR", { day: "numeric", month: "long"
     max-width: min(96vw, 1400px); text-align: center;
   }
   .visionneuse::backdrop { background: rgba(9, 10, 13, 0.9); }
-  .visionneuse img { display: block; margin: 0 auto; max-width: 100%; max-height: 78vh; object-fit: contain; }
+  .visionneuse img { display: block; margin: 0 auto; max-width: 100%; max-height: 78vh; object-fit: contain; opacity: 0; transition: opacity 0.35s ease; }
+  .visionneuse img.prete { opacity: 1; }
+  /* Plein ecran du diaporama : fond noir, la page disparait */
+  :global(html:fullscreen) .visionneuse::backdrop { background: #090a0d; }
+  .lancer { margin-top: 1.5rem; }
   .legende { margin: 0.8rem 0 0; font-weight: 600; min-height: 1.6em; }
   .boutons { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.75rem; margin-top: 0.8rem; }
   .boutons [hidden] { display: none; }
