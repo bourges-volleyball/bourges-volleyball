@@ -123,6 +123,8 @@ const aDesAlbums = (await getCollection("galerie")).length > 0;
     flex-wrap: wrap;
     gap: 0.4rem 1.5rem;
   }
-  .foot-note a { color: inherit; }
+  /* Marge de toucher : 28 px de haut au doigt, sans rien deplacer (un lien
+     en ligne ne grandit pas sa ligne avec un padding vertical) */
+  .foot-note a { color: inherit; padding-block: 4px; }
   .foot-note a:hover { color: var(--signal); }
 </style>

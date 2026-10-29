@@ -384,11 +384,9 @@ formulaires Netlify, comme le formulaire de contact. Pour l'activer :
    Email notification*, formulaire **commande-payee**, et l'adresse du club.
 3. Faire un achat test (le sirop à 1 €) : le mail doit arriver.
 
-> **À laisser éteint avec l'offre gratuite de Netlify.** Chaque envoi de
-> formulaire coûte 1 crédit sur les 300 du mois : une centaine d'adhésions en
-> septembre, c'est une centaine de crédits, soit sept publications du site
-> en moins. Sans la variable, rien n'est envoyé. Voir « Le budget de l'offre
-> gratuite », section 8.
+> **Sans effet sur le budget.** Avec les offres à crédits de Netlify, les
+> envois de formulaire sont gratuits (documentation de Netlify relue le
+> 29 octobre 2026). Sans la variable, rien n'est envoyé.
 
 ### Galerie
 Un **album** par événement : un titre, une date, quelques mots si l'on veut,
@@ -613,8 +611,10 @@ et les données structurées lues par Google (`src/layouts/Base.astro`).
 - [ ] Donner une date au tournoi Octobre rose dans la boutique (sans date, la
   vente reste ouverte)
 - [ ] Confirmer les dates du tournoi inter-entreprises, de l'AG et du stage
-- [ ] Vérifier les mentions légales et la page Confidentialité (adresse,
-  durée de conservation des messages, fixée à un an)
+- [ ] **Nommer le directeur de la publication** dans les mentions légales
+  (aujourd'hui « Le président », la loi demande un nom)
+- [ ] Saisir les événements de la saison dans l'**Agenda** : la page, dans le
+  menu, est vide (choix de l'audit : la laisser, le club va la remplir)
 - [x] Prendre le nom de domaine : bourges-volleyball.fr, chez OVH
 - [ ] Le brancher (section 1, « Brancher le nom de domaine »)
 
@@ -710,6 +710,11 @@ Netlify `HELLOASSO_API = https://api.helloasso-sandbox.com` avec ses clés.
 - [x] Lundi FFVolley : ne republie que si la fédération a du nouveau
 - [x] Bouton « Tester HelloAsso » sur la page Commandes : vérifie la clé API
   sans rien encaisser
+- [x] Audit du 29 octobre 2026 (sécurité, design, ergonomie, fonctionnalités,
+  réglementaire) : outils mis à jour (8 failles connues corrigées), trois
+  règles de sécurité de plus, points du diaporama assez grands au doigt et
+  bouton pause, petits liens agrandis au toucher, budget Netlify corrigé,
+  geste annuel pour les messages de contact, fichier inutile retiré
 - [x] Boutique en pause tant que le paiement n'est pas branché et testé :
   interrupteur dans *Réglages*, visiteurs renvoyés vers la page HelloAsso du
   club (helloasso.com/associations/bourges-volley, l'adresse des formulaires
@@ -763,7 +768,19 @@ qui quittent le bureau** (*Identity → l'utilisateur → Delete*).
 - **En-têtes de sécurité** dans `public/_headers` : pas de devinette de type de
   fichier, pas de fuite d'adresse vers les sites tiers, ni caméra ni micro ni
   position, et interdiction d'enfermer le site dans un cadre sur un autre
-  domaine.
+  domaine. Depuis l'audit du 29 octobre 2026, aussi : ni objet embarqué, ni
+  balise `<base>`, ni formulaire qui envoie ses saisies ailleurs que sur le
+  site (`object-src`, `base-uri`, `form-action`). Un compte bénévole piraté ne
+  peut donc pas glisser dans une actu un faux formulaire qui détourne les
+  saisies.
+- **Inscription à l'administration fermée** : sur invitation seulement,
+  vérifié le 29 octobre 2026 (`/.netlify/identity/settings` répond
+  `"disable_signup": true`). La connexion avec un compte Google y est activée :
+  elle ne sert qu'aux personnes déjà invitées.
+- **Outils à jour** : `npm audit` sans aucune faille connue le 29 octobre 2026
+  (Astro 7.4, Vite 8.3.5, sharp 0.35.5). À relancer deux ou trois fois par an ;
+  `npm audit fix` corrige sans changer de version majeure, puis `npm run
+  build` et `npm test` pour vérifier.
 - **Le widget d'identification ne se charge plus pour les visiteurs.** Il ne
   s'active que si l'adresse contient un jeton d'invitation.
 
@@ -784,6 +801,39 @@ qui quittent le bureau** (*Identity → l'utilisateur → Delete*).
   (*Forms → Settings → Spam filters*).
 - **Un numéro de téléphone est publié** en pied de page et sur la page Contact.
   C'est un choix, pas un oubli — mais il change avec le bureau.
+- **Une commande non payée retient ses places 20 minutes.** Quelqu'un de
+  malveillant pourrait donc, en lançant des commandes en rafale, faire
+  paraître un stage complet. Une limite par visiteur (proposée gratuitement par
+  Netlify) a été écartée à l'audit : elle compterait aussi chaque affichage de
+  page et n'empêcherait pas une seule adresse de bloquer des dizaines de
+  places. Si cela arrivait : remettre la boutique en pause (*Réglages*), et les
+  commandes en attente s'effacent d'elles-mêmes.
+- **Tous les comptes de l'administration voient les commandes** (noms, mails,
+  téléphones des acheteurs), choix du club à l'audit du 29 octobre 2026. Un
+  rôle réservé à la boutique reste possible : Netlify Identity sait donner des
+  rôles, et `netlify/functions/commandes.mjs` les vérifierait.
+- **Les anciennes photos reprises de Clubeo** (465, de 2005 à 2021) montrent
+  parfois des mineurs, sans trace de l'accord des parents. La page
+  Confidentialité promet le retrait sur simple demande : à tenir sans délai.
+- **L'administration n'est pas couverte par la politique de scripts** (CSP) :
+  Decap ne le supporte pas. Elle repose sur l'empreinte du fichier de Decap et
+  sur l'inscription fermée.
+
+### Une fois par an, en septembre : les messages de contact
+
+La page Confidentialité promet que **les messages du formulaire de contact
+sont supprimés au plus tard un an après le dernier échange**. Rien ne le fait
+tout seul (choix de l'audit du 29 octobre 2026 : une suppression automatique
+demanderait de ranger dans Netlify une clé capable de tout modifier). En
+septembre, avec les poules FFVolley :
+
+1. **Netlify**, *Forms* → formulaire **contact** : supprimer les messages de
+   plus d'un an.
+2. **La boîte du club** (Gmail) : rechercher
+   `from:formresponses@netlify.com older_than:1y`, tout sélectionner,
+   supprimer ; de même pour les échanges de plus d'un an qui ont suivi.
+
+Les commandes de la boutique, elles, s'effacent seules (un an).
 
 ---
 
@@ -886,14 +936,17 @@ payante, il suffit de changer `schedule` dans le fichier (`"@daily"`).
 ### Le budget de l'offre gratuite Netlify
 
 Le club est sur l'offre **gratuite** : **300 crédits par mois**, qui paient
-tout. Tarifs relevés en octobre 2026 (à revérifier sur netlify.com/pricing) :
+tout. Tarifs relus le 29 octobre 2026 dans la documentation de Netlify
+(*How credits work*) :
 
 | Ce qui consomme | Coût | Pour ce site |
 |---|---|---|
-| Une publication du site | 15 crédits | chaque « Publier » de l'administration, chaque mise à jour du code, chaque lundi |
-| La bande passante | 20 crédits par Go | une page pèse 0,2 à 0,5 Mo, un album de galerie environ 3 Mo |
-| Un envoi de formulaire | 1 crédit | chaque message de contact ; chaque alerte de commande si elle est activée |
-| Les fonctions (boutique) | quelques crédits | négligeable |
+| Une publication du site | 15 crédits | chaque « Publier » de l'administration, chaque mise à jour du code, chaque lundi qui a du nouveau |
+| Une copie d'essai (*Deploy Preview*, branche) | 0 crédit | une demande de fusion sur GitHub : le site entier à une adresse à part, pour vérifier avant de publier |
+| La bande passante | 20 crédits par Go | une page pèse 0,15 à 0,9 Mo (l'accueil, sur ordinateur), un album de galerie 1 à 2 Mo |
+| Les requêtes des visiteurs | 2 crédits pour 10 000 | une page en demande 8 à 50 (photos comprises) |
+| Les fonctions (boutique, lundi) | 10 crédits par Go-heure | négligeable |
+| Un envoi de formulaire | gratuit | messages de contact, alertes de commande |
 
 **Les publications sont presque tout le budget** : 300 crédits, c'est
 **vingt publications par mois** si rien d'autre ne consomme. Le lundi en
@@ -911,8 +964,9 @@ mois suivant, et peut mettre le site entier en pause. D'où quatre règles :
   « Media » de Decap, qui enregistrait chaque photo seule, a été retiré de la
   barre du haut (`public/admin/index.html`) ;
 - **regarder la jauge** de temps en temps : Netlify, *Team → Usage & billing* ;
-- **laisser l'alerte de commande éteinte**, et ne pas passer la mise à jour
-  FFVolley à tous les jours.
+- **essayer les grosses modifications du code sur une copie d'essai**
+  (demande de fusion sur GitHub), gratuite, plutôt qu'en publiant ;
+- **ne pas passer la mise à jour FFVolley à tous les jours.**
 
 Si le budget devient trop juste : les matchs pourraient être lus en direct
 par le navigateur des visiteurs, sans aucune publication le lundi. C'est une

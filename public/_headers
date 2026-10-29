@@ -8,7 +8,12 @@
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=()
-  Content-Security-Policy: frame-ancestors 'self'
+  # Avec la CSP qu'Astro met dans chaque page (scripts du site seulement) :
+  # pas d'objet <object>/<embed>, pas de <base> qui detournerait les liens,
+  # et un formulaire ne peut envoyer ses saisies qu'au site lui-meme. Un
+  # compte benevole pirate ne pourrait pas glisser dans une actu un faux
+  # formulaire qui envoie les saisies ailleurs.
+  Content-Security-Policy: frame-ancestors 'self'; object-src 'none'; base-uri 'self'; form-action 'self'
   # A RETIRER LE JOUR DE LA MISE EN LIGNE REELLE, avec la ligne Disallow
   # de robots.txt. Sans ces deux gestes le site restera invisible sur Google.
   X-Robots-Tag: noindex, nofollow

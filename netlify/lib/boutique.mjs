@@ -220,8 +220,8 @@ export async function helloasso(chemin, corps) {
 /* Alerte au club : une commande vient d'etre payee. Passe par un formulaire
    Netlify cache (« commande-payee », dans src/pages/boutique/paiement.astro) :
    Netlify envoie chaque envoi par mail aux adresses choisies dans
-   Forms > Form notifications. Seulement si ALERTE_COMMANDES vaut « oui » :
-   selon l'offre Netlify, un envoi de formulaire peut consommer des credits.
+   Forms > Form notifications. Seulement si ALERTE_COMMANDES vaut « oui »
+   (les envois de formulaire sont gratuits avec les offres a credits).
    Ni nom ni adresse : le detail se lit sur la page Commandes. */
 export async function alerter(c, site) {
   if (process.env.ALERTE_COMMANDES !== "oui" || !site) return;
