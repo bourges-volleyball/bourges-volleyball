@@ -80,12 +80,12 @@ Netlify a placé **Git Gateway** en fin de vie. Concrètement, en septembre 2026
 - Netlify corrigera les **failles de sécurité**, mais **plus les bugs** ;
 - de nouvelles configurations ne sont officiellement « pas recommandées ».
 
-**À vérifier** (relevé le 29 octobre 2026) : d'après le forum de Netlify et
-une discussion du dépôt Decap (decaporg/decap-cms, discussion 7419), Netlify
-serait revenu en février 2026 sur la dépréciation de **Netlify Identity**,
-dont Git Gateway fait partie, et la documentation de Netlify décrit toujours
-Git Gateway. Pas confirmé par une annonce officielle lue directement : voir
-netlify.com/changelog avant toute migration.
+**Vérifié le 29 octobre 2026.** La documentation de Netlify (page Git Gateway,
+mise à jour le 17 septembre 2026) le marque toujours **deprecated**, dans les
+termes ci-dessus. Seul **Netlify Identity**, la connexion des bénévoles, a été
+sauvé : le 19 février 2026, Netlify est revenu sur son abandon et le garde
+comme service pris en charge. Git Gateway, qui enregistre les modifications
+dans le dépôt, n'est pas concerné par ce revirement.
 
 **Pourquoi on l'utilise quand même.** C'est la seule solution qui permet aux
 bénévoles de modifier le site **sans compte GitHub**. Les autres méthodes
