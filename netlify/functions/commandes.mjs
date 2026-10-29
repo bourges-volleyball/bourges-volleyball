@@ -3,16 +3,11 @@
    GET  : toutes les commandes payees.
    POST : { cle, remis } coche ou decoche « remis » (article livre, place pointee). */
 
-import { store, cleValide } from "../lib/boutique.mjs";
+import { store, cleValide, benevoleConnecte } from "../lib/boutique.mjs";
 
 export default async (req) => {
-  // Meme connexion que l'administration : le jeton Netlify Identity du
-  // benevole, que l'on fait verifier par Netlify lui-meme.
-  const origine = new URL(req.url).origin;
-  const qui = await fetch(`${origine}/.netlify/identity/user`, {
-    headers: { authorization: req.headers.get("authorization") ?? "" },
-  });
-  if (!qui.ok) return new Response("Connexion requise", { status: 401 });
+  // Meme connexion que l'administration
+  if (!(await benevoleConnecte(req))) return new Response("Connexion requise", { status: 401 });
 
   const s = store();
   if (req.method === "POST") {

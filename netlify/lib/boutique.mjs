@@ -130,6 +130,15 @@ export function verifier(campagne, demande, restantes = {}, maintenant = Date.no
 
 export const store = () => getStore({ name: "commandes", consistency: "strong" });
 
+/** Un benevole connecte a l'administration : son jeton Netlify Identity,
+ *  que l'on fait verifier par Netlify lui-meme. */
+export async function benevoleConnecte(req) {
+  const qui = await fetch(`${new URL(req.url).origin}/.netlify/identity/user`, {
+    headers: { authorization: req.headers.get("authorization") ?? "" },
+  });
+  return qui.ok;
+}
+
 /** Le catalogue tel que publie par le site (src/pages/boutique/catalogue.json.ts). */
 export async function catalogue(origine) {
   const r = await fetch(new URL("/boutique/catalogue.json", origine));
@@ -177,6 +186,7 @@ export async function placesRestantes(campagne) {
    HELLOASSO_API permet de viser le bac a sable pour des essais :
    https://api.helloasso-sandbox.com */
 const API = process.env.HELLOASSO_API ?? "https://api.helloasso.com";
+export const bacASable = API.includes("sandbox");
 const ORGANISATION = process.env.HELLOASSO_ORGANISATION ?? "bourges-volley";
 
 let jeton; // valable 30 minutes, garde tant que la fonction reste chaude

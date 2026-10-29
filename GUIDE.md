@@ -628,7 +628,8 @@ et les données structurées lues par Google (`src/layouts/Base.astro`).
 ### Brancher le paiement de la boutique (une fois)
 
 Vérifié le 28 octobre 2026 : l'association est **vérifiée** sur HelloAsso,
-condition pour encaisser par le site. Il reste trois gestes, dans l'ordre :
+condition pour encaisser par le site. Trois gestes, dans l'ordre (la clé API
+a été créée et donnée à Netlify le 29 octobre 2026) :
 
 1. **Créer la clé API** — espace HelloAsso du club, *Mon compte →
    Intégrations et API → Générer ma clé API*. Elle donne un identifiant
@@ -644,6 +645,13 @@ condition pour encaisser par le site. Il reste trois gestes, dans l'ordre :
    `https://bourges-volleyball.netlify.app/.netlify/functions/paiement`).
    C'est elle qui marque une commande payée même si l'acheteur ferme son
    navigateur avant de revenir sur le site.
+
+**Vérifier sans payer** : page Commandes de l'administration, bouton **Tester
+HelloAsso** (`netlify/functions/essai-helloasso.mjs`). Le site demande un jeton
+avec la clé, lit la fiche de l'association, puis prépare un paiement d'essai de
+1 € : son lien ouvre la vraie page de paiement HelloAsso, qu'on ferme sans
+payer. Aucune commande n'est enregistrée, la boutique peut rester en pause.
+Ce test ne couvre ni le paiement lui-même ni la notification (étape 3).
 
 Ensuite, **rouvrir la boutique** (elle est en pause depuis le 29 octobre 2026,
 voir « Boutique » partie 2) et **faire aussitôt un achat réel à 1 €** (un sirop
@@ -696,6 +704,8 @@ Netlify `HELLOASSO_API = https://api.helloasso-sandbox.com` avec ses clés.
 - [x] Logo du club sur l'écran d'accueil d'un téléphone (icônes tirées du logo
   d'origine, 1117 px, de l'ancien site Clubeo)
 - [x] Lundi FFVolley : ne republie que si la fédération a du nouveau
+- [x] Bouton « Tester HelloAsso » sur la page Commandes : vérifie la clé API
+  sans rien encaisser
 - [x] Boutique en pause tant que le paiement n'est pas branché et testé :
   interrupteur dans *Réglages*, visiteurs renvoyés vers la page HelloAsso du
   club (helloasso.com/associations/bourges-volley, l'adresse des formulaires
