@@ -582,7 +582,9 @@ et les données structurées lues par Google (`src/layouts/Base.astro`).
 
 - [ ] Redéposer les photos du diaporama **en version d'origine** : celles du
   28 octobre sont passées par WhatsApp (960 à 1500 px) et paraissent floues
-- [ ] Brancher la mise à jour du lundi (`BUILD_HOOK_URL`, section 8)
+- [x] Brancher la mise à jour du lundi (`BUILD_HOOK_URL`, section 8) : hook
+  et variable créés le 29 octobre 2026, actifs à partir de la publication
+  suivante
 - [ ] Remplacer les photos des articles de la boutique : celles reprises de
   HelloAsso ne font que 300 px, et s'agrandissent d'un clic
 - [ ] Remplacer les photos d'équipe et saisir les effectifs réels
