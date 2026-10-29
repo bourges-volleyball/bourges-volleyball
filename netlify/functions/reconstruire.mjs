@@ -1,17 +1,24 @@
-/* Chaque lundi vers 6h : reconstruit le site, ce qui relit le calendrier et
-   les resultats FFVolley du week-end (scripts/ffvb.mjs).
+/* Chaque lundi vers 6h : republie le site si la FFVolley a du nouveau (scores
+   du week-end, calendrier modifie, classement), sinon ne fait rien.
 
-   Une fois par semaine seulement : chaque publication coute 15 credits
-   Netlify, sur 300 par mois avec l'offre gratuite, et chaque modification
-   faite dans l'administration en coute autant. Entre deux reconstructions,
-   le « prochain match » avance tout seul dans le navigateur des visiteurs.
+   Chaque publication coute 15 credits Netlify, sur 300 par mois avec l'offre
+   gratuite. Une semaine sans match (vacances, intersaison), ou deja couverte
+   par une publication depuis l'administration (qui relit aussi la FFVolley),
+   n'en coute donc aucun. Entre deux publications, le « prochain match »
+   avance tout seul dans le navigateur des visiteurs.
 
    BUILD_HOOK_URL : Netlify, Site configuration > Build & deploy > Build hooks. */
 
-export default async () => {
+import { aRepublier } from "../lib/ffvb.mjs";
+
+export default async (req, context) => {
   if (!process.env.BUILD_HOOK_URL) return console.log("BUILD_HOOK_URL absente : pas de reconstruction");
+  const site = context?.site?.url ?? process.env.URL;
+  // Dans le doute (site injoignable...), on republie : c'est l'ancien comportement
+  const raison = await aRepublier(site).catch((e) => `verification impossible (${e.message})`);
+  if (!raison) return console.log("FFVolley : rien de neuf depuis la derniere publication, pas de reconstruction");
   const r = await fetch(process.env.BUILD_HOOK_URL, { method: "POST" });
-  console.log(`Reconstruction demandee : ${r.status}`);
+  console.log(`Reconstruction demandee, ${raison} : ${r.status}`);
 };
 
 // En heure UTC : 5h, soit 6h ou 7h a Bourges selon la saison

@@ -42,7 +42,8 @@ const equipes = defineCollection({
     ageMin: z.number(),
     ageMax: z.number(),
     niveau: z.string(),
-    creneaux: z.array(z.object({ jour: z.string(), horaire: z.string() })),
+    // gymnase d'un creneau : seulement s'il differe de celui de l'equipe
+    creneaux: z.array(z.object({ jour: z.string(), horaire: z.string(), gymnase: facultatif(z.string()) })),
     gymnase: z.string(),
     coach: z.string().optional(),
     tarif: z.number(),

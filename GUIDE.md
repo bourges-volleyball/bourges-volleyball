@@ -250,6 +250,16 @@ simplement. Chez les jeunes, on peut ne mettre que les noms.
 Les **rencontres de l'équipe** s'affichent toutes seules sur sa fiche, tirées
 du calendrier fédéral. Rien à saisir.
 
+Les **créneaux d'entraînement** alimentent aussi la page **Planning**, qui
+montre toute la semaine du club, jour par jour, avec les écoles de sport de
+la Ville (*Textes des pages*). Le **jour** se choisit dans une liste, pour que
+le planning range chaque créneau au bon endroit ; les créneaux d'un jour s'y
+classent par heure de début, lue dans l'**horaire** (« 20h00 – 22h00 »). Des
+équipes qui s'entraînent ensemble, même jour, même horaire, même gymnase,
+partagent une ligne. **Gymnase ce jour-là** ne sert que si un créneau n'a pas
+lieu dans le gymnase de l'équipe (l'Ufolep, entre Léo Lagrange et Yves du
+Manoir).
+
 
 ### Matchs
 **Les rencontres FFVolley arrivent toutes seules.** Le calendrier et les
@@ -674,6 +684,11 @@ Netlify `HELLOASSO_API = https://api.helloasso-sandbox.com` avec ses clés.
   débordement)
 - [x] Site prêt pour www.bourges-volleyball.fr (29 octobre 2026), à brancher
   dès que le domaine est livré
+- [x] Page Planning : toute la semaine d'entraînements, jour par jour, dans le
+  menu après Équipes (menu complet au-delà de 1300 px de large)
+- [x] Logo du club sur l'écran d'accueil d'un téléphone (icônes tirées du logo
+  d'origine, 1117 px, de l'ancien site Clubeo)
+- [x] Lundi FFVolley : ne republie que si la fédération a du nouveau
 - [x] Boutique en pause tant que le paiement n'est pas branché et testé :
   interrupteur dans *Réglages*, visiteurs renvoyés vers la page HelloAsso du
   club (helloasso.com/associations/bourges-volley, l'adresse des formulaires
@@ -754,7 +769,9 @@ qui quittent le bureau** (*Identity → l'utilisateur → Delete*).
 ## 8. La récupération automatique FFVolley
 
 Le script `scripts/ffvb.mjs` lit les pages de calendrier de la fédération et
-écrit le résultat dans `src/data/ffvb.json`, que le site utilise ensuite.
+écrit le résultat dans `src/data/ffvb.json`, que le site utilise ensuite. La
+lecture des pages elle-même est dans `netlify/lib/ffvb.mjs`, partagée avec la
+fonction du lundi ; ses tests (`npm test`) simulent une page de la fédération.
 
 ```bash
 npm run maj:ffvb    # met à jour le calendrier et les résultats
@@ -797,8 +814,10 @@ depuis le navigateur, Imprimer > Enregistrer en PDF, après toute modification.
 
 **Il n'échoue jamais bruyamment.** Si la fédération est injoignable ou change
 la structure de ses pages, le script conserve le fichier précédent et le site
-continue de fonctionner avec les dernières données connues. C'est volontaire :
-un calendrier de la veille vaut mieux qu'une page vide.
+continue de fonctionner avec les dernières données connues. Une poule seule
+en échec garde de même ses rencontres et son classement de la dernière
+lecture réussie. C'est volontaire : un calendrier de la veille vaut mieux
+qu'une page vide.
 
 En contrepartie, il faut le savoir : **la FFVolley ne publie aucune API**.
 Ce script lit du HTML. Une refonte de leur site le cassera un jour, et il
@@ -813,9 +832,14 @@ main dans la rubrique Matchs.
 
 ### La mise à jour du lundi (à brancher une fois)
 
-La fonction `netlify/functions/reconstruire.mjs` reconstruit le site chaque
-lundi vers 6h : les scores du week-end et les changements de calendrier
-arrivent ainsi sans que personne ne publie rien. Pour l'activer :
+La fonction `netlify/functions/reconstruire.mjs` passe chaque lundi vers 6h.
+Elle relit la FFVolley et la compare à ce que montre le site en ligne (la page
+`/ffvb.json`, publiée avec lui) : **elle ne republie que s'il y a du nouveau**,
+un score, un match déplacé, un classement. Les scores du week-end arrivent
+ainsi sans que personne ne publie rien, et une semaine sans match (vacances,
+intersaison), ou déjà à jour parce qu'un bénévole a publié depuis le
+week-end, ne coûte aucun crédit. Une poule injoignable ce matin-là n'est pas
+un changement : elle est comparée le lundi suivant. Pour l'activer :
 
 1. Netlify, *Site configuration → Build & deploy → Build hooks → Add build
    hook*, nommé par exemple « Lundi FFVolley », branche `main`. Copier
@@ -825,15 +849,16 @@ arrivent ainsi sans que personne ne publie rien. Pour l'activer :
    diffusez pas : elle permet de lancer une publication.
 3. La variable n'est lue qu'à partir de la **publication suivante** : la
    première publication qui suit (une actu, *Deploys → Trigger deploy*…)
-   active le lundi. Pour vérifier, le lundi matin : *Deploys* montre une
-   publication « Lundi FFVolley », et *Logs → Functions → reconstruire*
-   affiche « Reconstruction demandee : 200 ». « BUILD_HOOK_URL absente » :
-   aucune publication n'a suivi l'ajout de la variable.
+   active le lundi. Pour vérifier, le lundi matin, *Logs → Functions →
+   reconstruire* affiche « Reconstruction demandee, du nouveau pour… : 200 »
+   (et *Deploys* une publication « Lundi FFVolley »), ou « rien de neuf depuis
+   la derniere publication ». « BUILD_HOOK_URL absente » : aucune publication
+   n'a suivi l'ajout de la variable.
 
 **Pourquoi pas tous les jours ?** Avec l'offre gratuite de Netlify, chaque
 publication coûte 15 crédits sur 300 par mois, soit une vingtaine de
-publications, modifications des bénévoles comprises. Une par semaine en
-consomme quatre ou cinq. Le prochain match, lui, avance tout seul dans le
+publications, modifications des bénévoles comprises. Une par semaine au plus
+en consomme quatre ou cinq, souvent moins. Le prochain match, lui, avance tout seul dans le
 navigateur des visiteurs, sans publication. Si le club passe à une offre
 payante, il suffit de changer `schedule` dans le fichier (`"@daily"`).
 
@@ -851,7 +876,8 @@ tout. Tarifs relevés en octobre 2026 (à revérifier sur netlify.com/pricing) :
 
 **Les publications sont presque tout le budget** : 300 crédits, c'est
 **vingt publications par mois** si rien d'autre ne consomme. Le lundi en
-prend quatre ou cinq. Il en reste une quinzaine pour les bénévoles et les
+prend quatre ou cinq au plus en pleine saison, aucune les semaines sans
+nouveauté FFVolley. Il en reste une quinzaine pour les bénévoles et les
 évolutions du site.
 
 **Quand les crédits sont épuisés**, Netlify bloque les publications jusqu'au
@@ -867,6 +893,8 @@ mois suivant, et peut mettre le site entier en pause. D'où quatre règles :
 - **laisser l'alerte de commande éteinte**, et ne pas passer la mise à jour
   FFVolley à tous les jours.
 
-Si le budget devient trop juste : la mise à jour du lundi peut être remplacée
-par une fonction qui lit la FFVolley sans republier le site (quatre ou cinq
-publications gagnées par mois), ou le club peut passer à l'offre Pro.
+Si le budget devient trop juste : les matchs pourraient être lus en direct
+par le navigateur des visiteurs, sans aucune publication le lundi. C'est une
+réécriture de leurs quatre affichages (accueil, page Matchs, fiches d'équipe,
+agenda), écartée en octobre 2026 pour rester simple à entretenir. Ou le club
+passe à l'offre Pro.

@@ -67,7 +67,10 @@ const derniers = joues.filter(sien).slice(0, 3);
             <dt>Entraînements</dt>
             <dd>
               {d.creneaux.map((c) => (
-                <span class="creneau">{c.jour} <b class="mono">{c.horaire}</b></span>
+                <span class="creneau">
+                  {c.jour} <b class="mono">{c.horaire}</b>
+                  {c.gymnase && <span class="ou">{c.gymnase}</span>}
+                </span>
               ))}
             </dd>
           </div>
@@ -239,6 +242,8 @@ const derniers = joues.filter(sien).slice(0, 3);
   dd { margin: 0; font-weight: 600; font-size: var(--s2); line-height: 1.35; }
   .creneau { display: block; font-weight: 500; }
   .creneau b { white-space: nowrap; }
+  .creneau .ou { font-weight: 400; color: var(--fg-2); }
+  .creneau .ou::before { content: " · "; }
   .precision { display: block; font-family: "Barlow Semi Condensed", sans-serif;
     font-weight: 400; font-size: var(--s1); color: var(--fg-2); }
 

@@ -69,7 +69,10 @@ const inscrire = boutiqueEnPause ? (lienEnAttendant ?? "/boutique/") : "/boutiqu
                 <dt>Entraînements</dt>
                 <dd>
                   {e.data.creneaux.map((c) => (
-                    <span class="créneau">{c.jour} <b class="mono">{c.horaire}</b></span>
+                    <span class="créneau">
+                      {c.jour} <b class="mono">{c.horaire}</b>
+                      {c.gymnase && <span class="ou">{c.gymnase}</span>}
+                    </span>
                   ))}
                 </dd>
               </div>
@@ -202,6 +205,8 @@ const inscrire = boutiqueEnPause ? (lienEnAttendant ?? "/boutique/") : "/boutiqu
   }
   dd { margin: 0; font-weight: 600; font-size: var(--s2); line-height: 1.35; }
   .créneau { display: block; font-weight: 500; }
+  .créneau .ou { font-weight: 400; color: var(--fg-2); }
+  .créneau .ou::before { content: " · "; }
   .precision {
     display: block; font-family: "Barlow Semi Condensed", sans-serif; font-weight: 400;
     font-size: var(--s1); color: var(--fg-2);

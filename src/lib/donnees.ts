@@ -1,4 +1,4 @@
-import { getCollection } from "astro:content";
+import { getCollection, getEntry } from "astro:content";
 import ffvb from "../data/ffvb.json";
 import reglageBoutique from "../data/boutique.json";
 
@@ -20,6 +20,47 @@ export const FUSEAU = "Europe/Paris";
 export async function equipes() {
   const liste = await getCollection("equipes");
   return liste.sort((a, b) => a.data.ordre - b.data.ordre);
+}
+
+/* Planning : les creneaux de toutes les equipes et des ecoles de sport de la
+   Ville, jour par jour, chaque jour range par heure de debut. Des equipes qui
+   s'entrainent ensemble (meme jour, meme horaire, meme gymnase) partagent une
+   ligne. Un jour mal orthographie n'est pas perdu : il passe apres dimanche. */
+export const JOURS = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
+const minutesDebut = (horaire: string) => {
+  const m = horaire.match(/(\d{1,2})\s*h\s*(\d{2})?/i);
+  return m ? Number(m[1]) * 60 + Number(m[2] ?? 0) : 24 * 60;
+};
+const ages = (min: number, max: number) => (max >= 99 ? `${min} ans et plus` : `${min} à ${max} ans`);
+
+export async function planning() {
+  const [liste, ecoles] = await Promise.all([equipes(), getEntry("pageEcoles", "ecoles-de-sport")]);
+  type Ligne = { jour: string; horaire: string; lieu: string; ville: boolean; qui: { nom: string; href: string }[]; pour: string; ageMin: number; ageMax: number };
+  const lignes = new Map<string, Ligne>();
+  const ajouter = (c: { jour: string; horaire: string }, lieu: string, ville: boolean, qui: Ligne["qui"][number], pour: string, ageMin = 0, ageMax = 0) => {
+    const jour = JOURS.find((j) => j.toLowerCase() === c.jour.trim().toLowerCase()) ?? c.jour.trim();
+    const cle = [jour, c.horaire.trim(), lieu.trim(), ville].join("|");
+    const l = lignes.get(cle);
+    if (!l) {
+      lignes.set(cle, { jour, horaire: c.horaire.trim(), lieu: lieu.trim(), ville, qui: [qui], pour, ageMin, ageMax });
+      return;
+    }
+    l.qui.push(qui);
+    l.ageMin = Math.min(l.ageMin, ageMin);
+    l.ageMax = Math.max(l.ageMax, ageMax);
+  };
+  for (const e of liste)
+    for (const c of e.data.creneaux)
+      ajouter(c, c.gymnase ?? e.data.gymnase, false, { nom: e.data.nom, href: `/equipes/${e.id}/` }, "", e.data.ageMin, e.data.ageMax);
+  for (const c of ecoles?.data.creneaux ?? [])
+    ajouter(c, c.lieu, true, { nom: c.activite.split(/[,.:;]/)[0].trim(), href: "/nous-rejoindre/#ecoles-de-sport" }, `${c.public} · École de sport de la Ville`);
+
+  const tout = [...lignes.values()].map((l) => ({ ...l, pour: l.ville ? l.pour : ages(l.ageMin, l.ageMax) }));
+  const jours = [...new Set([...JOURS, ...tout.map((l) => l.jour)])];
+  return jours.map((jour) => ({
+    jour,
+    lignes: tout.filter((l) => l.jour === jour).sort((a, b) => minutesDebut(a.horaire) - minutesDebut(b.horaire)),
+  }));
 }
 
 /* Le site n'est reconstruit qu'une fois par semaine (netlify/functions/

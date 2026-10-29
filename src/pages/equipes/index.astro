@@ -18,6 +18,7 @@ const liste = await equipes();
       Deux séances d’essai sont possibles avant de prendre la licence,
       quel que soit le groupe.
     </p>
+    <a class="btn ghost" href="/planning/"><span>Voir le planning de la semaine</span></a>
   </section>
 
   <section class="section wrap">
@@ -51,6 +52,7 @@ const liste = await equipes();
 </Base>
 
 <style>
+  .page-head .btn { margin-top: 1.25rem; }
   .grille { display: grid; gap: 1.25rem; }
   @media (min-width: 700px) { .grille { grid-template-columns: repeat(2, 1fr); } }
   @media (min-width: 1080px) { .grille { grid-template-columns: repeat(3, 1fr); } }

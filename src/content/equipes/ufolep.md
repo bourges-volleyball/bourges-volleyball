@@ -7,11 +7,12 @@ niveau: "Loisir mixte et M18 · départemental du Cher"
 creneaux:
   - jour: "Mardi"
     horaire: "20h30 – 22h00"
+    gymnase: "Gymnase Yves du Manoir"
   - jour: "Jeudi"
     horaire: "20h30 – 22h00"
   - jour: "Vendredi"
     horaire: "20h00 – 22h00"
-gymnase: "Léo Lagrange et Yves du Manoir"
+gymnase: "Gymnase Léo Lagrange"
 tarif: 85
 photo: "../../images/equipes/equipe-2.jpg"
 ---

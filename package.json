@@ -8,7 +8,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "maj:ffvb": "node scripts/ffvb.mjs",
-    "test": "node --test netlify/lib/boutique.test.mjs",
+    "test": "node --test netlify/lib/*.test.mjs",
     "admin": "npx -y decap-server",
     "prebuild": "node -e \"require('fs').rmSync('node_modules/.astro/data-store.json',{force:true})\"",
     "predev": "node -e \"require('fs').rmSync('node_modules/.astro/data-store.json',{force:true})\""

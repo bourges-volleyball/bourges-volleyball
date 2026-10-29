@@ -11,6 +11,7 @@ const aDesAlbums = (await getCollection("galerie")).length > 0;
 const liens = [
   { href: "/le-club/", texte: "Le club" },
   { href: "/equipes/", texte: "Équipes" },
+  { href: "/planning/", texte: "Planning" },
   { href: "/agenda/", texte: "Agenda" },
   { href: "/matchs/", texte: "Matchs" },
   ...(boutiqueEnPause ? [] : [{ href: "/boutique/", texte: "Boutique" }]),
@@ -172,11 +173,12 @@ const liens = [
 
   .mobile { display: none; }
 
-  /* 1240 px : le menu complet demande environ 1210 px (logo + 9 liens, Galerie
-     comprise, + Admin + Nous rejoindre), marges comprises. En dessous, il
-     passait sur deux lignes. Au-dela, on affichait un menu burger a des
-     visiteurs qui avaient largement la place pour la navigation entiere. */
-  @media (max-width: 1240px) {
+  /* 1300 px : le menu complet demande environ 1290 px (logo + 10 liens,
+     Planning, Boutique et Galerie compris, + Admin + Nous rejoindre), marges
+     comprises. En dessous, il passait sur deux lignes. Au-dela, on affichait
+     un menu burger a des visiteurs qui avaient la place pour la navigation
+     entiere (1366 px, l'ecran d'ordinateur portable le plus courant). */
+  @media (max-width: 1300px) {
     .bureau { display: none; }
     .burger { display: grid; }
     /* Le bouton d'inscription reste visible : c'est la raison d'etre du site */
@@ -251,10 +253,10 @@ const liens = [
       }
     });
 
-    // Repasser en affichage bureau (au-dela du seuil du CSS ci-dessus, 1240 px)
+    // Repasser en affichage bureau (au-dela du seuil du CSS ci-dessus, 1300 px)
     // doit refermer le menu, sinon il reste
     // ouvert et invisible, et le bouton se desynchronise.
-    const large = matchMedia("(min-width: 1241px)");
+    const large = matchMedia("(min-width: 1301px)");
     large.addEventListener("change", (e) => {
       if (e.matches) basculer(false);
     });
