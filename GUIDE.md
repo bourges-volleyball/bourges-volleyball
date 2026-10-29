@@ -611,8 +611,6 @@ et les données structurées lues par Google (`src/layouts/Base.astro`).
 - [ ] Donner une date au tournoi Octobre rose dans la boutique (sans date, la
   vente reste ouverte)
 - [ ] Confirmer les dates du tournoi inter-entreprises, de l'AG et du stage
-- [ ] **Nommer le directeur de la publication** dans les mentions légales
-  (aujourd'hui « Le président », la loi demande un nom)
 - [ ] Saisir les événements de la saison dans l'**Agenda** : la page, dans le
   menu, est vide (choix de l'audit : la laisser, le club va la remplir)
 - [x] Prendre le nom de domaine : bourges-volleyball.fr, chez OVH
@@ -815,6 +813,10 @@ qui quittent le bureau** (*Identity → l'utilisateur → Delete*).
 - **Les anciennes photos reprises de Clubeo** (465, de 2005 à 2021) montrent
   parfois des mineurs, sans trace de l'accord des parents. La page
   Confidentialité promet le retrait sur simple demande : à tenir sans délai.
+- **Les mentions légales ne nomment pas le directeur de la publication** :
+  « Le président du Bourges Volley-Ball », choix du club (le nom change avec
+  le bureau). La loi (LCEN, article 6) demande un nom ; le risque est faible
+  pour une association, mais il existe.
 - **L'administration n'est pas couverte par la politique de scripts** (CSP) :
   Decap ne le supporte pas. Elle repose sur l'empreinte du fichier de Decap et
   sur l'inscription fermée.
