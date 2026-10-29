@@ -117,9 +117,11 @@ Sans ces deux gestes, **le site ne sortira jamais dans Google**.
 ### Brancher le nom de domaine
 
 Le domaine **bourges-volleyball.fr** a été commandé chez OVH le 28 octobre
-2026. Le site est déjà réglé dessus : `astro.config.mjs` (ligne `site:`),
-`public/admin/config.yml` (ligne `site_url:`) et la ligne Sitemap gardée en
-commentaire dans `public/robots.txt`. L'adresse principale est
+2026. Le site est déjà réglé dessus : `public/admin/config.yml` (ligne
+`site_url:`) et la ligne Sitemap gardée en commentaire dans
+`public/robots.txt`. `astro.config.mjs` (ligne `site:`), lui, prend l'adresse
+principale que Netlify donne à chaque construction : la bonne adresse, avant
+comme après le branchement, sans rien modifier. L'adresse principale est
 **www.bourges-volleyball.fr** ; la version sans www y renvoie. C'est le choix
 que conseille Netlify : l'adresse avec www passe par son réseau de serveurs,
 la version sans www par une seule adresse IP, qui peut changer.
@@ -143,10 +145,12 @@ Une fois le domaine livré par OVH (après le paiement de la commande) :
    ensuite tout seul le certificat HTTPS (*Domain management → HTTPS*).
 4. **HelloAsso** : changer l'adresse de notification (voir « Brancher le
    paiement de la boutique », partie 6).
-5. **Publier** le site. Les liens de partage, l'adresse canonique des pages et
-   le plan du site prennent la nouvelle adresse ; bourges-volleyball.netlify.app
-   renvoie alors toute seule vers www.bourges-volleyball.fr. Les bénévoles se
-   reconnectent une fois à l'administration, à la nouvelle adresse.
+5. **Reconstruire** le site : *Deploys → Trigger deploy* dans Netlify, ou
+   n'importe quelle publication depuis l'administration. Les liens de partage,
+   l'adresse canonique des pages et le plan du site prennent la nouvelle
+   adresse ; bourges-volleyball.netlify.app renvoie déjà toute seule vers
+   www.bourges-volleyball.fr. Les bénévoles se reconnectent une fois à
+   l'administration, à la nouvelle adresse.
 
 ---
 
@@ -666,7 +670,7 @@ Netlify `HELLOASSO_API = https://api.helloasso-sandbox.com` avec ses clés.
 - [x] Administration et page Commandes aux couleurs du site, utilisables sur
   tablette et téléphone (colonne des collections entière, barre du haut sans
   débordement)
-- [x] Site réglé sur www.bourges-volleyball.fr (29 octobre 2026), à brancher
+- [x] Site prêt pour www.bourges-volleyball.fr (29 octobre 2026), à brancher
   dès que le domaine est livré
 - [x] Boutique en pause tant que le paiement n'est pas branché et testé :
   interrupteur dans *Réglages*, visiteurs renvoyés vers la page HelloAsso du

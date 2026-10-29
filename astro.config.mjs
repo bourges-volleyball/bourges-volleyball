@@ -1,11 +1,13 @@
 import { defineConfig } from "astro/config";
 import sitemap from "@astrojs/sitemap";
 
-// L'adresse du site, avec www : c'est le domaine principal declare a Netlify
-// (bourges-volleyball.fr, sans www, y renvoie). Sert aux liens de partage,
-// a l'adresse canonique des pages et au plan du site (sitemap).
+// L'adresse du site, pour les liens de partage, l'adresse canonique des pages
+// et le plan du site (sitemap). Sur Netlify, URL est l'adresse principale du
+// site au moment de la construction : bourges-volleyball.netlify.app tant que
+// le domaine n'est pas branche, www.bourges-volleyball.fr ensuite (la version
+// sans www y renvoie). Ailleurs, l'adresse definitive.
 export default defineConfig({
-  site: "https://www.bourges-volleyball.fr",
+  site: process.env.URL ?? "https://www.bourges-volleyball.fr",
   integrations: [sitemap()],
   // Pas de coloration de code (Shiki) : inutile ici, et ses styles en ligne
   // seraient bloques par la CSP ci-dessous.
