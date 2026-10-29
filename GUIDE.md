@@ -607,8 +607,9 @@ et les données structurées lues par Google (`src/layouts/Base.astro`).
 - [ ] Remplacer les photos d'équipe et saisir les effectifs réels
 - [ ] Renseigner les encadrants de chaque groupe (tous « À préciser »)
 - [ ] Ajouter les vrais partenaires et leurs logos
-- [ ] **Brancher le paiement de la boutique** (une fois, voir ci-dessous),
-  puis la rouvrir : elle est en pause
+- [ ] **Brancher le paiement de la boutique** (voir ci-dessous) : clé API
+  testée le 29 octobre 2026 ; reste l'achat réel à 1 € après le branchement
+  du domaine, puis la rouvrir : elle est en pause
 - [ ] Donner une date au tournoi Octobre rose dans la boutique (sans date, la
   vente reste ouverte)
 - [ ] Confirmer les dates du tournoi inter-entreprises, de l'AG et du stage
@@ -652,6 +653,9 @@ avec la clé, lit la fiche de l'association, puis prépare un paiement d'essai d
 1 € : son lien ouvre la vraie page de paiement HelloAsso, qu'on ferme sans
 payer. Aucune commande n'est enregistrée, la boutique peut rester en pause.
 Ce test ne couvre ni le paiement lui-même ni la notification (étape 3).
+**Fait le 29 octobre 2026 : test réussi**, clé acceptée et page de paiement
+HelloAsso du club affichée. Reste l'achat réel à 1 €, une fois le domaine
+branché et la boutique rouverte.
 
 Ensuite, **rouvrir la boutique** (elle est en pause depuis le 29 octobre 2026,
 voir « Boutique » partie 2) et **faire aussitôt un achat réel à 1 €** (un sirop
