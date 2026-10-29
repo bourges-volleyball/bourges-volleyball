@@ -819,7 +819,14 @@ arrivent ainsi sans que personne ne publie rien. Pour l'activer :
    hook*, nommé par exemple « Lundi FFVolley », branche `main`. Copier
    l'adresse obtenue.
 2. *Site configuration → Environment variables* : `BUILD_HOOK_URL` = cette
-   adresse. Ne la diffusez pas : elle permet de lancer une publication.
+   adresse, toutes les portées (*All scopes*, ou au moins *Functions*). Ne la
+   diffusez pas : elle permet de lancer une publication.
+3. La variable n'est lue qu'à partir de la **publication suivante** : la
+   première publication qui suit (une actu, *Deploys → Trigger deploy*…)
+   active le lundi. Pour vérifier, le lundi matin : *Deploys* montre une
+   publication « Lundi FFVolley », et *Logs → Functions → reconstruire*
+   affiche « Reconstruction demandee : 200 ». « BUILD_HOOK_URL absente » :
+   aucune publication n'a suivi l'ajout de la variable.
 
 **Pourquoi pas tous les jours ?** Avec l'offre gratuite de Netlify, chaque
 publication coûte 15 crédits sur 300 par mois, soit une vingtaine de
