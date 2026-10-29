@@ -2,11 +2,14 @@
    pour recalculer chaque montant. Genere a chaque construction du site : il
    est donc toujours d'accord avec ce que montrent les pages. */
 import { getCollection } from "astro:content";
+import { boutiqueEnPause } from "../../lib/donnees";
 
 // Les jours d'un stage voyagent en AAAA-MM-JJ, sans heure
 const jour = (d: Date) => d.toISOString().slice(0, 10);
 
 export async function GET() {
+  // En pause : aucune vente publiee, donc aucune commande acceptee
+  if (boutiqueEnPause) return Response.json([]);
   const ventes = (await getCollection("boutique")).map(({ id, data: d }) => ({
     id,
     nom: d.nom,

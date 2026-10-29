@@ -1,9 +1,11 @@
 ---
 import { getCollection } from "astro:content";
+import { boutiqueEnPause } from "../lib/donnees";
 
 const ici = Astro.url.pathname;
 const actif = (href: string) => (href === "/" ? ici === "/" : ici.startsWith(href));
-// Pas d'album : pas de lien vers une galerie vide (de meme dans le pied de page)
+// Pas d'album : pas de lien vers une galerie vide ; boutique en pause : pas de
+// lien vers elle (de meme dans le pied de page)
 const aDesAlbums = (await getCollection("galerie")).length > 0;
 
 const liens = [
@@ -11,7 +13,7 @@ const liens = [
   { href: "/equipes/", texte: "Équipes" },
   { href: "/agenda/", texte: "Agenda" },
   { href: "/matchs/", texte: "Matchs" },
-  { href: "/boutique/", texte: "Boutique" },
+  ...(boutiqueEnPause ? [] : [{ href: "/boutique/", texte: "Boutique" }]),
   { href: "/actus/", texte: "Actus" },
   ...(aDesAlbums ? [{ href: "/galerie/", texte: "Galerie" }] : []),
   { href: "/partenaires/", texte: "Partenaires" },

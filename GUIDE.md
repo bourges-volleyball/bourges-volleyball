@@ -70,7 +70,7 @@ Pas de mot de passe, et les modifications sont réelles.
 6. Inviter les bénévoles : *Identity → Invite users*. Ils reçoivent un mail,
    choisissent un mot de passe, et arrivent sur l'administration.
 
-L'administration est ensuite accessible à l'adresse **votre-site.fr/admin/**.
+L'administration est ensuite accessible à l'adresse **www.bourges-volleyball.fr/admin/**.
 
 ### ⚠ Git Gateway est déprécié — à savoir dès maintenant
 
@@ -116,16 +116,43 @@ Sans ces deux gestes, **le site ne sortira jamais dans Google**.
 
 ### Brancher le nom de domaine
 
-Quand le domaine sera pris (OVH ou Gandi, environ 12 € par an) :
-*Domain management → Add a domain* dans Netlify, puis suivre les instructions
-de redirection DNS. Il faut aussi changer l'adresse dans **deux fichiers** :
-`astro.config.mjs` (ligne `site:`) et `public/robots.txt`.
+Le domaine **bourges-volleyball.fr** a été commandé chez OVH le 28 octobre
+2026. Le site est déjà réglé dessus : `astro.config.mjs` (ligne `site:`),
+`public/admin/config.yml` (ligne `site_url:`) et la ligne Sitemap gardée en
+commentaire dans `public/robots.txt`. L'adresse principale est
+**www.bourges-volleyball.fr** ; la version sans www y renvoie. C'est le choix
+que conseille Netlify : l'adresse avec www passe par son réseau de serveurs,
+la version sans www par une seule adresse IP, qui peut changer.
+
+Une fois le domaine livré par OVH (après le paiement de la commande) :
+
+1. **Netlify** : *Domain management → Add a domain*, saisir
+   `www.bourges-volleyball.fr`. Netlify propose d'ajouter aussi
+   `bourges-volleyball.fr` : accepter. Vérifier que `www.bourges-volleyball.fr`
+   porte la mention *Primary domain*, sinon *Options → Set as primary domain*.
+2. **OVH** : *Web Cloud → Noms de domaine → bourges-volleyball.fr*, onglet
+   *Zone DNS* :
+   - l'entrée **A** du domaine (sous-domaine vide) : cible `75.2.60.5` ;
+   - supprimer les entrées **AAAA** du domaine et de www s'il y en a (Netlify
+     ne répond pas en IPv6 à cette adresse), et l'entrée existante de `www` ;
+   - ajouter une entrée **CNAME** : sous-domaine `www`, cible
+     `bourges-volleyball.netlify.app.`, **avec le point final** (sans lui,
+     OVH colle le nom du domaine derrière) ;
+   - ne pas toucher aux entrées MX et TXT : ce sont celles du mail.
+3. **Attendre** : de quelques minutes à 24 h, 48 h au plus. Netlify crée
+   ensuite tout seul le certificat HTTPS (*Domain management → HTTPS*).
+4. **HelloAsso** : changer l'adresse de notification (voir « Brancher le
+   paiement de la boutique », partie 6).
+5. **Publier** le site. Les liens de partage, l'adresse canonique des pages et
+   le plan du site prennent la nouvelle adresse ; bourges-volleyball.netlify.app
+   renvoie alors toute seule vers www.bourges-volleyball.fr. Les bénévoles se
+   reconnectent une fois à l'administration, à la nouvelle adresse.
 
 ---
 
 ## 2. Pour les bénévoles : modifier le site
 
-Tout se passe sur **votre-site.fr/admin/**, que le bouton **Admin** du haut
+Tout se passe sur **www.bourges-volleyball.fr/admin/**, que le bouton **Admin** du haut
 du site ouvre directement (dans le menu sur téléphone). Se connecter avec le
 mail et le mot de passe reçus par invitation. Si l'administration affiche
 « Git Gateway Error: [object Object] », c'est une ancienne connexion restée
@@ -278,6 +305,28 @@ et paie sans quitter le site ; seul le paiement par carte passe par HelloAsso.
   posées pour chaque participant.
 - **Dates** : facultatives. Le soir du « dernier jour pour commander », la vente
   se ferme toute seule. Sans date, elle reste ouverte (buvette).
+
+**Une vente terminée** disparaît de la boutique (sa page affiche « Cette vente
+est fermée ») mais reste dans l'administration, avec ses commandes.
+
+- **Rouvrir la même vente** (prolonger de quelques jours, rouvrir après une
+  erreur) : changer ses dates et publier.
+- **Une nouvelle édition** (le tournoi de l'an prochain, le stage des vacances
+  suivantes) : ouvrir l'ancienne fiche, **Dupliquer** dans le menu du bouton
+  « Publiée » en haut, puis **changer le nom** et les dates. Le nom fait
+  l'adresse de la page : deux ventes ne peuvent pas porter le même. La copie
+  repart avec ses places au complet et ses propres commandes. Rouvrir
+  l'ancienne fiche à la place fausserait les places : le site compte toutes
+  les commandes payées d'une fiche, gardées un an.
+
+**Mettre toute la boutique en pause** : *Réglages → Boutique : ouverte ou en
+pause*, éteindre l'interrupteur **Boutique ouverte**, publier. La boutique sort du menu et du
+pied de page, ses pages annoncent son ouverture prochaine (les liens des
+actus et de l'agenda y mènent toujours), et le serveur refuse toute commande :
+le catalogue qu'il lit est vide. Le champ **En attendant** donne la page
+HelloAsso du club : un bouton « Aller sur HelloAsso » y envoie les visiteurs,
+comme le bouton « S'inscrire » de la page Nous rejoindre. Les ventes ne
+bougent pas : on rallume l'interrupteur, on publie, tout revient.
 
 **Le montant est toujours recalculé par le serveur** à partir de la fiche :
 modifier un prix dans l'administration s'applique dès la publication suivante.
@@ -535,13 +584,15 @@ et les données structurées lues par Google (`src/layouts/Base.astro`).
 - [ ] Remplacer les photos d'équipe et saisir les effectifs réels
 - [ ] Renseigner les encadrants de chaque groupe (tous « À préciser »)
 - [ ] Ajouter les vrais partenaires et leurs logos
-- [ ] **Brancher le paiement de la boutique** (une fois, voir ci-dessous)
+- [ ] **Brancher le paiement de la boutique** (une fois, voir ci-dessous),
+  puis la rouvrir : elle est en pause
 - [ ] Donner une date au tournoi Octobre rose dans la boutique (sans date, la
   vente reste ouverte)
 - [ ] Confirmer les dates du tournoi inter-entreprises, de l'AG et du stage
 - [ ] Vérifier les mentions légales et la page Confidentialité (adresse,
   durée de conservation des messages, fixée à un an)
-- [ ] Prendre le nom de domaine et le brancher
+- [x] Prendre le nom de domaine : bourges-volleyball.fr, chez OVH
+- [ ] Le brancher (section 1, « Brancher le nom de domaine »)
 
 ### Pistes
 
@@ -565,17 +616,23 @@ condition pour encaisser par le site. Il reste trois gestes, dans l'ordre :
    *Deploys → Trigger deploy*.
 3. **Renseigner l'adresse de notification** — même page HelloAsso, champ
    *Mon URL de callback* :
-   `https://bourges-volleyball.netlify.app/.netlify/functions/paiement`
-   (à changer avec le nom de domaine). C'est elle qui marque une commande
-   payée même si l'acheteur ferme son navigateur avant de revenir sur le site.
+   `https://www.bourges-volleyball.fr/.netlify/functions/paiement`, avec www
+   (tant que le domaine n'est pas branché :
+   `https://bourges-volleyball.netlify.app/.netlify/functions/paiement`).
+   C'est elle qui marque une commande payée même si l'acheteur ferme son
+   navigateur avant de revenir sur le site.
 
-Ensuite, **faire un achat réel à 1 €** (un sirop à la buvette) pour vérifier
-toute la chaîne, puis le rembourser depuis HelloAsso.
+Ensuite, **rouvrir la boutique** (elle est en pause depuis le 29 octobre 2026,
+voir « Boutique » partie 2) et **faire aussitôt un achat réel à 1 €** (un sirop
+à la buvette) pour vérifier toute la chaîne, puis le rembourser depuis
+HelloAsso. Si quelque chose cloche, la remettre en pause le temps de corriger.
 
 Enfin, **passer en privé ou clôturer les formulaires HelloAsso** repris par le
 site (boutique Héroïc, adhésions, stage, tournoi, buvettes) : sinon on peut
 encore commander des deux côtés, et les places du stage seraient vendues deux
-fois. Les commandes déjà passées sur HelloAsso restent dans son espace.
+fois. Les commandes déjà passées sur HelloAsso restent dans son espace. Pas
+avant : pendant la pause, le site envoie les visiteurs sur la page HelloAsso
+du club, donc vers ces formulaires.
 
 Pour des essais sans argent réel, HelloAsso propose un bac à sable
 (helloasso-sandbox.com) : y créer une association de test, et ajouter dans
@@ -609,6 +666,12 @@ Netlify `HELLOASSO_API = https://api.helloasso-sandbox.com` avec ses clés.
 - [x] Administration et page Commandes aux couleurs du site, utilisables sur
   tablette et téléphone (colonne des collections entière, barre du haut sans
   débordement)
+- [x] Site réglé sur www.bourges-volleyball.fr (29 octobre 2026), à brancher
+  dès que le domaine est livré
+- [x] Boutique en pause tant que le paiement n'est pas branché et testé :
+  interrupteur dans *Réglages*, visiteurs renvoyés vers la page HelloAsso du
+  club (helloasso.com/associations/bourges-volley, l'adresse des formulaires
+  repris de l'ancien site)
 
 ## 7. Sécurité : ce qui protège le site, et ce qui reste à surveiller
 

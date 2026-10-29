@@ -1,9 +1,10 @@
 ---
 import Base from "../../layouts/Base.astro";
 import { Image } from "astro:assets";
-import { boutique, RAYONS, dateLongue, euros } from "../../lib/donnees";
+import { boutique, boutiqueEnPause, lienEnAttendant, RAYONS, dateLongue, euros } from "../../lib/donnees";
 
-const { ouverts, aVenir } = await boutique();
+// En pause : aucune vente affichee, seulement l'annonce de l'ouverture
+const { ouverts, aVenir } = boutiqueEnPause ? { ouverts: [], aVenir: [] } : await boutique();
 const rayons = RAYONS.map((r) => ({ ...r, ventes: ouverts.filter((c) => c.data.categorie === r.id) })).filter(
   (r) => r.ventes.length,
 );
@@ -20,8 +21,9 @@ const prixMin = (c: (typeof ouverts)[number]) => Math.min(...c.data.articles.map
     <p class="eyebrow">En ligne</p>
     <h1>Boutique</h1>
     <p>
-      Textile du club, adhésions, stages, tournois et buvette : tout se commande
-      ici, en quelques minutes. Le paiement se fait par carte, sur HelloAsso.
+      Textile du club, adhésions, stages, tournois et buvette : tout se
+      {boutiqueEnPause ? " commandera bientôt " : " commande "}ici, en quelques
+      minutes. Le paiement se fait par carte, sur HelloAsso.
     </p>
     {
       rayons.length > 1 && (
@@ -71,7 +73,33 @@ const prixMin = (c: (typeof ouverts)[number]) => Math.min(...c.data.articles.map
   }
 
   {
-    ouverts.length === 0 && (
+    boutiqueEnPause && (
+      <section class="section wrap">
+        <div class="ferme">
+          <p class="etiquette">Bientôt</p>
+          <h2>La boutique en ligne ouvre bientôt</h2>
+          <p>
+            {lienEnAttendant
+              ? "En attendant, adhésions, inscriptions et commandes se règlent sur la page HelloAsso du club."
+              : "En attendant, écrivez-nous pour une adhésion, une inscription ou une commande."}
+          </p>
+          <div class="actions">
+            {lienEnAttendant && (
+              <a class="btn" href={lienEnAttendant}>
+                <span>Aller sur HelloAsso</span>
+              </a>
+            )}
+            <a class="btn ghost" href="/contact/">
+              <span>Nous écrire</span>
+            </a>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    !boutiqueEnPause && ouverts.length === 0 && (
       <section class="section wrap">
         <div class="ferme">
           <p class="etiquette">Boutique fermée</p>
@@ -183,6 +211,7 @@ const prixMin = (c: (typeof ouverts)[number]) => Math.min(...c.data.articles.map
     justify-items: start;
   }
   .ferme p { margin: 0; color: var(--fg-2); }
+  .ferme .actions { display: flex; flex-wrap: wrap; gap: 0.8rem; }
   .etiquette {
     font-family: "Barlow Semi Condensed", sans-serif;
     font-weight: 600;

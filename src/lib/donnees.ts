@@ -1,5 +1,6 @@
 import { getCollection } from "astro:content";
 import ffvb from "../data/ffvb.json";
+import reglageBoutique from "../data/boutique.json";
 
 /* Toute la logique de tri et de filtrage vit ici, pour que l'accueil et les
    pages internes ne divergent jamais sur ce qu'est « un match a venir ». */
@@ -175,6 +176,14 @@ export function venteOuverte(d: { ouvertureLe?: Date; fermetureLe?: Date }, main
     (!d.fermetureLe || d.fermetureLe.getTime() + 86400000 > maintenant)
   );
 }
+
+/* Boutique en pause (administration, Reglages > Boutique) : plus de lien
+   dans le menu, des pages qui annoncent l'ouverture, et un catalogue vide
+   pour que netlify/functions/commande.mjs refuse toute commande. `lien` :
+   la page HelloAsso du club, ou payer en attendant. */
+const reglage: { ouverte: boolean; lien?: string } = reglageBoutique;
+export const boutiqueEnPause = !reglage.ouverte;
+export const lienEnAttendant = reglage.lien || undefined;
 
 export async function boutique() {
   const tous = (await getCollection("boutique")).sort((a, b) => a.data.ordre - b.data.ordre);

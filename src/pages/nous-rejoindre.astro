@@ -1,7 +1,7 @@
 ---
 import Base from "../layouts/Base.astro";
 import { getEntry } from "astro:content";
-import { equipes } from "../lib/donnees";
+import { equipes, boutiqueEnPause, lienEnAttendant } from "../lib/donnees";
 
 const liste = await equipes();
 const ecoles = (await getEntry("pageEcoles", "ecoles-de-sport"))?.data;
@@ -16,6 +16,8 @@ const AGES = Array.from(
   (_, i) => AGE_PLANCHER + i,
 );
 const defaut = AGE_PLANCHER;
+// Boutique en pause : on adhere en attendant sur la page HelloAsso du club
+const inscrire = boutiqueEnPause ? (lienEnAttendant ?? "/boutique/") : "/boutique/#adhesion";
 ---
 
 <Base
@@ -87,7 +89,7 @@ const defaut = AGE_PLANCHER;
               </div>
             </dl>
             <div class="res-cta">
-              <a class="btn" href="/boutique/#adhesion"><span>S&rsquo;inscrire</span></a>
+              <a class="btn" href={inscrire}><span>S&rsquo;inscrire</span></a>
               <a class="btn ghost" href="/contact/?sujet=essai"><span>Venir essayer</span></a>
             </div>
           </article>

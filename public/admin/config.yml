@@ -18,9 +18,8 @@ public_folder: "/images/uploads"
 locale: "fr"
 
 # Logo sur l'ecran de connexion, et lien "Voir le site" en haut de l'interface.
-# A changer le jour ou le club a son nom de domaine.
 logo_url: "/images/logo-bvb.png"
-site_url: "https://bourges-volleyball.netlify.app"
+site_url: "https://www.bourges-volleyball.fr"
 
 # Chaque enregistrement cree une version : rien n'est jamais perdu.
 publish_mode: simple
@@ -477,7 +476,7 @@ collections:
           time_format: false,
           format: "YYYY-MM-DD",
           required: false,
-          hint: "Le soir de cette date, la vente se ferme toute seule. Laissée vide, elle reste ouverte (buvette).",
+          hint: "Le soir de cette date, la vente se ferme toute seule. Laissée vide, elle reste ouverte (buvette). Pour rouvrir la même vente, changez cette date. Pour une nouvelle édition (le tournoi de l'an prochain), dupliquez plutôt la fiche et changez son nom : elle repart avec ses places au complet.",
         }
       - {
           name: "nominatif",
@@ -657,12 +656,19 @@ collections:
       - { name: "description", label: "Description", widget: "text" }
       - { name: "lien", label: "Lien (inscription, infos)", widget: "string", required: false, pattern: ["^https?://", "L'adresse doit commencer par https://"], hint: "Par exemple la page de la vente dans la boutique, pour s'inscrire à un tournoi ou un stage. Affiche le bouton « S'inscrire ou en savoir plus »." }
 
-  # Reglages lus par scripts/ffvb.mjs avant chaque construction du site
+  # Reglages : la boutique (lue par src/lib/donnees.ts) et les poules
+  # FFVolley (lues par scripts/ffvb.mjs avant chaque construction du site)
   - name: "reglages"
     label: "Réglages"
-    description: "À toucher une fois par saison, en septembre, quand la FFVolley publie les nouvelles poules. Voir le guide, partie « Les matchs »."
+    description: "L'ouverture de la boutique, et les poules FFVolley à revoir une fois par saison, en septembre."
     editor: { preview: false }
     files:
+      - name: "boutique"
+        label: "Boutique : ouverte ou en pause"
+        file: "src/data/boutique.json"
+        fields:
+          - { name: "ouverte", label: "Boutique ouverte", widget: "boolean", default: false, hint: "Interrupteur éteint, la boutique est en pause : elle disparaît du menu, ses pages annoncent son ouverture prochaine et aucune commande n'est possible. Les ventes restent dans la rubrique Boutique, prêtes à rouvrir." }
+          - { name: "lien", label: "En attendant : page HelloAsso du club", widget: "string", required: false, pattern: ["^https://", "L'adresse doit commencer par https://"], hint: "Pendant la pause, un bouton « Aller sur HelloAsso » y envoie les visiteurs, et le bouton « S'inscrire » de la page Nous rejoindre aussi." }
       - name: "ffvb"
         label: "Matchs FFVolley : saison et poules"
         file: "src/data/ffvb-poules.json"

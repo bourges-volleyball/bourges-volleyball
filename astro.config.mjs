@@ -1,10 +1,11 @@
 import { defineConfig } from "astro/config";
 import sitemap from "@astrojs/sitemap";
 
-// L'adresse definitive sera le nom de domaine du club quand il sera pris.
-// En attendant, celle fournie par Netlify. A changer ici et nulle part ailleurs.
+// L'adresse du site, avec www : c'est le domaine principal declare a Netlify
+// (bourges-volleyball.fr, sans www, y renvoie). Sert aux liens de partage,
+// a l'adresse canonique des pages et au plan du site (sitemap).
 export default defineConfig({
-  site: "https://bourges-volleyball.netlify.app",
+  site: "https://www.bourges-volleyball.fr",
   integrations: [sitemap()],
   // Pas de coloration de code (Shiki) : inutile ici, et ses styles en ligne
   // seraient bloques par la CSP ci-dessous.

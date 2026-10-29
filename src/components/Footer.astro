@@ -1,5 +1,6 @@
 ---
 import { getCollection } from "astro:content";
+import { boutiqueEnPause } from "../lib/donnees";
 
 const annee = new Date().getFullYear();
 // Pas d'album : pas de lien vers une galerie vide
@@ -26,7 +27,7 @@ const aDesAlbums = (await getCollection("galerie")).length > 0;
           <li><a href="/le-club/">Le club</a></li>
           <li><a href="/nous-rejoindre/">Nous rejoindre</a></li>
           <li><a href="/agenda/">Agenda</a></li>
-          <li><a href="/boutique/">Boutique</a></li>
+          {!boutiqueEnPause && <li><a href="/boutique/">Boutique</a></li>}
           <li><a href="/equipes/">Les équipes</a></li>
           <li><a href="/matchs/">Matchs et résultats</a></li>
           {aDesAlbums && <li><a href="/galerie/">Galerie photos</a></li>}

@@ -2,7 +2,7 @@
 import Base from "../../layouts/Base.astro";
 import { Image, getImage } from "astro:assets";
 import { getCollection } from "astro:content";
-import { RAYONS, dateLongue, euros, venteOuverte } from "../../lib/donnees";
+import { RAYONS, boutiqueEnPause, lienEnAttendant, dateLongue, euros, venteOuverte } from "../../lib/donnees";
 
 export async function getStaticPaths() {
   return (await getCollection("boutique")).map((c) => ({ params: { id: c.id }, props: { c } }));
@@ -11,7 +11,9 @@ export async function getStaticPaths() {
 const { c } = Astro.props;
 const d = c.data;
 const rayon = RAYONS.find((r) => r.id === d.categorie)!;
-const ouverte = venteOuverte(d);
+// Boutique en pause : la page reste (les actus et l'agenda y renvoient),
+// sans formulaire
+const ouverte = !boutiqueEnPause && venteOuverte(d);
 const pasEncore = d.ouvertureLe && d.ouvertureLe.getTime() > Date.now();
 // Version agrandie des photos, ouverte d'un clic : jamais plus grande que l'original
 const grandes = await Promise.all(
@@ -83,12 +85,36 @@ const vente = {
   </section>
 
   <section class="section wrap">
-    <div class="ferme" data-ferme hidden={ouverte}>
-      <h2>{pasEncore ? `Ouverture le ${dateLongue(d.ouvertureLe!)}` : "Cette vente est fermée"}</h2>
-      <a class="btn ghost" href="/boutique/"><span>Voir les autres ventes</span></a>
-    </div>
+    {
+      boutiqueEnPause ? (
+        <div class="ferme">
+          <h2>Commandes en ligne bientôt ouvertes</h2>
+          <p>
+            {lienEnAttendant
+              ? "En attendant, cette vente se règle sur la page HelloAsso du club."
+              : "En attendant, écrivez-nous pour commander ou vous inscrire."}
+          </p>
+          <div class="actions">
+            {lienEnAttendant && (
+              <a class="btn" href={lienEnAttendant}>
+                <span>Aller sur HelloAsso</span>
+              </a>
+            )}
+            <a class="btn ghost" href="/contact/">
+              <span>Nous écrire</span>
+            </a>
+          </div>
+        </div>
+      ) : (
+        <div class="ferme" data-ferme hidden={ouverte}>
+          <h2>{pasEncore ? `Ouverture le ${dateLongue(d.ouvertureLe!)}` : "Cette vente est fermée"}</h2>
+          <a class="btn ghost" href="/boutique/"><span>Voir les autres ventes</span></a>
+        </div>
+      )
+    }
 
-    <form class="commande" data-vente={JSON.stringify(vente)} hidden={!ouverte}>
+    {/* Sans data-vente en pause : le script ne s'attache pas au formulaire */}
+    <form class="commande" data-vente={boutiqueEnPause ? undefined : JSON.stringify(vente)} hidden={!ouverte}>
       <fieldset>
         <legend><h2>{d.nominatif ? "Choisissez vos places" : "Choisissez vos articles"}</h2></legend>
         <ul class="articles">
@@ -460,6 +486,8 @@ const vente = {
     justify-items: start;
   }
   .ferme[hidden] { display: none; }
+  .ferme p { margin: 0; color: var(--fg-2); }
+  .ferme .actions { display: flex; flex-wrap: wrap; gap: 0.8rem; }
 
   .commande { display: grid; gap: clamp(2rem, 5vw, 3rem); max-width: 860px; }
   .commande[hidden] { display: none; }
