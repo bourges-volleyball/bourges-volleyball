@@ -5,7 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="robots" content="noindex" />
 <title>Guide de l'administration - Bourges Volley-Ball</title>
-<link rel="icon" href="/images/logo-bvb.png" />
+<link rel="icon" href="/favicon.ico" sizes="48x48" />
+<link rel="icon" href="/icons/favicon-96.png" type="image/png" sizes="96x96" />
+<!-- Ajoutee a l'ecran d'accueil d'un telephone, l'administration garde le
+     logo du club et s'ouvre sur /admin/ (et non sur le site) -->
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+<link rel="manifest" href="/admin/admin.webmanifest" />
+<meta name="apple-mobile-web-app-title" content="Admin BVB" />
+<meta name="theme-color" content="#0D0E11" />
 <!-- Guide des benevoles, aux couleurs du site (memes polices et couleurs que
      src/styles/global.css). Le PDF a cote (guide-administration-bvb.pdf) est
      l'impression de cette page : apres une modification, le regenerer avec
@@ -197,8 +204,10 @@ td{color:var(--fg-2)}
   <p>Sur la fenêtre de connexion, cliquez sur « Forgot password? » et suivez le lien reçu par e-mail.</p>
   <h3>Message « Git Gateway Error »</h3>
   <p>Votre ancienne connexion est restée en mémoire dans le navigateur. Ouvrez l'administration dans une <strong>fenêtre de navigation privée</strong> et reconnectez-vous, ou videz le cache du navigateur.</p>
-  <h3>Le guide, à tout moment</h3>
-  <p>Une fois connecté, le bouton vert <strong>Guide</strong>, en haut à droite de l'administration, rouvre cette page. Le bouton <strong>Commandes</strong>, juste à côté, ouvre les commandes de la boutique.</p>
+  <h3>Les boutons du haut</h3>
+  <p>Une fois connecté, en haut de l'administration : le bouton vert <strong>Publier le site</strong> (voir « Enregistrer, publier, supprimer »), <strong>Commandes</strong>, qui ouvre les commandes de la boutique, et <strong>Guide</strong>, qui rouvre cette page. Sur téléphone, Commandes et Guide se réduisent à leur pastille, € et ?.</p>
+  <h3>L'administration sur l'écran d'accueil</h3>
+  <p>Sur téléphone, ouvrez <span class="adresse">www.bourges-volleyball.fr/admin/</span>, puis : sur iPhone, bouton <strong>Partager</strong>, <strong>Sur l'écran d'accueil</strong> ; sur Android, menu <strong>⋮</strong>, <strong>Ajouter à l'écran d'accueil</strong>. Le raccourci « Admin BVB » porte le logo du club et ouvre directement l'administration.</p>
 </section>
 
 <section id="rubriques" class="wrap">

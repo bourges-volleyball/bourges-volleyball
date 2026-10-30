@@ -65,7 +65,11 @@ const jsonLd = {
     <title>{titreComplet}</title>
     <meta name="description" content={desc} />
     <link rel="canonical" href={canonical} />
-    <link rel="icon" href="/images/logo-bvb.png" />
+    {/* Onglet du navigateur : favicon.ico (16, 32 et 48 px), lu aussi par les
+        favoris, Windows et les outils qui le cherchent a la racine ; 96 px pour
+        les resultats Google, qui demandent un multiple de 48 */}
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" href="/icons/favicon-96.png" type="image/png" sizes="96x96" />
     {/* Raccourci sur l'ecran d'accueil d'un telephone : le logo du club, en grand */}
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />

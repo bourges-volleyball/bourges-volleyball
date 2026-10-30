@@ -767,6 +767,13 @@ Netlify `HELLOASSO_API = https://api.helloasso-sandbox.com` avec ses clés.
   menu après Équipes (menu complet au-delà de 1300 px de large)
 - [x] Logo du club sur l'écran d'accueil d'un téléphone (icônes tirées du logo
   d'origine, 1117 px, de l'ancien site Clubeo)
+- [x] Icônes pour tous les systèmes (30 octobre 2026) : `favicon.ico` à la
+  racine (16, 32, 48 px : onglets, favoris, Windows), 96 px pour les résultats
+  Google, `apple-touch-icon` (iPhone, iPad, Mac), manifeste (Android, Chrome,
+  Edge). L'administration a son propre manifeste (`public/admin/admin.webmanifest`) :
+  ajoutée à l'écran d'accueil, elle s'appelle « Admin BVB » et s'ouvre sur
+  `/admin/`. Les tuiles Windows (`browserconfig.xml`) et l'icône d'onglet
+  épinglé de Safari ne servent plus depuis Windows 11 et Safari 12
 - [x] Lundi FFVolley : ne republie que si la fédération a du nouveau
 - [x] Bouton « Tester HelloAsso » sur la page Commandes : vérifie la clé API
   sans rien encaisser
