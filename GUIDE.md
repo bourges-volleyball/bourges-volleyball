@@ -586,6 +586,9 @@ et les données structurées lues par Google (`src/layouts/Base.astro`).
   prudence. On sait désormais que le club a une section Ufolep M18 à part,
   avec sa propre adhésion : le loisir semble bien réservé aux adultes, mais
   cela demande confirmation.
+- [ ] **Netlify, *Project configuration → Environment variables → Site
+  policies*** : le réglage doit être sur **Require approval** (c'est le défaut).
+  Voir « Le dépôt GitHub est public » au chapitre 7.
 
 > **Le site ne contient plus aucun contenu inventé.** Les faux effectifs, les
 > événements aux dates provisoires et les partenaires sans nom ont été retirés
@@ -820,6 +823,36 @@ qui quittent le bureau** (*Identity → l'utilisateur → Delete*).
 - **L'administration n'est pas couverte par la politique de scripts** (CSP) :
   Decap ne le supporte pas. Elle repose sur l'empreinte du fichier de Decap et
   sur l'inscription fermée.
+
+### Le dépôt GitHub est public, et doit le rester
+
+N'importe qui peut lire le code du site et tout son historique sur
+`github.com/bourges-volleyball/bourges-volleyball`. Ce n'est pas un risque :
+**aucun secret n'y est rangé** (vérifié le 30 octobre 2026, historique
+compris). Les clés HelloAsso et l'adresse du hook du lundi sont des variables
+Netlify, les commandes sont dans Netlify Blobs, les messages de contact dans
+Netlify Forms.
+
+- **Pourquoi ne pas le passer en privé** : le dépôt appartient à une
+  organisation GitHub, et l'offre gratuite de Netlify ne publie pas un dépôt
+  privé d'organisation (offre Pro, à partir de 20 $ par mois). Les
+  publications faites depuis l'administration risqueraient en plus de rester
+  « en attente d'approbation ».
+- **La règle** : ne jamais écrire une clé, un mot de passe ou l'adresse du hook
+  dans un fichier du dépôt, ni dans une actu. Si cela arrive, l'effacer ne
+  suffit pas, l'historique la garde : **changer la clé à la source**
+  (HelloAsso : en générer une nouvelle ; hook : le supprimer et en créer un
+  autre dans Netlify), puis mettre à jour la variable.
+- **Une proposition de modification venue d'un inconnu** (*pull request*
+  depuis une copie du dépôt) ne doit pas être approuvée chez Netlify : sa
+  copie d'essai tournerait avec les clés HelloAsso. Netlify la bloque par
+  défaut (*Project configuration → Environment variables → Site policies* :
+  **Require approval**), réglage à laisser tel quel.
+- **Ce qui est visible en plus du site** : ce guide, et l'adresse mail des
+  personnes qui ont enregistré des modifications.
+- **Une photo retirée du site reste dans l'historique.** Si une famille demande
+  qu'une photo disparaisse vraiment (droit à l'image), il faut aussi la purger
+  de l'historique du dépôt : c'est un travail de développeur, à demander.
 
 ### Une fois par an, en septembre : les messages de contact
 
