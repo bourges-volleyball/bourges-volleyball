@@ -174,8 +174,29 @@ Ils s'identifient avec un mail et un mot de passe ; c'est Git Gateway qui
 écrit dans le dépôt à leur place. GitHub ne concerne que la personne qui a
 mis le site en ligne.
 
-Chaque enregistrement publie le site automatiquement. Comptez une à deux
-minutes avant que la modification soit visible.
+### Enregistrer, puis publier le site
+
+**Enregistrer ne change pas le site.** Le bouton **Enregistrer** de chaque
+fiche (« Publier » dans Decap d'origine, renommé) range la modification sur la
+branche `preparation` du dépôt (`backend.branch` dans
+`public/admin/config.yml`). On peut enregistrer autant qu'on veut, plusieurs
+actus, des équipes, des matchs : rien ne part en ligne et rien ne coûte.
+
+**Le bouton « Publier le site »**, en vert en haut de l'administration, montre
+le nombre de modifications en attente. Il ouvre `/admin/publier.html` : la
+liste de ce qui attend (quoi, qui, quand), et un bouton qui met **tout en
+ligne d'un coup**, une seule publication (15 crédits). Comptez une à deux
+minutes avant que le site soit à jour.
+
+Sous le capot (`netlify/functions/publier.mjs`) : la fonction fusionne
+`preparation` dans `main` par Git Gateway, avec le jeton du bénévole connecté,
+puis remet `preparation` au niveau de `main`. Aucune clé à ranger. La branche
+`preparation` se crée toute seule à la première ouverture de l'administration
+si elle n'existe pas. Le message de chaque enregistrement (« Modification :
+une équipe « m15-filles » ») vient de `commit_messages` dans `config.yml`.
+
+Ce bouton refuse de publier quand les crédits Netlify du mois sont épuisés :
+voir **Le garde-fou des crédits**, chapitre 8.
 
 ### Essayer l'administration avant la mise en ligne
 
@@ -204,7 +225,10 @@ l'accès.
 La page des commandes de la boutique s'essaie aussi :
 **http://localhost:4321/admin/commandes.html** montre alors des **commandes
 d'exemple**, signalées comme telles. Les vraies n'existent qu'en ligne, où
-tournent la connexion et les fonctions Netlify.
+tournent la connexion et les fonctions Netlify. De même,
+**http://localhost:4321/admin/publier.html** montre des modifications et des
+crédits d'exemple. Sur l'ordinateur, « Enregistrer » écrit directement dans
+les fichiers du dossier, sans branche `preparation`.
 
 ### Actualités
 Publier un article : titre, date, résumé, photo de une, autres photos, texte.
@@ -214,7 +238,9 @@ résultats du week-end, avec les photos des équipes. Sans photo de une, la
 première sert de vignette. Une photo de groupe se met plutôt là qu'en photo
 de une : la une est recadrée en bandeau large, qui couperait les têtes.
 Le **résumé** s'affiche sous le titre, sur la page Actualités et en tête de l'article : deux lignes suffisent. L'accueil, lui, ne montre que la date et le titre des trois derniers articles, dans le panneau « À la une ».
-La case **Brouillon** permet de préparer un article sans le publier.
+La case **Brouillon** garde un article hors du site, même quand quelqu'un
+publie le site : utile pour un article préparé sur plusieurs jours pendant que
+d'autres modifications partent.
 
 ### Textes des pages
 Trois fiches, que l'on modifie mais que l'on ne peut pas supprimer :
@@ -236,6 +262,16 @@ importants : ce sont eux qui font fonctionner le sélecteur d'âge de la page
 « Nous rejoindre ». Mettez 99 comme âge maximum s'il n'y a pas de limite.
 
 L'**ordre d'affichage** classe les équipes sur le site, du plus jeune au plus âgé.
+
+Le **nom de l'équipe** range aussi ses matchs : une fiche affiche les rencontres
+dont l'équipe porte exactement le même nom, qu'elles viennent de FFVolley
+(*Réglages > Matchs FFVolley*) ou de la rubrique Matchs. « M18 filles » sur la
+fiche et « M18 filles » dans les réglages : les matchs s'affichent ; « M18
+Filles » d'un côté seulement : la fiche reste sans matchs.
+
+Les jeunes ont une fiche par catégorie et par sexe depuis le 30 octobre 2026
+(M13, M15 et M18, garçons et filles). Des groupes qui s'entraînent ensemble
+gardent chacun leurs créneaux : le Planning les réunit sur une même ligne.
 
 La **photo d'équipe** sert deux fois. En tête de la fiche, elle s'affiche à
 côté du titre et des infos (entraînements, gymnase, tarif), sans être
@@ -331,23 +367,23 @@ et paie sans quitter le site ; seul le paiement par carte passe par HelloAsso.
 est fermée ») mais reste dans l'administration, avec ses commandes.
 
 - **Rouvrir la même vente** (prolonger de quelques jours, rouvrir après une
-  erreur) : changer ses dates et publier.
+  erreur) : changer ses dates, enregistrer, puis « Publier le site ».
 - **Une nouvelle édition** (le tournoi de l'an prochain, le stage des vacances
   suivantes) : ouvrir l'ancienne fiche, **Dupliquer** dans le menu du bouton
-  « Publiée » en haut, puis **changer le nom** et les dates. Le nom fait
+  « Enregistrée » en haut, puis **changer le nom** et les dates. Le nom fait
   l'adresse de la page : deux ventes ne peuvent pas porter le même. La copie
   repart avec ses places au complet et ses propres commandes. Rouvrir
   l'ancienne fiche à la place fausserait les places : le site compte toutes
   les commandes payées d'une fiche, gardées un an.
 
 **Mettre toute la boutique en pause** : *Réglages → Boutique : ouverte ou en
-pause*, éteindre l'interrupteur **Boutique ouverte**, publier. La boutique sort du menu et du
+pause*, éteindre l'interrupteur **Boutique ouverte**, enregistrer, puis « Publier le site ». La boutique sort du menu et du
 pied de page, ses pages annoncent son ouverture prochaine (les liens des
 actus et de l'agenda y mènent toujours), et le serveur refuse toute commande :
 le catalogue qu'il lit est vide. Le champ **En attendant** donne la page
 HelloAsso du club : un bouton « Aller sur HelloAsso » y envoie les visiteurs,
 comme le bouton « S'inscrire » de la page Nous rejoindre. Les ventes ne
-bougent pas : on rallume l'interrupteur, on publie, tout revient.
+bougent pas : on rallume l'interrupteur, on publie le site, tout revient.
 
 **Le montant est toujours recalculé par le serveur** à partir de la fiche :
 modifier un prix dans l'administration s'applique dès la publication suivante.
@@ -384,11 +420,9 @@ formulaires Netlify, comme le formulaire de contact. Pour l'activer :
    Email notification*, formulaire **commande-payee**, et l'adresse du club.
 3. Faire un achat test (le sirop à 1 €) : le mail doit arriver.
 
-> **À laisser éteint avec l'offre gratuite de Netlify.** Chaque envoi de
-> formulaire coûte 1 crédit sur les 300 du mois : une centaine d'adhésions en
-> septembre, c'est une centaine de crédits, soit sept publications du site
-> en moins. Sans la variable, rien n'est envoyé. Voir « Le budget de l'offre
-> gratuite », section 8.
+> **Sans effet sur le budget.** Avec les offres à crédits de Netlify, les
+> envois de formulaire sont gratuits (documentation de Netlify relue le
+> 29 octobre 2026). Sans la variable, rien n'est envoyé.
 
 ### Galerie
 Un **album** par événement : un titre, une date, quelques mots si l'on veut,
@@ -530,9 +564,23 @@ git commit -m "ce que vous avez changé"
 git push            # une fois le dépôt GitHub relié
 ```
 
-Chaque `push` déclenche une nouvelle publication sur Netlify. Les
-modifications faites par les bénévoles depuis `/admin/` sont enregistrées
-automatiquement, sans rien taper.
+Chaque `push` sur `main` déclenche une publication sur Netlify (15 crédits,
+comptés par le garde-fou). Les bénévoles, eux, enregistrent sur la branche
+`preparation`, que « Publier le site » verse dans `main` : un `git pull` avant
+de travailler récupère ce qu'ils ont publié.
+
+**Si « Publier le site » annonce un conflit**, une même fiche a été modifiée
+dans `main` (par le code) et dans `preparation` (par un bénévole). À régler
+une fois sur l'ordinateur :
+
+```bash
+git fetch origin
+git checkout preparation
+git merge origin/main      # corriger les fichiers signalés, puis git add et git commit
+git push origin preparation
+```
+
+Puis « Publier le site » à nouveau.
 
 **N'écrivez jamais `<script is:inline>`.** Astro ne calcule l'empreinte CSP
 que des scripts qu'il traite lui-même : un script `is:inline` serait bloqué
@@ -584,6 +632,13 @@ et les données structurées lues par Google (`src/layouts/Base.astro`).
   Instagram ne dit que « Séniors FFVB » le lundi et le mercredi, sans
   distinguer les masculins des féminines. Les deux fiches portent donc les
   mêmes créneaux. À corriger si les groupes sont séparés.
+- [ ] **Les fiches jeunes garçons et filles** (séparées le 30 octobre 2026)
+  reprennent les créneaux et le niveau de l'ancienne fiche commune, et une
+  photo d'illustration (un match mixte pour les filles) en attendant les
+  vraies photos d'équipe. Seul le niveau des M18 est sûr (poules FFVolley : prénationale
+  garçons, régionale filles). À corriger dans *Équipes* si les M13 ou les M15
+  ne jouent pas au niveau indiqué, ou si garçons et filles ne s'entraînent pas
+  aux mêmes heures.
 - [ ] **L'âge minimum de la section loisir Ufolep**, fixé à 18 ans par
   prudence. On sait désormais que le club a une section Ufolep M18 à part,
   avec sa propre adhésion : le loisir semble bien réservé aux adultes, mais
@@ -597,6 +652,11 @@ et les données structurées lues par Google (`src/layouts/Base.astro`).
 
 ### À fournir par le club
 
+- [ ] **Régler le garde-fou des crédits** à la mise en service (page
+  « Publier le site », section 8) : le jour de remise à zéro, les crédits
+  gardés pour les visites (d'après *Usage & billing → Credit usage
+  breakdown*), et le relevé du jour, puisque le site ne connaît pas les
+  publications d'avant
 - [ ] Redéposer les photos du diaporama **en version d'origine** : celles du
   28 octobre sont passées par WhatsApp (960 à 1500 px) et paraissent floues
 - [x] Brancher la mise à jour du lundi (`BUILD_HOOK_URL`, section 8) : hook
@@ -607,13 +667,14 @@ et les données structurées lues par Google (`src/layouts/Base.astro`).
 - [ ] Remplacer les photos d'équipe et saisir les effectifs réels
 - [ ] Renseigner les encadrants de chaque groupe (tous « À préciser »)
 - [ ] Ajouter les vrais partenaires et leurs logos
-- [ ] **Brancher le paiement de la boutique** (une fois, voir ci-dessous),
-  puis la rouvrir : elle est en pause
+- [ ] **Brancher le paiement de la boutique** (voir ci-dessous) : clé API
+  testée le 29 octobre 2026 ; reste l'achat réel à 1 € après le branchement
+  du domaine, puis la rouvrir : elle est en pause
 - [ ] Donner une date au tournoi Octobre rose dans la boutique (sans date, la
   vente reste ouverte)
 - [ ] Confirmer les dates du tournoi inter-entreprises, de l'AG et du stage
-- [ ] Vérifier les mentions légales et la page Confidentialité (adresse,
-  durée de conservation des messages, fixée à un an)
+- [ ] Saisir les événements de la saison dans l'**Agenda** : la page, dans le
+  menu, est vide (choix de l'audit : la laisser, le club va la remplir)
 - [x] Prendre le nom de domaine : bourges-volleyball.fr, chez OVH
 - [ ] Le brancher (section 1, « Brancher le nom de domaine »)
 
@@ -652,6 +713,9 @@ avec la clé, lit la fiche de l'association, puis prépare un paiement d'essai d
 1 € : son lien ouvre la vraie page de paiement HelloAsso, qu'on ferme sans
 payer. Aucune commande n'est enregistrée, la boutique peut rester en pause.
 Ce test ne couvre ni le paiement lui-même ni la notification (étape 3).
+**Fait le 29 octobre 2026 : test réussi**, clé acceptée et page de paiement
+HelloAsso du club affichée. Reste l'achat réel à 1 €, une fois le domaine
+branché et la boutique rouverte.
 
 Ensuite, **rouvrir la boutique** (elle est en pause depuis le 29 octobre 2026,
 voir « Boutique » partie 2) et **faire aussitôt un achat réel à 1 €** (un sirop
@@ -703,13 +767,27 @@ Netlify `HELLOASSO_API = https://api.helloasso-sandbox.com` avec ses clés.
   menu après Équipes (menu complet au-delà de 1300 px de large)
 - [x] Logo du club sur l'écran d'accueil d'un téléphone (icônes tirées du logo
   d'origine, 1117 px, de l'ancien site Clubeo)
+- [x] Icônes pour tous les systèmes (30 octobre 2026) : `favicon.ico` à la
+  racine (16, 32, 48 px : onglets, favoris, Windows), 96 px pour les résultats
+  Google, `apple-touch-icon` (iPhone, iPad, Mac), manifeste (Android, Chrome,
+  Edge). L'administration a son propre manifeste (`public/admin/admin.webmanifest`) :
+  ajoutée à l'écran d'accueil, elle s'appelle « Admin BVB » et s'ouvre sur
+  `/admin/`. Les tuiles Windows (`browserconfig.xml`) et l'icône d'onglet
+  épinglé de Safari ne servent plus depuis Windows 11 et Safari 12
 - [x] Lundi FFVolley : ne republie que si la fédération a du nouveau
 - [x] Bouton « Tester HelloAsso » sur la page Commandes : vérifie la clé API
   sans rien encaisser
+- [x] Audit du 29 octobre 2026 (sécurité, design, ergonomie, fonctionnalités,
+  réglementaire) : outils mis à jour (8 failles connues corrigées), trois
+  règles de sécurité de plus, points du diaporama assez grands au doigt et
+  bouton pause, petits liens agrandis au toucher, budget Netlify corrigé,
+  geste annuel pour les messages de contact, fichier inutile retiré
 - [x] Boutique en pause tant que le paiement n'est pas branché et testé :
   interrupteur dans *Réglages*, visiteurs renvoyés vers la page HelloAsso du
   club (helloasso.com/associations/bourges-volley, l'adresse des formulaires
   repris de l'ancien site)
+- [x] Dépôt GitHub public vérifié sans aucun secret, et copies d'essai des
+  inconnus bloquées chez Netlify (*Require approval*), le 30 octobre 2026
 
 ## 7. Sécurité : ce qui protège le site, et ce qui reste à surveiller
 
@@ -759,7 +837,19 @@ qui quittent le bureau** (*Identity → l'utilisateur → Delete*).
 - **En-têtes de sécurité** dans `public/_headers` : pas de devinette de type de
   fichier, pas de fuite d'adresse vers les sites tiers, ni caméra ni micro ni
   position, et interdiction d'enfermer le site dans un cadre sur un autre
-  domaine.
+  domaine. Depuis l'audit du 29 octobre 2026, aussi : ni objet embarqué, ni
+  balise `<base>`, ni formulaire qui envoie ses saisies ailleurs que sur le
+  site (`object-src`, `base-uri`, `form-action`). Un compte bénévole piraté ne
+  peut donc pas glisser dans une actu un faux formulaire qui détourne les
+  saisies.
+- **Inscription à l'administration fermée** : sur invitation seulement,
+  vérifié le 29 octobre 2026 (`/.netlify/identity/settings` répond
+  `"disable_signup": true`). La connexion avec un compte Google y est activée :
+  elle ne sert qu'aux personnes déjà invitées.
+- **Outils à jour** : `npm audit` sans aucune faille connue le 29 octobre 2026
+  (Astro 7.4, Vite 8.3.5, sharp 0.35.5). À relancer deux ou trois fois par an ;
+  `npm audit fix` corrige sans changer de version majeure, puis `npm run
+  build` et `npm test` pour vérifier.
 - **Le widget d'identification ne se charge plus pour les visiteurs.** Il ne
   s'active que si l'adresse contient un jeton d'invitation.
 
@@ -780,6 +870,74 @@ qui quittent le bureau** (*Identity → l'utilisateur → Delete*).
   (*Forms → Settings → Spam filters*).
 - **Un numéro de téléphone est publié** en pied de page et sur la page Contact.
   C'est un choix, pas un oubli — mais il change avec le bureau.
+- **Une commande non payée retient ses places 20 minutes.** Quelqu'un de
+  malveillant pourrait donc, en lançant des commandes en rafale, faire
+  paraître un stage complet. Une limite par visiteur (proposée gratuitement par
+  Netlify) a été écartée à l'audit : elle compterait aussi chaque affichage de
+  page et n'empêcherait pas une seule adresse de bloquer des dizaines de
+  places. Si cela arrivait : remettre la boutique en pause (*Réglages*), et les
+  commandes en attente s'effacent d'elles-mêmes.
+- **Tous les comptes de l'administration voient les commandes** (noms, mails,
+  téléphones des acheteurs), choix du club à l'audit du 29 octobre 2026. Un
+  rôle réservé à la boutique reste possible : Netlify Identity sait donner des
+  rôles, et `netlify/functions/commandes.mjs` les vérifierait.
+- **Les anciennes photos reprises de Clubeo** (465, de 2005 à 2021) montrent
+  parfois des mineurs, sans trace de l'accord des parents. La page
+  Confidentialité promet le retrait sur simple demande : à tenir sans délai.
+- **Les mentions légales ne nomment pas le directeur de la publication** :
+  « Le président du Bourges Volley-Ball », choix du club (le nom change avec
+  le bureau). La loi (LCEN, article 6) demande un nom ; le risque est faible
+  pour une association, mais il existe.
+- **L'administration n'est pas couverte par la politique de scripts** (CSP) :
+  Decap ne le supporte pas. Elle repose sur l'empreinte du fichier de Decap et
+  sur l'inscription fermée.
+
+### Le dépôt GitHub est public, et doit le rester
+
+N'importe qui peut lire le code du site et tout son historique sur
+`github.com/bourges-volleyball/bourges-volleyball`. Ce n'est pas un risque :
+**aucun secret n'y est rangé** (vérifié le 30 octobre 2026, historique
+compris). Les clés HelloAsso et l'adresse du hook du lundi sont des variables
+Netlify, les commandes sont dans Netlify Blobs, les messages de contact dans
+Netlify Forms.
+
+- **Pourquoi ne pas le passer en privé** : le dépôt appartient à une
+  organisation GitHub, et l'offre gratuite de Netlify ne publie pas un dépôt
+  privé d'organisation (offre Pro, à partir de 20 $ par mois). Les
+  publications faites depuis l'administration risqueraient en plus de rester
+  « en attente d'approbation ».
+- **La règle** : ne jamais écrire une clé, un mot de passe ou l'adresse du hook
+  dans un fichier du dépôt, ni dans une actu. Si cela arrive, l'effacer ne
+  suffit pas, l'historique la garde : **changer la clé à la source**
+  (HelloAsso : en générer une nouvelle ; hook : le supprimer et en créer un
+  autre dans Netlify), puis mettre à jour la variable.
+- **Une proposition de modification venue d'un inconnu** (*pull request*
+  depuis une copie du dépôt) ne doit pas être approuvée chez Netlify : sa
+  copie d'essai tournerait avec les clés HelloAsso. Netlify la bloque par
+  défaut (*Project configuration → Environment variables → Site policies* :
+  **Require approval**, vérifié le 30 octobre 2026), réglage à laisser tel
+  quel. Si une telle copie apparaît « en attente » dans *Deploys* : **Reject**.
+- **Ce qui est visible en plus du site** : ce guide, et l'adresse mail des
+  personnes qui ont enregistré des modifications.
+- **Une photo retirée du site reste dans l'historique.** Si une famille demande
+  qu'une photo disparaisse vraiment (droit à l'image), il faut aussi la purger
+  de l'historique du dépôt : c'est un travail de développeur, à demander.
+
+### Une fois par an, en septembre : les messages de contact
+
+La page Confidentialité promet que **les messages du formulaire de contact
+sont supprimés au plus tard un an après le dernier échange**. Rien ne le fait
+tout seul (choix de l'audit du 29 octobre 2026 : une suppression automatique
+demanderait de ranger dans Netlify une clé capable de tout modifier). En
+septembre, avec les poules FFVolley :
+
+1. **Netlify**, *Forms* → formulaire **contact** : supprimer les messages de
+   plus d'un an.
+2. **La boîte du club** (Gmail) : rechercher
+   `from:formresponses@netlify.com older_than:1y`, tout sélectionner,
+   supprimer ; de même pour les échanges de plus d'un an qui ont suivi.
+
+Les commandes de la boutique, elles, s'effacent seules (un an).
 
 ---
 
@@ -856,7 +1014,9 @@ un score, un match déplacé, un classement. Les scores du week-end arrivent
 ainsi sans que personne ne publie rien, et une semaine sans match (vacances,
 intersaison), ou déjà à jour parce qu'un bénévole a publié depuis le
 week-end, ne coûte aucun crédit. Une poule injoignable ce matin-là n'est pas
-un changement : elle est comparée le lundi suivant. Pour l'activer :
+un changement : elle est comparée le lundi suivant. Elle s'abstient aussi
+quand le **garde-fou des crédits** (plus bas) dit que le mois est épuisé.
+Pour l'activer :
 
 1. Netlify, *Site configuration → Build & deploy → Build hooks → Add build
    hook*, nommé par exemple « Lundi FFVolley », branche `main`. Copier
@@ -873,8 +1033,9 @@ un changement : elle est comparée le lundi suivant. Pour l'activer :
    n'a suivi l'ajout de la variable.
 
 **Pourquoi pas tous les jours ?** Avec l'offre gratuite de Netlify, chaque
-publication coûte 15 crédits sur 300 par mois, soit une vingtaine de
-publications, modifications des bénévoles comprises. Une par semaine au plus
+publication coûte 15 crédits sur 300 par mois, soit une quinzaine de
+publications une fois la part des visites gardée de côté, celles des
+bénévoles comprises. Une par semaine au plus
 en consomme quatre ou cinq, souvent moins. Le prochain match, lui, avance tout seul dans le
 navigateur des visiteurs, sans publication. Si le club passe à une offre
 payante, il suffit de changer `schedule` dans le fichier (`"@daily"`).
@@ -882,14 +1043,17 @@ payante, il suffit de changer `schedule` dans le fichier (`"@daily"`).
 ### Le budget de l'offre gratuite Netlify
 
 Le club est sur l'offre **gratuite** : **300 crédits par mois**, qui paient
-tout. Tarifs relevés en octobre 2026 (à revérifier sur netlify.com/pricing) :
+tout. Tarifs relus le 29 octobre 2026 dans la documentation de Netlify
+(*How credits work*) :
 
 | Ce qui consomme | Coût | Pour ce site |
 |---|---|---|
-| Une publication du site | 15 crédits | chaque « Publier » de l'administration, chaque mise à jour du code, chaque lundi |
-| La bande passante | 20 crédits par Go | une page pèse 0,2 à 0,5 Mo, un album de galerie environ 3 Mo |
-| Un envoi de formulaire | 1 crédit | chaque message de contact ; chaque alerte de commande si elle est activée |
-| Les fonctions (boutique) | quelques crédits | négligeable |
+| Une publication du site | 15 crédits | chaque « Publier le site » de l'administration, chaque mise à jour du code, chaque lundi qui a du nouveau |
+| Une copie d'essai (*Deploy Preview*, branche) | 0 crédit | une demande de fusion sur GitHub : le site entier à une adresse à part, pour vérifier avant de publier |
+| La bande passante | 20 crédits par Go | une page pèse 0,15 à 0,9 Mo (l'accueil, sur ordinateur), un album de galerie 1 à 2 Mo |
+| Les requêtes des visiteurs | 2 crédits pour 10 000 | une page en demande 8 à 50 (photos comprises) |
+| Les fonctions (boutique, lundi) | 10 crédits par Go-heure | négligeable |
+| Un envoi de formulaire | gratuit | messages de contact, alertes de commande |
 
 **Les publications sont presque tout le budget** : 300 crédits, c'est
 **vingt publications par mois** si rien d'autre ne consomme. Le lundi en
@@ -897,18 +1061,59 @@ prend quatre ou cinq au plus en pleine saison, aucune les semaines sans
 nouveauté FFVolley. Il en reste une quinzaine pour les bénévoles et les
 évolutions du site.
 
-**Quand les crédits sont épuisés**, Netlify bloque les publications jusqu'au
-mois suivant, et peut mettre le site entier en pause. D'où quatre règles :
+**Quand les crédits sont épuisés**, Netlify met le site entier en pause :
+il est injoignable jusqu'au début du mois suivant (offre gratuite, sans achat
+de crédits possible). D'où le garde-fou ci-dessous, et ces règles :
 
-- **regrouper les modifications** avant de cliquer sur « Publier » (un album
-  complet, une vente complète, pas photo par photo) ;
+- **regrouper les modifications** : enregistrer tout ce qu'on veut, puis un
+  seul « Publier le site » ;
 - **ajouter les photos depuis le formulaire** du contenu (« Choisir une
-  image ») : elles partent avec lui, en une seule publication. Le bouton
-  « Media » de Decap, qui enregistrait chaque photo seule, a été retiré de la
+  image ») : elles partent avec lui. Le bouton « Media » de Decap, qui
+  enregistre une photo seule, sans contenu qui l'affiche, a été retiré de la
   barre du haut (`public/admin/index.html`) ;
-- **regarder la jauge** de temps en temps : Netlify, *Team → Usage & billing* ;
-- **laisser l'alerte de commande éteinte**, et ne pas passer la mise à jour
-  FFVolley à tous les jours.
+- **regarder la jauge** de temps en temps : Netlify, *Team → Usage & billing*,
+  et reporter le chiffre sur la page « Publier le site » ;
+- **essayer les grosses modifications du code sur une copie d'essai**
+  (demande de fusion sur GitHub), gratuite, plutôt qu'en publiant ;
+- **ne pas passer la mise à jour FFVolley à tous les jours.**
+
+### Le garde-fou des crédits
+
+Netlify ne donne pas le solde de crédits aux sites. Le site compte donc
+lui-même ses publications : Netlify prévient la fonction
+`netlify/functions/deploy-succeeded.mjs` après chaque mise en ligne réussie
+(appel signé, impossible à imiter de l'extérieur), qui la note dans Netlify
+Blobs (magasin « credits »). Chaque publication de production compte
+15 crédits, d'où qu'elle vienne : « Publier le site », lundi FFVolley, `push`
+du code, *Trigger deploy* sur Netlify. Les copies d'essai, gratuites, ne
+comptent pas.
+
+**La règle** (`netlify/lib/credits.mjs`, vérifiée par `npm test`) : une
+publication n'est permise que si, après elle, il reste encore les **crédits
+gardés pour les visites** (60 par défaut). Sinon le bouton « Publier le site »
+devient orange, la page explique pourquoi et jusqu'à quand, et **la mise à
+jour du lundi s'abstient aussi**. Les modifications restent enregistrées et
+partiront au début du cycle suivant. Le site, lui, reste en ligne.
+
+**Trois réglages**, sur la page « Publier le site » (rangés dans Netlify Blobs
+et non dans le dépôt, pour rester modifiables quand les publications sont
+bloquées) :
+
+- **le jour de remise à zéro** : Netlify, *Usage & billing*, le jour où
+  commence la période en cours. Tant qu'il n'est pas donné, le compte part du
+  1er du mois ;
+- **les crédits gardés pour les visites** : ce que les visites (bande passante,
+  requêtes, fonctions) ont coûté le mois précédent, *Usage & billing → Credit
+  usage breakdown*, plus une marge ;
+- **le relevé** (facultatif) : le chiffre que Netlify affiche ce jour-là,
+  visites comprises. Il remplace l'estimation jusqu'à la fin du cycle, et les
+  publications suivantes s'y ajoutent. C'est aussi ce qu'il faut faire à la
+  mise en service : le site ne connaît pas les publications d'avant.
+
+**Limite** : c'est une estimation. Les visites au-delà de la réserve (un pic
+de trafic) ne sont pas vues : un relevé de temps en temps la recale. Le
+garde-fou empêche le site de se mettre lui-même en pause par ses
+publications ; il ne protège pas d'un afflux de visiteurs.
 
 Si le budget devient trop juste : les matchs pourraient être lus en direct
 par le navigateur des visiteurs, sans aucune publication le lundi. C'est une

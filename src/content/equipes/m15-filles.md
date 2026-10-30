@@ -1,9 +1,9 @@
 ---
-nom: "M13"
-ordre: 1
-ageMin: 11
-ageMax: 12
-niveau: "Championnat départemental · filles et garçons"
+nom: "M15 filles"
+ordre: 4
+ageMin: 13
+ageMax: 14
+niveau: "Championnat régional"
 creneaux:
   - jour: "Jeudi"
     horaire: "17h30 – 19h00"

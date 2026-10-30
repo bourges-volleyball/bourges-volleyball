@@ -1,9 +1,9 @@
 ---
-nom: "M18"
-ordre: 3
+nom: "M18 filles"
+ordre: 6
 ageMin: 15
 ageMax: 17
-niveau: "Championnat régional · filles et garçons"
+niveau: "Régionale"
 creneaux:
   - jour: "Jeudi"
     horaire: "19h00 – 20h30"
@@ -11,5 +11,5 @@ creneaux:
     horaire: "15h00 – 16h30"
 gymnase: "Gymnase Léo Lagrange"
 tarif: 125
-photo: "../../images/equipes/equipe-1.jpg"
+photo: "../../images/equipes/equipe-3.jpg"
 ---

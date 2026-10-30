@@ -202,7 +202,8 @@ const t = (await getEntry("pageAccueil", "accueil"))!.data;
   .dots {
     position: absolute;
     z-index: 4;
-    bottom: 1.4rem;
+    /* Les boutons font 24 px de haut, le trait visible 4 px en leur milieu */
+    bottom: calc(1.4rem - 10px);
     /* Alignees sur le bord droit du contenu du hero, pas sur celui de
        l'ecran : sinon l'ecart avec le panneau se creuse avec la largeur. */
     left: 50%;
@@ -216,20 +217,57 @@ const t = (await getEntry("pageAccueil", "accueil"))!.data;
     justify-content: flex-end;
     gap: 0.45rem;
   }
+  /* Le trait visible fait 4 px, le bouton 24 px de haut : assez grand pour
+     le doigt (24 px au moins), sans changer l'apparence. */
   .dots :global(button) {
+    position: relative;
     width: 34px;
-    height: 4px;
+    height: 24px;
     border: 0;
     padding: 0;
     cursor: pointer;
+    background: none;
+  }
+  .dots :global(button:not(.pause))::before {
+    content: "";
+    position: absolute;
+    inset: 10px 0;
     background: rgba(255, 255, 255, 0.32);
     transition: background 0.15s;
   }
-  .dots :global(button[aria-current="true"]) {
+  .dots :global(button[aria-current="true"])::before {
     background: var(--signal);
   }
-  .dots :global(button:hover) {
+  .dots :global(button:not(.pause):hover)::before {
     background: rgba(255, 255, 255, 0.6);
+  }
+  /* Pause : deux barres ; en pause, un triangle de lecture */
+  .dots :global(.pause) {
+    width: 24px;
+    margin-right: 0.3rem;
+  }
+  .dots :global(.pause)::before,
+  .dots :global(.pause)::after {
+    content: "";
+    position: absolute;
+    top: 7px;
+    width: 3px;
+    height: 10px;
+    background: rgba(255, 255, 255, 0.6);
+  }
+  .dots :global(.pause)::before { left: 8px; }
+  .dots :global(.pause)::after { left: 13px; }
+  .dots :global(.pause:hover)::before,
+  .dots :global(.pause:hover)::after { background: var(--fg); }
+  .dots :global(.pause[aria-pressed="true"])::after { display: none; }
+  .dots :global(.pause[aria-pressed="true"])::before {
+    left: 9px;
+    width: 0;
+    height: 0;
+    background: none;
+    border-style: solid;
+    border-width: 5px 0 5px 8px;
+    border-color: transparent transparent transparent rgba(255, 255, 255, 0.6);
   }
 
 
@@ -323,7 +361,9 @@ const t = (await getEntry("pageAccueil", "accueil"))!.data;
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--signal);
-    padding-top: 0.2rem;
+    /* 28 px de haut au doigt ; la marge negative garde la mise en page */
+    padding: calc(0.2rem + 4px) 0 4px;
+    margin: -4px 0;
   }
 </style>
 
@@ -334,6 +374,26 @@ const t = (await getEntry("pageAccueil", "accueil"))!.data;
     const doux = matchMedia("(prefers-reduced-motion: reduce)");
     let index = 0;
     let minuteur: ReturnType<typeof setInterval> | null = null;
+    let enPause = false;
+
+    // Un defilement automatique doit pouvoir s'arreter (accessibilite) :
+    // bouton pause, inutile si le visiteur a coupe les animations
+    if (!doux.matches) {
+      const pause = document.createElement("button");
+      pause.type = "button";
+      pause.className = "pause";
+      const majPause = () => {
+        pause.setAttribute("aria-pressed", String(enPause));
+        pause.setAttribute("aria-label", enPause ? "Reprendre le défilement des photos" : "Mettre en pause le défilement des photos");
+      };
+      pause.addEventListener("click", () => {
+        enPause = !enPause;
+        majPause();
+        relancer();
+      });
+      majPause();
+      dots.appendChild(pause);
+    }
 
     slides.forEach((_, i) => {
       const b = document.createElement("button");
@@ -349,13 +409,14 @@ const t = (await getEntry("pageAccueil", "accueil"))!.data;
     function afficher(i: number) {
       index = (i + slides.length) % slides.length;
       slides.forEach((s, n) => s.classList.toggle("is-active", n === index));
-      [...dots!.children].forEach((d, n) =>
+      [...dots!.querySelectorAll("button:not(.pause)")].forEach((d, n) =>
         d.setAttribute("aria-current", n === index ? "true" : "false"),
       );
     }
     function relancer() {
       if (minuteur) clearInterval(minuteur);
-      if (!doux.matches) minuteur = setInterval(() => afficher(index + 1), 5500);
+      minuteur = null;
+      if (!doux.matches && !enPause) minuteur = setInterval(() => afficher(index + 1), 5500);
     }
 
     afficher(0);

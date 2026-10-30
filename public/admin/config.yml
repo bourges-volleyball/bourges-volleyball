@@ -4,7 +4,19 @@
 
 backend:
   name: git-gateway
-  branch: main
+  # Les enregistrements vont sur la branche « preparation », pas sur le site :
+  # rien ne change en ligne tant que personne n'a clique « Publier le site »
+  # (/admin/publier.html, netlify/functions/publier.mjs), qui verse d'un coup
+  # toutes les modifications dans main. Netlify ne met en ligne que main.
+  branch: preparation
+  # Ces messages sont la liste « en attente » de la page Publier le site.
+  # {{collection}} est le label_singular (« une actualité »).
+  commit_messages:
+    create: "Ajout : {{collection}} « {{slug}} »"
+    update: "Modification : {{collection}} « {{slug}} »"
+    delete: "Suppression : {{collection}} « {{slug}} »"
+    uploadMedia: "Ajout du fichier « {{path}} »"
+    deleteMedia: "Suppression du fichier « {{path}} »"
 
 # Permet d'essayer l'administration sur son ordinateur, sans deployer.
 # Decap ignore ce reglage des que le site n'est plus sur localhost :

@@ -1,6 +1,6 @@
 ---
 nom: Seniors masculins
-ordre: 4
+ordre: 7
 ageMin: 18
 ageMax: 99
 niveau: Prénationale

@@ -1,9 +1,9 @@
 ---
-nom: "M15"
-ordre: 2
+nom: "M15 garçons"
+ordre: 3
 ageMin: 13
 ageMax: 14
-niveau: "Championnat régional · filles et garçons"
+niveau: "Championnat régional"
 creneaux:
   - jour: "Jeudi"
     horaire: "17h30 – 19h00"

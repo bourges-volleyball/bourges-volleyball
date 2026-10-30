@@ -5,7 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="robots" content="noindex" />
 <title>Guide de l'administration - Bourges Volley-Ball</title>
-<link rel="icon" href="/images/logo-bvb.png" />
+<link rel="icon" href="/favicon.ico" sizes="48x48" />
+<link rel="icon" href="/icons/favicon-96.png" type="image/png" sizes="96x96" />
+<!-- Ajoutee a l'ecran d'accueil d'un telephone, l'administration garde le
+     logo du club et s'ouvre sur /admin/ (et non sur le site) -->
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+<link rel="manifest" href="/admin/admin.webmanifest" />
+<meta name="apple-mobile-web-app-title" content="Admin BVB" />
+<meta name="theme-color" content="#0D0E11" />
 <!-- Guide des benevoles, aux couleurs du site (memes polices et couleurs que
      src/styles/global.css). Le PDF a cote (guide-administration-bvb.pdf) est
      l'impression de cette page : apres une modification, le regenerer avec
@@ -142,7 +149,7 @@ td{color:var(--fg-2)}
     <li><a href="#comprendre">Comment marche le site</a></li>
     <li><a href="#connexion">Se connecter</a></li>
     <li><a href="#rubriques">Les rubriques</a></li>
-    <li><a href="#publier">Publier, modifier, supprimer</a></li>
+    <li><a href="#publier">Enregistrer, publier, supprimer</a></li>
     <li><a href="#actus">Les actualités</a></li>
     <li><a href="#photos">Les photos de l'accueil</a></li>
     <li><a href="#agenda">L'agenda</a></li>
@@ -157,11 +164,11 @@ td{color:var(--fg-2)}
 <section id="comprendre" class="wrap">
   <p class="eyebrow">01</p>
   <h2>Comment marche le site</h2>
-  <p>Le site n'a pas de base de données à surveiller ni de serveur à mettre à jour. Chaque fois que vous publiez quelque chose, le site entier est reconstruit en une ou deux minutes, puis mis en ligne.</p>
+  <p>Le site n'a pas de base de données à surveiller ni de serveur à mettre à jour. Vous enregistrez autant de modifications que vous voulez, sans rien changer en ligne ; quand tout est prêt, un bouton publie le site : il est reconstruit en une ou deux minutes, puis mis en ligne.</p>
   <ol class="etapes">
     <li><b>1</b><span>Vous écrivez</span><small>dans l'administration, depuis un ordinateur ou un téléphone.</small></li>
-    <li><b>2</b><span>Vous publiez</span><small>la modification est enregistrée et gardée en mémoire : on peut toujours revenir en arrière.</small></li>
-    <li><b>3</b><span>Le site se reconstruit</span><small>chez l'hébergeur, Netlify. Comptez une à deux minutes.</small></li>
+    <li><b>2</b><span>Vous enregistrez</span><small>la modification est gardée de côté, pas encore sur le site. On peut en enregistrer plusieurs, dans plusieurs rubriques.</small></li>
+    <li><b>3</b><span>Vous publiez le site</span><small>bouton vert <strong>Publier le site</strong>, en haut : tout part d'un coup. Comptez une à deux minutes.</small></li>
     <li><b>4</b><span>C'est en ligne</span><small>rechargez la page du site pour voir le changement.</small></li>
   </ol>
 
@@ -176,7 +183,7 @@ td{color:var(--fg-2)}
 
   <div class="note">
     <p><b>Bon à savoir</b></p>
-    <p>L'hébergement gratuit permet une vingtaine de publications par mois, mise à jour du lundi comprise. Préparez plusieurs changements avant de publier plutôt que de publier dix fois une virgule. Les photos s'ajoutent depuis le formulaire, avec <strong>Choisir une image</strong> : elles partent avec le contenu, en une seule publication. C'est pour cela qu'il n'y a pas de bouton « Media » en haut : une photo envoyée par là était publiée seule.</p>
+    <p>L'hébergement gratuit permet une quinzaine de publications par mois, mise à jour du lundi comprise (elle ne publie que les semaines où la FFVolley a du nouveau). Enregistrer est gratuit : enregistrez tout ce que vous voulez, puis publiez le site une fois. Quand les crédits du mois sont épuisés, le bouton <strong>Publier le site</strong> devient orange et refuse de publier, pour que le site ne soit pas coupé : vos modifications attendent le mois suivant. Les photos s'ajoutent depuis le formulaire, avec <strong>Choisir une image</strong> : elles partent avec le contenu. Il n'y a pas de bouton « Media » en haut : une photo envoyée par là serait rangée seule, sans contenu qui l'affiche.</p>
   </div>
 </section>
 
@@ -197,8 +204,10 @@ td{color:var(--fg-2)}
   <p>Sur la fenêtre de connexion, cliquez sur « Forgot password? » et suivez le lien reçu par e-mail.</p>
   <h3>Message « Git Gateway Error »</h3>
   <p>Votre ancienne connexion est restée en mémoire dans le navigateur. Ouvrez l'administration dans une <strong>fenêtre de navigation privée</strong> et reconnectez-vous, ou videz le cache du navigateur.</p>
-  <h3>Le guide, à tout moment</h3>
-  <p>Une fois connecté, le bouton vert <strong>Guide</strong>, en haut à droite de l'administration, rouvre cette page. Le bouton <strong>Commandes</strong>, juste à côté, ouvre les commandes de la boutique.</p>
+  <h3>Les boutons du haut</h3>
+  <p>Une fois connecté, en haut de l'administration : le bouton vert <strong>Publier le site</strong> (voir « Enregistrer, publier, supprimer »), <strong>Commandes</strong>, qui ouvre les commandes de la boutique, et <strong>Guide</strong>, qui rouvre cette page. Sur téléphone, Commandes et Guide se réduisent à leur pastille, € et ?.</p>
+  <h3>L'administration sur l'écran d'accueil</h3>
+  <p>Sur téléphone, ouvrez <span class="adresse">www.bourges-volleyball.fr/admin/</span>, puis : sur iPhone, bouton <strong>Partager</strong>, <strong>Sur l'écran d'accueil</strong> ; sur Android, menu <strong>⋮</strong>, <strong>Ajouter à l'écran d'accueil</strong>. Le raccourci « Admin BVB » porte le logo du club et ouvre directement l'administration.</p>
 </section>
 
 <section id="rubriques" class="wrap">
@@ -229,18 +238,19 @@ td{color:var(--fg-2)}
 
 <section id="publier" class="wrap">
   <p class="eyebrow">04</p>
-  <h2>Publier, modifier, supprimer</h2>
+  <h2>Enregistrer, publier, supprimer</h2>
   <p>Toutes les rubriques fonctionnent de la même façon.</p>
   <ul>
     <li><strong>Ajouter</strong> : bouton foncé en haut de la rubrique (« + une actualité », « + une vente »…).</li>
     <li><strong>Modifier</strong> : cliquez sur l'élément dans la liste.</li>
-    <li><strong>Publier</strong> : bouton <strong>Publier</strong> en haut, puis <strong>Publier maintenant</strong>. Le site est à jour une à deux minutes plus tard.</li>
-    <li><strong>Supprimer</strong> : bouton <strong>Supprimer l'entrée</strong> en haut d'un élément ouvert.</li>
+    <li><strong>Enregistrer</strong> : bouton <strong>Enregistrer</strong> en haut, puis <strong>Enregistrer maintenant</strong>. La modification est gardée, mais le site ne change pas encore.</li>
+    <li><strong>Supprimer</strong> : bouton <strong>Supprimer l'entrée</strong> en haut d'un élément ouvert. Elle quitte le site à la prochaine publication.</li>
+    <li><strong>Publier le site</strong> : bouton vert en haut de l'administration, avec le nombre de modifications en attente. Il ouvre une page qui les liste (quoi, qui, quand) ; le bouton <strong>Publier le site</strong> de cette page les met toutes en ligne. Le site est à jour une à deux minutes plus tard.</li>
   </ul>
   <p>Le formulaire est à gauche, l'<strong>aperçu</strong> à droite : il montre à peu près ce que verront les visiteurs. Sous chaque champ, une petite phrase grise explique quoi y mettre.</p>
   <div class="note">
     <p><b>Pas de panique</b></p>
-    <p>Tant que vous n'avez pas cliqué sur Publier, rien ne change sur le site. Et ce qui est publié reste enregistré : une erreur se rattrape, même une suppression.</p>
+    <p>Tant que personne n'a cliqué sur <strong>Publier le site</strong>, rien ne change en ligne. Et tout ce qui est enregistré est gardé en mémoire : une erreur se rattrape, même une suppression. Attention, le bouton publie <strong>tout</strong> ce qui attend, y compris ce qu'un autre bénévole a enregistré : jetez un œil à la liste avant.</p>
   </div>
   <p class="discret">Sur téléphone, l'aperçu est masqué pour laisser la place au formulaire, et le bouton « Ajout rapide » aussi : chaque rubrique garde son bouton « + … ». Tout le reste fonctionne, sur téléphone comme sur tablette.</p>
 </section>
@@ -258,7 +268,7 @@ td{color:var(--fg-2)}
     <li><strong>Résumé</strong> : deux lignes, affichées sous le titre et sur l'accueil.</li>
     <li><strong>Photo de une</strong> : en largeur, 1200 px au moins. Pour une affiche (portrait ou carrée), cochez <strong>C'est une affiche</strong> : elle s'affichera en entier.</li>
     <li><strong>Autres photos</strong> (facultatif) : jusqu'à 12 photos, en grille sous le texte, qui s'ouvrent en grand d'un clic. Idéal pour les résultats du week-end avec les photos d'équipe. Sans photo de une, la première sert de vignette dans la liste des actus. Au-delà de 12 photos, faites plutôt un album dans la Galerie.</li>
-    <li><strong>Brouillon</strong> : cochée, l'actualité est enregistrée mais n'apparaît pas sur le site.</li>
+    <li><strong>Brouillon</strong> : cochée, l'actualité reste hors du site même quand quelqu'un publie le site. Pratique pour un article préparé sur plusieurs jours.</li>
     <li><strong>Texte</strong> : le corps de l'article. Les boutons au-dessus du champ mettent en gras, ajoutent un lien, une liste ou un tableau.</li>
   </ul>
 </section>
@@ -310,7 +320,7 @@ td{color:var(--fg-2)}
   </ol>
   <div class="note">
     <p><b>Le nom de l'équipe compte</b></p>
-    <p>Écrivez-le toujours de la même façon (par exemple « Ufolep ») : c'est lui qui range le match dans le bon onglet de la page Matchs.</p>
+    <p>Écrivez-le toujours de la même façon (par exemple « Ufolep ») : c'est lui qui range le match dans le bon onglet de la page Matchs. Écrit exactement comme le nom d'une fiche Équipes (« M15 filles »), le match s'affiche aussi sur la fiche de cette équipe.</p>
   </div>
   <h3>Chaque début de saison</h3>
   <p>En septembre, quand la FFVolley publie les poules de la nouvelle saison, il faut dire au site où trouver chaque équipe : une équipe qui monte ou qui descend change de poule, et l'adresse change avec la saison.</p>
@@ -318,7 +328,7 @@ td{color:var(--fg-2)}
     <li>Sur <span class="adresse">ffvbbeach.org</span>, ouvrez les résultats de la ligue (ou de la fédération pour une équipe en national), puis le <strong>calendrier de la poule</strong> de l'équipe.</li>
     <li>Copiez l'adresse de cette page, dans la barre d'adresse du navigateur. Elle ressemble à <span class="adresse">…vbspo_calendrier.php?saison=2027/2028&amp;codent=LICE&amp;poule=PNM</span></li>
     <li>Dans l'administration, rubrique <strong>Réglages</strong>, ouvrez <strong>Matchs FFVolley : saison et poules</strong> et collez l'adresse dans la ligne de l'équipe. Une nouvelle équipe engagée ? « Ajouter une équipe ». Une équipe qui ne joue plus en FFVolley ? Supprimez sa ligne.</li>
-    <li>Publiez : deux minutes plus tard, la page Matchs montre la nouvelle saison.</li>
+    <li>Enregistrez, puis <strong>Publier le site</strong> : deux minutes plus tard, la page Matchs montre la nouvelle saison.</li>
   </ol>
 </section>
 
@@ -360,11 +370,11 @@ td{color:var(--fg-2)}
   <h3>Une vente terminée</h3>
   <p>Le soir du dernier jour pour commander, la vente disparaît de la boutique, mais elle reste dans l'administration avec ses commandes.</p>
   <ul>
-    <li><strong>Rouvrir la même vente</strong> (la prolonger de quelques jours) : changez ses dates et publiez.</li>
-    <li><strong>Une nouvelle édition</strong> (le tournoi de l'an prochain, le stage des prochaines vacances) : ouvrez l'ancienne vente, cliquez sur le bouton <strong>Publiée</strong> en haut, puis <strong>Dupliquer</strong>, puis <strong>changez le nom</strong> et les dates. La copie repart avec toutes ses places et ses propres commandes. Ne rouvrez pas l'ancienne : ses commandes de l'an passé compteraient encore dans les places.</li>
+    <li><strong>Rouvrir la même vente</strong> (la prolonger de quelques jours) : changez ses dates, enregistrez et publiez le site.</li>
+    <li><strong>Une nouvelle édition</strong> (le tournoi de l'an prochain, le stage des prochaines vacances) : ouvrez l'ancienne vente, cliquez sur le bouton <strong>Enregistrée</strong> en haut, puis <strong>Dupliquer</strong>, puis <strong>changez le nom</strong> et les dates. La copie repart avec toutes ses places et ses propres commandes. Ne rouvrez pas l'ancienne : ses commandes de l'an passé compteraient encore dans les places.</li>
   </ul>
   <h3>Mettre la boutique en pause</h3>
-  <p>Rubrique <strong>Réglages</strong>, <strong>Boutique : ouverte ou en pause</strong> : éteignez l'interrupteur <strong>Boutique ouverte</strong> et publiez. La boutique sort du menu, ses pages annoncent « bientôt » et plus aucune commande n'est possible. Le champ <strong>En attendant</strong> envoie les visiteurs sur la page HelloAsso du club. Les ventes ne bougent pas : rallumez l'interrupteur et publiez, tout revient.</p>
+  <p>Rubrique <strong>Réglages</strong>, <strong>Boutique : ouverte ou en pause</strong> : éteignez l'interrupteur <strong>Boutique ouverte</strong>, enregistrez et publiez le site. La boutique sort du menu, ses pages annoncent « bientôt » et plus aucune commande n'est possible. Le champ <strong>En attendant</strong> envoie les visiteurs sur la page HelloAsso du club. Les ventes ne bougent pas : rallumez l'interrupteur et publiez le site, tout revient.</p>
   <div class="attention">
     <p><b>Une vente, un seul endroit</b></p>
     <p>Quand une vente est sur le site et la boutique ouverte, fermez le formulaire HelloAsso correspondant : sinon on peut commander des deux côtés, et les places d'un stage seraient vendues deux fois. Pendant la pause, au contraire, laissez-les ouverts : c'est là que le site envoie les visiteurs.</p>
@@ -399,7 +409,7 @@ td{color:var(--fg-2)}
   <p class="eyebrow">11</p>
   <h2>Équipes, partenaires, textes</h2>
   <ul>
-    <li><strong>Équipes</strong> : en début de saison, mettez à jour les créneaux, le coach, le tarif et la photo. L'effectif (joueurs, postes, numéros) est facultatif.</li>
+    <li><strong>Équipes</strong> : en début de saison, mettez à jour les créneaux, le coach, le tarif et la photo. L'effectif (joueurs, postes, numéros) est facultatif. Les jeunes ont une fiche pour les garçons et une pour les filles (M13, M15, M18) ; deux groupes qui s'entraînent ensemble ont chacun les mêmes créneaux, et le Planning les réunit sur une ligne.</li>
     <li><strong>Créneaux</strong> : choisissez le jour dans la liste et écrivez l'horaire sous la forme <code>20h00 – 22h00</code>. Ils s'affichent sur la fiche de l'équipe, sur la page Nous rejoindre et sur la page <strong>Planning</strong>, qui montre toute la semaine du club. Remplissez <strong>Gymnase ce jour-là</strong> seulement si ce créneau n'a pas lieu dans le gymnase habituel de l'équipe.</li>
     <li><strong>Photo d'équipe</strong> : une photo de groupe, en largeur de préférence, 1600 px au moins. Elle s'affiche en tête de la fiche, à côté des infos de l'équipe. Une photo presque carrée est légèrement recadrée (un peu de plafond et de sol en moins) ; les joueurs restent toujours visibles.</li>
     <li><strong>Partenaires</strong> : nom, niveau (principal, officiel, institutionnel), lien et logo. Un logo en PNG à fond transparent rend mieux.</li>
@@ -412,11 +422,12 @@ td{color:var(--fg-2)}
   <p class="eyebrow">12</p>
   <h2>Les bons réflexes</h2>
   <ul>
-    <li><strong>Regroupez vos modifications</strong> avant de publier : une vingtaine de publications par mois, pas plus.</li>
+    <li><strong>Enregistrez, puis publiez le site une fois</strong> : une quinzaine de publications par mois, pas plus. Si le bouton est orange, les crédits du mois sont épuisés : vos modifications attendent, le site reste en ligne.</li>
     <li><strong>Des photos d'origine</strong>, jamais passées par WhatsApp ou Messenger.</li>
     <li><strong>Demandez l'accord</strong> avant de publier la photo ou le nom d'un enfant.</li>
     <li><strong>Pas de données personnelles</strong> dans une actualité : ni téléphone ni adresse de particulier.</li>
     <li><strong>Vérifiez sur le site</strong> deux minutes après avoir publié.</li>
+    <li><strong>Chaque septembre</strong>, effacez les messages de contact de plus d'un an, dans Netlify (<em>Forms</em>, formulaire <em>contact</em>) et dans la boîte mail du club. C'est la promesse faite aux visiteurs sur la page Confidentialité. Les commandes, elles, s'effacent seules.</li>
     <li><strong>Un doute, un bug ?</strong> Prévenez la personne qui s'occupe du site avant de tenter une réparation.</li>
   </ul>
 </section>

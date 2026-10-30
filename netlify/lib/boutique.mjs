@@ -130,14 +130,16 @@ export function verifier(campagne, demande, restantes = {}, maintenant = Date.no
 
 export const store = () => getStore({ name: "commandes", consistency: "strong" });
 
-/** Un benevole connecte a l'administration : son jeton Netlify Identity,
- *  que l'on fait verifier par Netlify lui-meme. */
-export async function benevoleConnecte(req) {
+/** Le benevole connecte a l'administration (null sinon) : son jeton Netlify
+ *  Identity, que l'on fait verifier par Netlify lui-meme. */
+export async function benevole(req) {
   const qui = await fetch(`${new URL(req.url).origin}/.netlify/identity/user`, {
     headers: { authorization: req.headers.get("authorization") ?? "" },
   });
-  return qui.ok;
+  return qui.ok ? qui.json() : null;
 }
+
+export const benevoleConnecte = async (req) => (await benevole(req)) != null;
 
 /** Le catalogue tel que publie par le site (src/pages/boutique/catalogue.json.ts). */
 export async function catalogue(origine) {
@@ -220,8 +222,8 @@ export async function helloasso(chemin, corps) {
 /* Alerte au club : une commande vient d'etre payee. Passe par un formulaire
    Netlify cache (« commande-payee », dans src/pages/boutique/paiement.astro) :
    Netlify envoie chaque envoi par mail aux adresses choisies dans
-   Forms > Form notifications. Seulement si ALERTE_COMMANDES vaut « oui » :
-   selon l'offre Netlify, un envoi de formulaire peut consommer des credits.
+   Forms > Form notifications. Seulement si ALERTE_COMMANDES vaut « oui »
+   (les envois de formulaire sont gratuits avec les offres a credits).
    Ni nom ni adresse : le detail se lit sur la page Commandes. */
 export async function alerter(c, site) {
   if (process.env.ALERTE_COMMANDES !== "oui" || !site) return;
