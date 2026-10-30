@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Publier le site - Bourges Volley-Ball</title>
+    <link rel="icon" href="/images/logo-bvb.png" />
+    <!-- Ce qui a ete enregistre dans l'administration sans etre encore en
+         ligne, et le bouton qui le publie, si les credits Netlify du mois le
+         permettent. Tout passe par netlify/functions/publier.mjs, qui verifie
+         la connexion (Netlify Identity). Meme presentation que
+         /admin/commandes.html. -->
+    <style>
+    <style>
+      @font-face{font-family:"Barlow";font-weight:400;font-display:swap;src:url(/admin/polices/barlow-latin-400-normal.woff2) format("woff2")}
+      @font-face{font-family:"Barlow";font-weight:500;font-display:swap;src:url(/admin/polices/barlow-latin-500-normal.woff2) format("woff2")}
+      @font-face{font-family:"Barlow";font-weight:600;font-display:swap;src:url(/admin/polices/barlow-latin-600-normal.woff2) format("woff2")}
+      @font-face{font-family:"Barlow";font-weight:700;font-display:swap;src:url(/admin/polices/barlow-latin-700-normal.woff2) format("woff2")}
+      @font-face{font-family:"Barlow Condensed";font-weight:800;font-display:swap;src:url(/admin/polices/barlow-condensed-latin-800-normal.woff2) format("woff2")}
+      @font-face{font-family:"Barlow Semi Condensed";font-weight:600;font-display:swap;src:url(/admin/polices/barlow-semi-condensed-latin-600-normal.woff2) format("woff2")}
+
+      :root {
+        --noir: #0d0e11; --noir-2: #15171c; --noir-3: #1d2027; --hair: #282c34;
+        --fg: #f4f4f2; --fg-2: #9a9fa9; --signal: #b4e600; --signal-fonce: #96c200; --sur-signal: #101114;
+        --pad: clamp(1.15rem, 4vw, 3.5rem); --s0: .75rem; --s2: 1.18rem;
+        color-scheme: dark;
+      }
+      * { box-sizing: border-box; }
+      [hidden] { display: none !important; }
+      body {
+        margin: 0; background: var(--noir); color: var(--fg);
+        font-family: "Barlow", "Helvetica Neue", Arial, sans-serif; font-size: 1rem; line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+      h1, h2, h3 {
+        font-family: "Barlow Condensed", "Arial Narrow", sans-serif; font-weight: 800;
+        text-transform: uppercase; line-height: .92; letter-spacing: .005em; margin: 0;
+      }
+      a { color: inherit; }
+      :focus-visible { outline: 3px solid var(--signal); outline-offset: 3px; }
+      .wrap { max-width: 1180px; margin-inline: auto; padding-inline: var(--pad); }
+      .eyebrow, .etiquette, .compte {
+        font-family: "Barlow Semi Condensed", sans-serif; font-weight: 600; font-size: var(--s0);
+        letter-spacing: .16em; text-transform: uppercase; color: var(--fg-2); margin: 0;
+      }
+
+      /* En-tete du site */
+      header.site {
+        position: sticky; top: 0; z-index: 30; background: rgba(13, 14, 17, .94);
+        border-bottom: 1px solid var(--hair); backdrop-filter: blur(8px);
+      }
+      .bar { display: flex; align-items: center; gap: 1rem; padding-block: .6rem; }
+      .mark { display: flex; align-items: center; gap: .6rem; text-decoration: none; margin-right: auto; }
+      .mark img { width: 42px; height: 42px; filter: invert(1); mix-blend-mode: screen; flex: none; }
+      .mark span { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 1.3rem; text-transform: uppercase; line-height: .95; }
+      .nav { display: flex; gap: 1.25rem; }
+      .nav a {
+        text-decoration: none; font-family: "Barlow Semi Condensed", sans-serif; font-weight: 600;
+        font-size: .88rem; letter-spacing: .09em; text-transform: uppercase; padding-block: .35rem;
+        border-bottom: 3px solid transparent; transition: border-color .12s, color .12s; white-space: nowrap;
+      }
+      .nav a:hover { border-bottom-color: var(--signal); color: var(--signal); }
+      @media (max-width: 560px) { .nav { gap: .8rem; } .nav a { font-size: .78rem; } .mark span { display: none; } }
+
+      /* Boutons : l'oblique du site */
+      .btn {
+        text-decoration: none; font-family: "Barlow Semi Condensed", sans-serif; font-weight: 600;
+        font-size: .92rem; letter-spacing: .09em; text-transform: uppercase; cursor: pointer;
+        padding: .75rem 1.35rem; display: inline-block; transform: skewX(-10deg);
+        background: var(--signal); color: var(--sur-signal); border: 2px solid var(--signal);
+        transition: background .12s, color .12s;
+      }
+      .btn > span { display: inline-block; transform: skewX(10deg); }
+      .btn:hover { background: transparent; color: var(--signal); }
+      .btn.ghost { background: transparent; color: var(--fg); border-color: rgba(255, 255, 255, .5); }
+      .btn.ghost:hover { background: var(--fg); color: var(--noir); border-color: var(--fg); }
+
+      .page-head { border-bottom: 1px solid var(--hair); padding-block: clamp(1.75rem, 4.5vw, 3rem); }
+      .page-head h1 { font-size: clamp(2.4rem, 7vw, 4.5rem); margin-top: .7rem; }
+      .page-head p { margin: 1rem 0 0; max-width: 60ch; color: var(--fg-2); font-size: var(--s2); }
+      .section { padding-block: clamp(1.75rem, 4vw, 2.75rem); }
+      .section + .section { padding-top: 0; }
+      .section-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .5rem 1rem; margin-bottom: 1.25rem; }
+      .section-head h2 { font-size: clamp(1.7rem, 4.5vw, 2.4rem); }
+      .info { color: var(--fg-2); font-size: var(--s2); margin: 0; }
+
+      /* Les modifications en attente, une ligne chacune */
+      .attente { list-style: none; margin: 0 0 1.5rem; padding: 0; display: grid; gap: 1px; background: var(--hair); border: 1px solid var(--hair); }
+      .attente li { background: var(--noir-2); padding: .7rem 1rem; display: flex; flex-wrap: wrap; justify-content: space-between; gap: .2rem 1rem; }
+      .attente li b { font-weight: 600; }
+      .attente li span { color: var(--fg-2); font-size: .95rem; }
+      .action { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.5rem; }
+      .btn[disabled] { opacity: .45; cursor: not-allowed; }
+      .btn[disabled]:hover { background: var(--signal); color: var(--sur-signal); }
+      .message { margin: 1rem 0 0; font-size: var(--s2); }
+      .message.ok { color: var(--signal); }
+      .message.erreur { color: #ffb4a8; }
+
+      /* Les credits du mois : des cases comme le total de la page Commandes */
+      .chiffres {
+        display: grid; gap: 1px; background: var(--hair); border: 1px solid var(--hair);
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); margin-bottom: 1rem;
+      }
+      .chiffres div { background: var(--noir-2); padding: .85rem 1rem; display: grid; gap: .3rem; }
+      .chiffres b {
+        font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 2rem; line-height: 1;
+        color: var(--signal); font-variant-numeric: tabular-nums;
+      }
+      .jauge { height: 10px; background: var(--noir-3); border: 1px solid var(--hair); display: flex; margin-bottom: .4rem; }
+      .jauge span { display: block; height: 100%; }
+      .jauge .utilise { background: var(--signal); }
+      .jauge .reserve { background: repeating-linear-gradient(45deg, #5a4a20 0 6px, #3a2a00 6px 12px); margin-left: auto; }
+      .legende { color: var(--fg-2); font-size: .9rem; margin: 0 0 1rem; }
+      .alerte { background: #3a2a00; border-left: 4px solid #ffb020; color: #ffe3a3; padding: .85rem 1rem; margin: 0 0 1.25rem; }
+      .alerte p { margin: 0; }
+      .alerte p + p { margin-top: .5rem; }
+
+      /* Reglages du garde-fou */
+      form.reglages { display: grid; gap: 1rem; max-width: 640px; }
+      form.reglages label { display: block; margin-bottom: .35rem; }
+      form.reglages input {
+        width: 9rem; background: var(--noir-2); color: var(--fg); border: 1px solid var(--hair);
+        padding: .6rem .7rem; font: inherit; font-weight: 600;
+      }
+      form.reglages input:focus { border-color: var(--signal); }
+      form.reglages small { display: block; color: var(--fg-2); margin-top: .3rem; font-size: .9rem; line-height: 1.45; }
+      .essai { border-left: 3px solid var(--signal); padding-left: .9rem; margin-bottom: 1.5rem; }
+
+      footer { border-top: 1px solid var(--hair); background: #08090b; margin-top: 2rem; }
+      footer .wrap { padding-block: 1.1rem; margin-inline: auto; display: flex; flex-wrap: wrap; gap: .4rem 1.5rem; }
+    </style>
+  </head>
+  <body>
+    <header class="site">
+      <div class="wrap bar">
+        <a class="mark" href="/">
+          <img src="/images/logo-bvb.png" alt="" width="42" height="42" />
+          <span>Bourges<br />Volley-Ball</span>
+        </a>
+        <nav class="nav" aria-label="Administration">
+          <a href="/admin/">Administration</a>
+          <a href="/">Le site</a>
+          <a href="/admin/guide/#publier">Guide</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="page-head wrap">
+        <p class="eyebrow">Administration · Publication</p>
+        <h1>Publier le site</h1>
+        <p>Ce qui est enregistré dans l'administration attend ici, sans changer le site. Un clic met tout en ligne d'un coup : le site est à jour une à deux minutes plus tard.</p>
+      </section>
+
+      <section class="section wrap">
+        <p class="info essai" id="essai" hidden>Essai sur l'ordinateur : modifications et crédits d'exemple, rien n'est publié.</p>
+        <p class="info" id="etat">Chargement…</p>
+        <p id="connexion" hidden><button class="btn" type="button" id="seConnecter"><span>Se connecter</span></button></p>
+      </section>
+
+      <section class="section wrap" id="blocAttente" hidden>
+        <div class="section-head">
+          <h2>En attente</h2>
+          <span class="compte" id="compteAttente"></span>
+        </div>
+        <div class="alerte" id="alerteBloque" hidden></div>
+        <ul class="attente" id="attente"></ul>
+        <p class="info" id="rien" hidden>Rien en attente : tout ce qui a été enregistré est déjà sur le site.</p>
+        <div class="action">
+          <button class="btn" type="button" id="publier"><span>Publier le site</span></button>
+          <span class="info" id="cout"></span>
+        </div>
+        <p class="message" id="resultat" aria-live="polite" hidden></p>
+      </section>
+
+      <section class="section wrap" id="blocCredits" hidden>
+        <div class="section-head">
+          <h2>Crédits Netlify du mois</h2>
+          <span class="compte" id="cycle"></span>
+        </div>
+        <div class="alerte" id="alerteJour" hidden>
+          <p>Indiquez ci-dessous le jour où vos crédits repartent à zéro : tant qu'il manque, le compte part du 1er du mois.</p>
+        </div>
+        <div class="chiffres">
+          <div><span class="etiquette">Mises en ligne ce mois-ci</span><b id="nbPublications"></b></div>
+          <div><span class="etiquette">Crédits utilisés</span><b id="utilises"></b></div>
+          <div><span class="etiquette">Gardés pour les visites</span><b id="reserve"></b></div>
+          <div><span class="etiquette">Publications encore possibles</span><b id="restantes"></b></div>
+        </div>
+        <div class="jauge" aria-hidden="true"><span class="utilise" id="jaugeUtilise"></span><span class="reserve" id="jaugeReserve"></span></div>
+        <p class="legende" id="legende"></p>
+      </section>
+
+      <section class="section wrap" id="blocReglages" hidden>
+        <div class="section-head"><h2>Réglages du garde-fou</h2></div>
+        <form class="reglages" id="reglages">
+          <p>
+            <label class="etiquette" for="jour">Jour de remise à zéro</label>
+            <input id="jour" type="number" min="1" max="31" required inputmode="numeric" />
+            <small>Netlify, <em>Usage &amp; billing</em> : le jour du mois où commence la période en cours.</small>
+          </p>
+          <p>
+            <label class="etiquette" for="reserveSaisie">Crédits gardés pour les visites</label>
+            <input id="reserveSaisie" type="number" min="0" max="285" required inputmode="numeric" />
+            <small>Les visites du site consomment aussi des crédits (bande passante, requêtes). Netlify, <em>Usage &amp; billing → Credit usage breakdown</em> : prenez ce que les visites ont coûté le mois dernier, plus une marge.</small>
+          </p>
+          <p>
+            <label class="etiquette" for="releve">Crédits déjà utilisés selon Netlify (facultatif)</label>
+            <input id="releve" type="number" min="0" max="1000" inputmode="numeric" />
+            <small>Le chiffre affiché aujourd'hui par Netlify, visites comprises. Il remplace l'estimation du site jusqu'à la fin du mois ; les publications suivantes s'y ajoutent.</small>
+          </p>
+          <p><button class="btn ghost" type="submit"><span>Enregistrer les réglages</span></button></p>
+          <p class="message" id="resultatReglages" aria-live="polite" hidden></p>
+        </form>
+      </section>
+    </main>
+
+    <footer>
+      <div class="wrap eyebrow">
+        <span>Bourges Volley-Ball</span>
+        <span>Page réservée aux bénévoles</span>
+      </div>
+    </footer>
+
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    <script>
+      var identite = window.netlifyIdentity;
+      var essai = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+      var etat = document.getElementById("etat");
+      var bouton = document.getElementById("publier");
+      var dernier = null;
+
+      function el(tag, texte) {
+        var e = document.createElement(tag);
+        if (texte != null) e.textContent = texte;
+        return e;
+      }
+      var date = function (iso, heure) {
+        return new Date(iso).toLocaleString("fr-FR", heure
+          ? { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", timeZone: "Europe/Paris" }
+          : { day: "numeric", month: "long", timeZone: "Europe/Paris" });
+      };
+      var pluriel = function (n, mot) { return n + " " + mot + (n > 1 ? "s" : ""); };
+
+      // Essai sur l'ordinateur : des exemples, rien n'est envoye
+      var EXEMPLE = {
+        modifications: [
+          { titre: "Modification : une équipe « m15-filles »", auteur: "Camille", le: "2026-10-30T13:02:00Z" },
+          { titre: "Ajout : une actualité « resultats-2026-11-02 »", auteur: "Alex", le: "2026-10-30T12:40:00Z" },
+          { titre: "Modification : un match « coupe-du-cher-u15 »", auteur: "Alex", le: "2026-10-29T19:15:00Z" },
+        ],
+        credits: { plafond: 300, parPublication: 15, jour: 14, reserve: 60, releve: null, publications: 6, utilises: 90, restantes: 10, permis: true, debut: "2026-10-14T00:00:00Z", remiseLe: "2026-11-14T00:00:00Z", regle: true },
+      };
+
+      function appel(methode, corps) {
+        if (essai) {
+          if (methode === "PUT") EXEMPLE.credits = Object.assign({}, EXEMPLE.credits, { jour: corps.jour, reserve: corps.reserve });
+          return Promise.resolve(new Response(JSON.stringify(methode === "PUT" ? EXEMPLE.credits : methode === "POST" ? { ok: true, publiees: EXEMPLE.modifications.length } : EXEMPLE)));
+        }
+        return identite.currentUser().jwt().then(function (jeton) {
+          return fetch("/.netlify/functions/publier", {
+            method: methode,
+            headers: { authorization: "Bearer " + jeton, "content-type": "application/json" },
+            body: corps ? JSON.stringify(corps) : undefined,
+          });
+        });
+      }
+
+      function afficherCredits(c) {
+        document.getElementById("blocCredits").hidden = !c;
+        document.getElementById("blocReglages").hidden = !c;
+        if (!c) return;
+        document.getElementById("cycle").textContent = "Du " + date(c.debut) + " au " + date(new Date(Date.parse(c.remiseLe) - 86400000).toISOString());
+        document.getElementById("alerteJour").hidden = c.regle;
+        document.getElementById("nbPublications").textContent = c.publications;
+        document.getElementById("utilises").textContent = c.utilises + " / " + c.plafond;
+        document.getElementById("reserve").textContent = c.reserve;
+        document.getElementById("restantes").textContent = c.restantes;
+        var pc = function (n) { return Math.min(100, Math.max(0, n / c.plafond * 100)) + "%"; };
+        document.getElementById("jaugeUtilise").style.width = pc(c.utilises);
+        document.getElementById("jaugeReserve").style.width = pc(c.reserve);
+        document.getElementById("legende").textContent =
+          "Chaque mise en ligne coûte " + c.parPublication + " crédits, qu'elle vienne de ce bouton, de la mise à jour FFVolley du lundi ou d'un changement du code. " +
+          (c.releve ? "Compte parti du relevé Netlify du " + date(c.releve.le) + " (" + c.releve.credits + " crédits), visites comprises jusque-là. "
+                    : "Les visites ne sont pas comptées ici : c'est le rôle des crédits gardés pour elles. ") +
+          "Retour à " + c.plafond + " crédits le " + date(c.remiseLe) + ".";
+        document.getElementById("jour").value = c.jour;
+        document.getElementById("reserveSaisie").value = c.reserve;
+      }
+
+      function afficher(e) {
+        dernier = e;
+        var n = e.modifications.length;
+        var c = e.credits;
+        var bloque = c && !c.permis;
+        document.getElementById("blocAttente").hidden = false;
+        document.getElementById("compteAttente").textContent = n ? pluriel(n, "modification") : "";
+        document.getElementById("attente").hidden = !n;
+        document.getElementById("rien").hidden = !!n;
+        document.getElementById("attente").replaceChildren.apply(document.getElementById("attente"), e.modifications.map(function (m) {
+          var li = el("li");
+          li.append(el("b", m.titre), el("span", m.auteur + ", " + date(m.le, true)));
+          return li;
+        }));
+        var alerte = document.getElementById("alerteBloque");
+        alerte.hidden = !bloque;
+        if (bloque) alerte.replaceChildren(
+          el("p", "Plus assez de crédits Netlify pour publier ce mois-ci : une mise en ligne de plus entamerait les crédits gardés pour les visites, et le site risquerait d'être mis en pause par Netlify."),
+          el("p", "Les modifications restent enregistrées. Elles pourront partir le " + date(c.remiseLe) + ". La mise à jour FFVolley du lundi est suspendue aussi. Le site, lui, reste en ligne."),
+        );
+        bouton.disabled = !n || bloque || !c;
+        document.getElementById("cout").textContent = !c
+          ? "Crédits illisibles pour le moment : publication impossible, réessayez plus tard."
+          : bloque ? "" : n ? "Utilise " + c.parPublication + " crédits. Encore " + pluriel(c.restantes, "publication") + " possible" + (c.restantes > 1 ? "s" : "") + " ce mois-ci." : "";
+        afficherCredits(c);
+        etat.hidden = true;
+      }
+
+      function charger() {
+        etat.hidden = false;
+        etat.textContent = "Chargement…";
+        appel("GET").then(function (r) {
+          if (r.status === 401) throw new Error("Session expirée : reconnectez-vous.");
+          return r.json().then(function (e) {
+            if (!r.ok) throw new Error(e.erreur || "La page n'a pas pu se charger (" + r.status + ").");
+            return e;
+          });
+        }).then(afficher).catch(function (e) {
+          etat.hidden = false;
+          etat.textContent = e.message;
+        });
+      }
+
+      bouton.addEventListener("click", function () {
+        var n = dernier.modifications.length;
+        if (!confirm("Mettre en ligne " + pluriel(n, "modification") + " ?")) return;
+        var sortie = document.getElementById("resultat");
+        bouton.disabled = true;
+        sortie.hidden = false;
+        sortie.className = "message";
+        sortie.textContent = "Publication…";
+        appel("POST").then(function (r) {
+          return r.json().then(function (j) {
+            if (!r.ok) throw new Error(j.erreur || "Publication impossible (" + r.status + ").");
+            return j;
+          });
+        }).then(function (j) {
+          sortie.className = "message ok";
+          sortie.textContent = "✓ " + pluriel(j.publiees, "modification") + " envoyée" + (j.publiees > 1 ? "s" : "") + " : le site sera à jour dans une à deux minutes.";
+          if (!essai) setTimeout(charger, 4000);
+        }).catch(function (e) {
+          sortie.className = "message erreur";
+          sortie.textContent = "Échec : " + e.message;
+          bouton.disabled = false;
+        });
+      });
+
+      document.getElementById("reglages").addEventListener("submit", function (ev) {
+        ev.preventDefault();
+        var sortie = document.getElementById("resultatReglages");
+        var lire = function (id) { var v = document.getElementById(id).value; return v === "" ? null : Number(v); };
+        sortie.hidden = false;
+        sortie.className = "message";
+        sortie.textContent = "Enregistrement…";
+        appel("PUT", { jour: lire("jour"), reserve: lire("reserveSaisie"), releve: lire("releve") }).then(function (r) {
+          return r.json().then(function (j) {
+            if (!r.ok) throw new Error(j.erreur || "Enregistrement impossible (" + r.status + ").");
+            return j;
+          });
+        }).then(function (c) {
+          document.getElementById("releve").value = "";
+          sortie.className = "message ok";
+          sortie.textContent = "✓ Réglages enregistrés.";
+          dernier.credits = c;
+          afficher(dernier);
+        }).catch(function (e) {
+          sortie.className = "message erreur";
+          sortie.textContent = "Échec : " + e.message;
+        });
+      });
+
+      document.getElementById("seConnecter").addEventListener("click", function () { identite.open("login"); });
+      // Widget Netlify absent (bloque par le reseau, ou essai sur l'ordinateur)
+      if (!identite) {
+        identite = { on: function () {}, open: function () {}, close: function () {} };
+        if (!essai) etat.textContent = "La connexion Netlify n'a pas pu se charger. Rechargez la page.";
+      }
+
+      if (essai) {
+        document.getElementById("essai").hidden = false;
+        charger();
+      } else identite.on("init", function (user) {
+        if (user) return charger();
+        etat.textContent = "Connectez-vous avec votre compte de l'administration.";
+        document.getElementById("connexion").hidden = false;
+      });
+      identite.on("login", function () {
+        identite.close();
+        document.getElementById("connexion").hidden = true;
+        charger();
+      });
+    </script>
+  </body>
+</html>

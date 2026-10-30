@@ -47,10 +47,10 @@
       :root [class*="AppHeaderNavLink"]:hover, :root [class*="AppHeaderNavLink"].header-link-active,
       :root [class*="AppHeaderNavLink"]:hover span, :root [class*="AppHeaderNavLink"].header-link-active span { color: #b4e600; }
 
-      /* Pas de bouton Media : une photo envoyee par la est enregistree tout
-         de suite, seule, et chaque enregistrement republie le site (15
-         credits Netlify). Ajoutee depuis le formulaire d'un contenu, elle part
-         avec lui, en une seule publication. Le bouton Media est le seul
+      /* Pas de bouton Media : une photo envoyee par la est enregistree
+         seule, sans contenu qui l'affiche, et la supprimer de la bibliotheque
+         casserait les fiches qui s'en servent. Ajoutee depuis le formulaire
+         d'un contenu, elle part avec lui. Le bouton Media est le seul
          <button> de la liste ; « Contenus » est un lien. */
       :root [class*="AppHeaderNavList"] li:has(> button[class*="AppHeaderButton"]),
       :root [class*="AppHeaderNavList"] button[class*="AppHeaderButton"] { display: none; }
@@ -88,7 +88,8 @@
       :root [class*="GoBackButtonStyle"] { color: #9a9fa9; }
       :root [class*="GoBackButtonStyle"]:hover { color: #f4f4f2; }
 
-      /* Boutons Commandes (/admin/commandes.html) et Guide (/admin/guide/).
+      /* Boutons Publier le site (/admin/publier.html), Commandes
+         (/admin/commandes.html) et Guide (/admin/guide/).
          Ranges dans la barre du haut, juste avant « Nouveau », par le script
          en bas de page ; en attendant (ecran de connexion), ils flottent en
          haut a droite. */
@@ -104,17 +105,27 @@
         background: transparent; color: #f4f4f2; border: 2px solid rgba(255, 255, 255, .5);
       }
       .lien-admin:hover, .lien-admin:focus-visible { background: #f4f4f2; color: #0d0e11; border-color: #f4f4f2; }
-      .lien-admin.guide { background: #b4e600; color: #0d0e11; border-color: #b4e600; }
-      .lien-admin.guide:hover, .lien-admin.guide:focus-visible { background: #0d0e11; color: #b4e600; border-color: #0d0e11; }
+      /* Publier le site : l'action principale, en vert lime */
+      .lien-admin.publier { background: #b4e600; color: #0d0e11; border-color: #b4e600; }
+      .lien-admin.publier:hover, .lien-admin.publier:focus-visible { background: #0d0e11; color: #b4e600; border-color: #b4e600; }
       .lien-admin .rond {
         display: grid; place-items: center; width: 18px; height: 18px; border-radius: 50%;
         background: currentColor; font-size: 12px;
       }
       .lien-admin .rond b { color: #0d0e11; }
-      .lien-admin.guide .rond b { color: #b4e600; }
-      .lien-admin.guide:hover .rond b, .lien-admin.guide:focus-visible .rond b { color: #0d0e11; }
-      .lien-admin:not(.guide):hover .rond b, .lien-admin:not(.guide):focus-visible .rond b { color: #f4f4f2; }
-      /* Libelles longs (« de la boutique », « d'utilisation ») sur grand
+      .lien-admin.publier .rond b { color: #b4e600; }
+      .lien-admin.publier:hover .rond b, .lien-admin.publier:focus-visible .rond b { color: #0d0e11; }
+      .lien-admin:not(.publier):hover .rond b, .lien-admin:not(.publier):focus-visible .rond b { color: #f4f4f2; }
+      /* Nombre de modifications enregistrees, pas encore en ligne */
+      .lien-admin .nombre {
+        min-width: 20px; padding: 3px 6px; border-radius: 10px; text-align: center;
+        background: #0d0e11; color: #b4e600; font-size: 12px; letter-spacing: 0;
+      }
+      .lien-admin.publier:hover .nombre, .lien-admin.publier:focus-visible .nombre { background: #b4e600; color: #0d0e11; }
+      /* Credits du mois epuises : le bouton reste, la page dit pourquoi */
+      .lien-admin.publier.bloque { background: #3a2a00; color: #ffe3a3; border-color: #ffb020; }
+      .lien-admin.publier.bloque .rond b { color: #3a2a00; }
+      /* Libelles longs (« le site », « de la boutique », « d'utilisation ») sur grand
          ecran seulement : sur tablette, la barre debordait a droite et le
          menu du compte (Se deconnecter) sortait de l'ecran. Pour la meme
          raison, l'adresse du site s'efface sous 960 px. */
@@ -126,6 +137,8 @@
       }
       @media (max-width: 599px) {
         .lien-admin { padding: 8px 10px; font-size: 13px; }
+        /* Telephone : Commandes et Guide reduits a leur pastille */
+        .lien-admin:not(.publier) > span:not(.rond) { display: none; }
       }
       /* Telephone : « Ajout rapide » laisse sa place au menu du compte.
          Chaque rubrique garde son propre bouton « + ... ». */
@@ -162,9 +175,10 @@
     </style>
   </head>
   <body>
-    <nav class="liens-admin" aria-label="Commandes et guide">
-      <a class="lien-admin" href="/admin/commandes.html" target="_blank" rel="noopener"><span class="rond" aria-hidden="true"><b>€</b></span><span>Commandes<span class="long"> de la boutique</span></span></a>
-      <a class="lien-admin guide" href="/admin/guide/" target="_blank" rel="noopener"><span class="rond" aria-hidden="true"><b>?</b></span><span>Guide<span class="long"> d'utilisation</span></span></a>
+    <nav class="liens-admin" aria-label="Publication, commandes et guide">
+      <a class="lien-admin publier" href="/admin/publier.html" target="_blank" rel="noopener"><span class="rond" aria-hidden="true"><b>↑</b></span><span>Publier<span class="long"> le site</span></span><span class="nombre" hidden></span></a>
+      <a class="lien-admin" href="/admin/commandes.html" target="_blank" rel="noopener" aria-label="Commandes de la boutique"><span class="rond" aria-hidden="true"><b>€</b></span><span>Commandes<span class="long"> de la boutique</span></span></a>
+      <a class="lien-admin" href="/admin/guide/" target="_blank" rel="noopener" aria-label="Guide d'utilisation"><span class="rond" aria-hidden="true"><b>?</b></span><span>Guide<span class="long"> d'utilisation</span></span></a>
     </nav>
     <script>
       // Les boutons vont dans la barre du haut de Decap des qu'elle existe,
@@ -222,6 +236,83 @@
       integrity="sha384-tbnFsiSBvMm2vOLu70Mx7HlnMj6kXxR0Tdo0USlY9564mb1AyMnIdCjOZ738PWPr"
       crossorigin="anonymous"
     ></script>
+
+    <!-- « Publier » devient « Enregistrer » : un enregistrement va sur la
+         branche preparation (config.yml) et ne change pas le site. C'est le
+         bouton « Publier le site » qui met tout en ligne d'un coup. Les
+         chemins sont ceux des textes francais de Decap 3.16 ; un chemin qui
+         disparait laisse simplement le texte d'origine. -->
+    <script>
+      (function () {
+        var fr = CMS.getLocale("fr");
+        var textes = {
+          "editor.editorToolbar.publish": "Enregistrer",
+          "editor.editorToolbar.publishing": "Enregistrement…",
+          "editor.editorToolbar.publishNow": "Enregistrer maintenant",
+          "editor.editorToolbar.published": "Enregistrée",
+          "editor.editorToolbar.publishAndCreateNew": "Enregistrer et en créer une autre",
+          "editor.editorToolbar.publishAndDuplicate": "Enregistrer et dupliquer",
+          "editor.editorToolbar.deletePublishedEntry": "Supprimer",
+          "editor.editor.onDeletePublishedEntry": "Supprimer cette fiche ? Elle quittera le site à la prochaine publication.",
+          "editor.editor.onDeleteWithUnsavedChanges": "Supprimer cette fiche, et les modifications pas encore enregistrées ? Elle quittera le site à la prochaine publication.",
+          "ui.toast.entryPublished": "Enregistré. Le site changera quand quelqu'un cliquera « Publier le site ».",
+          "ui.toast.onFailToPublishEntry": "Échec de l'enregistrement : %{details}",
+        };
+        Object.keys(textes).forEach(function (chemin) {
+          var cles = chemin.split("."), o = fr, i = 0;
+          for (; o && i < cles.length - 1; i++) o = o[cles[i]];
+          if (o && typeof o[cles[i]] === "string") o[cles[i]] = textes[chemin];
+        });
+      })();
+    </script>
+
+    <!-- Bouton « Publier le site » : le nombre de modifications enregistrees
+         qui attendent, et l'alerte quand les credits Netlify du mois sont
+         epuises (netlify/functions/publier.mjs). Relu a la connexion, apres
+         chaque enregistrement, a chaque changement de page de Decap (une
+         suppression y ramene a la liste) et au retour sur l'onglet. -->
+    <script>
+      (function () {
+        var bouton = document.querySelector(".lien-admin.publier");
+        var nombre = bouton.querySelector(".nombre");
+        var attente;
+        function actualiser() {
+          clearTimeout(attente);
+          // GitHub met un instant a montrer le dernier enregistrement
+          attente = setTimeout(function () {
+            var u = window.netlifyIdentity && netlifyIdentity.currentUser();
+            if (!u) return;
+            u.jwt().then(function (jeton) {
+              return fetch("/.netlify/functions/publier", { headers: { authorization: "Bearer " + jeton } });
+            }).then(function (r) {
+              return r.ok ? r.json() : null;
+            }).then(function (e) {
+              if (!e) return;
+              // Branche preparation creee a l'instant : Decap doit la relire (une fois)
+              if (e.creee && !sessionStorage.getItem("preparation-creee")) {
+                sessionStorage.setItem("preparation-creee", "1");
+                return location.reload();
+              }
+              var n = e.modifications.length;
+              nombre.textContent = n;
+              nombre.hidden = !n;
+              var bloque = !!e.credits && !e.credits.permis;
+              bouton.classList.toggle("bloque", bloque);
+              bouton.title = bloque
+                ? "Plus de crédits Netlify ce mois-ci : la publication attendra."
+                : n ? n + " modification" + (n > 1 ? "s" : "") + " enregistrée" + (n > 1 ? "s" : "") + ", pas encore sur le site" : "Rien en attente";
+            }).catch(function () {});
+          }, 1500);
+        }
+        if (window.netlifyIdentity) {
+          netlifyIdentity.on("init", actualiser);
+          netlifyIdentity.on("login", actualiser);
+        }
+        CMS.registerEventListener({ name: "postSave", handler: actualiser });
+        window.addEventListener("hashchange", actualiser);
+        window.addEventListener("focus", actualiser);
+      })();
+    </script>
 
     <!-- Apercu des photos de l'accueil : la photo telle qu'elle apparaitra,
          sur ordinateur et sur telephone, avec le cadrage et la luminosite

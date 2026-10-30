@@ -174,8 +174,29 @@ Ils s'identifient avec un mail et un mot de passe ; c'est Git Gateway qui
 écrit dans le dépôt à leur place. GitHub ne concerne que la personne qui a
 mis le site en ligne.
 
-Chaque enregistrement publie le site automatiquement. Comptez une à deux
-minutes avant que la modification soit visible.
+### Enregistrer, puis publier le site
+
+**Enregistrer ne change pas le site.** Le bouton **Enregistrer** de chaque
+fiche (« Publier » dans Decap d'origine, renommé) range la modification sur la
+branche `preparation` du dépôt (`backend.branch` dans
+`public/admin/config.yml`). On peut enregistrer autant qu'on veut, plusieurs
+actus, des équipes, des matchs : rien ne part en ligne et rien ne coûte.
+
+**Le bouton « Publier le site »**, en vert en haut de l'administration, montre
+le nombre de modifications en attente. Il ouvre `/admin/publier.html` : la
+liste de ce qui attend (quoi, qui, quand), et un bouton qui met **tout en
+ligne d'un coup**, une seule publication (15 crédits). Comptez une à deux
+minutes avant que le site soit à jour.
+
+Sous le capot (`netlify/functions/publier.mjs`) : la fonction fusionne
+`preparation` dans `main` par Git Gateway, avec le jeton du bénévole connecté,
+puis remet `preparation` au niveau de `main`. Aucune clé à ranger. La branche
+`preparation` se crée toute seule à la première ouverture de l'administration
+si elle n'existe pas. Le message de chaque enregistrement (« Modification :
+une équipe « m15-filles » ») vient de `commit_messages` dans `config.yml`.
+
+Ce bouton refuse de publier quand les crédits Netlify du mois sont épuisés :
+voir **Le garde-fou des crédits**, chapitre 8.
 
 ### Essayer l'administration avant la mise en ligne
 
@@ -204,7 +225,10 @@ l'accès.
 La page des commandes de la boutique s'essaie aussi :
 **http://localhost:4321/admin/commandes.html** montre alors des **commandes
 d'exemple**, signalées comme telles. Les vraies n'existent qu'en ligne, où
-tournent la connexion et les fonctions Netlify.
+tournent la connexion et les fonctions Netlify. De même,
+**http://localhost:4321/admin/publier.html** montre des modifications et des
+crédits d'exemple. Sur l'ordinateur, « Enregistrer » écrit directement dans
+les fichiers du dossier, sans branche `preparation`.
 
 ### Actualités
 Publier un article : titre, date, résumé, photo de une, autres photos, texte.
@@ -214,7 +238,9 @@ résultats du week-end, avec les photos des équipes. Sans photo de une, la
 première sert de vignette. Une photo de groupe se met plutôt là qu'en photo
 de une : la une est recadrée en bandeau large, qui couperait les têtes.
 Le **résumé** s'affiche sous le titre, sur la page Actualités et en tête de l'article : deux lignes suffisent. L'accueil, lui, ne montre que la date et le titre des trois derniers articles, dans le panneau « À la une ».
-La case **Brouillon** permet de préparer un article sans le publier.
+La case **Brouillon** garde un article hors du site, même quand quelqu'un
+publie le site : utile pour un article préparé sur plusieurs jours pendant que
+d'autres modifications partent.
 
 ### Textes des pages
 Trois fiches, que l'on modifie mais que l'on ne peut pas supprimer :
@@ -341,23 +367,23 @@ et paie sans quitter le site ; seul le paiement par carte passe par HelloAsso.
 est fermée ») mais reste dans l'administration, avec ses commandes.
 
 - **Rouvrir la même vente** (prolonger de quelques jours, rouvrir après une
-  erreur) : changer ses dates et publier.
+  erreur) : changer ses dates, enregistrer, puis « Publier le site ».
 - **Une nouvelle édition** (le tournoi de l'an prochain, le stage des vacances
   suivantes) : ouvrir l'ancienne fiche, **Dupliquer** dans le menu du bouton
-  « Publiée » en haut, puis **changer le nom** et les dates. Le nom fait
+  « Enregistrée » en haut, puis **changer le nom** et les dates. Le nom fait
   l'adresse de la page : deux ventes ne peuvent pas porter le même. La copie
   repart avec ses places au complet et ses propres commandes. Rouvrir
   l'ancienne fiche à la place fausserait les places : le site compte toutes
   les commandes payées d'une fiche, gardées un an.
 
 **Mettre toute la boutique en pause** : *Réglages → Boutique : ouverte ou en
-pause*, éteindre l'interrupteur **Boutique ouverte**, publier. La boutique sort du menu et du
+pause*, éteindre l'interrupteur **Boutique ouverte**, enregistrer, puis « Publier le site ». La boutique sort du menu et du
 pied de page, ses pages annoncent son ouverture prochaine (les liens des
 actus et de l'agenda y mènent toujours), et le serveur refuse toute commande :
 le catalogue qu'il lit est vide. Le champ **En attendant** donne la page
 HelloAsso du club : un bouton « Aller sur HelloAsso » y envoie les visiteurs,
 comme le bouton « S'inscrire » de la page Nous rejoindre. Les ventes ne
-bougent pas : on rallume l'interrupteur, on publie, tout revient.
+bougent pas : on rallume l'interrupteur, on publie le site, tout revient.
 
 **Le montant est toujours recalculé par le serveur** à partir de la fiche :
 modifier un prix dans l'administration s'applique dès la publication suivante.
@@ -538,9 +564,23 @@ git commit -m "ce que vous avez changé"
 git push            # une fois le dépôt GitHub relié
 ```
 
-Chaque `push` déclenche une nouvelle publication sur Netlify. Les
-modifications faites par les bénévoles depuis `/admin/` sont enregistrées
-automatiquement, sans rien taper.
+Chaque `push` sur `main` déclenche une publication sur Netlify (15 crédits,
+comptés par le garde-fou). Les bénévoles, eux, enregistrent sur la branche
+`preparation`, que « Publier le site » verse dans `main` : un `git pull` avant
+de travailler récupère ce qu'ils ont publié.
+
+**Si « Publier le site » annonce un conflit**, une même fiche a été modifiée
+dans `main` (par le code) et dans `preparation` (par un bénévole). À régler
+une fois sur l'ordinateur :
+
+```bash
+git fetch origin
+git checkout preparation
+git merge origin/main      # corriger les fichiers signalés, puis git add et git commit
+git push origin preparation
+```
+
+Puis « Publier le site » à nouveau.
 
 **N'écrivez jamais `<script is:inline>`.** Astro ne calcule l'empreinte CSP
 que des scripts qu'il traite lui-même : un script `is:inline` serait bloqué
@@ -593,8 +633,9 @@ et les données structurées lues par Google (`src/layouts/Base.astro`).
   distinguer les masculins des féminines. Les deux fiches portent donc les
   mêmes créneaux. À corriger si les groupes sont séparés.
 - [ ] **Les fiches jeunes garçons et filles** (séparées le 30 octobre 2026)
-  reprennent les créneaux, la photo et le niveau de l'ancienne fiche
-  commune. Seul le niveau des M18 est sûr (poules FFVolley : prénationale
+  reprennent les créneaux et le niveau de l'ancienne fiche commune, et une
+  photo d'illustration (un match mixte pour les filles) en attendant les
+  vraies photos d'équipe. Seul le niveau des M18 est sûr (poules FFVolley : prénationale
   garçons, régionale filles). À corriger dans *Équipes* si les M13 ou les M15
   ne jouent pas au niveau indiqué, ou si garçons et filles ne s'entraînent pas
   aux mêmes heures.
@@ -611,6 +652,11 @@ et les données structurées lues par Google (`src/layouts/Base.astro`).
 
 ### À fournir par le club
 
+- [ ] **Régler le garde-fou des crédits** à la mise en service (page
+  « Publier le site », section 8) : le jour de remise à zéro, les crédits
+  gardés pour les visites (d'après *Usage & billing → Credit usage
+  breakdown*), et le relevé du jour, puisque le site ne connaît pas les
+  publications d'avant
 - [ ] Redéposer les photos du diaporama **en version d'origine** : celles du
   28 octobre sont passées par WhatsApp (960 à 1500 px) et paraissent floues
 - [x] Brancher la mise à jour du lundi (`BUILD_HOOK_URL`, section 8) : hook
@@ -961,7 +1007,9 @@ un score, un match déplacé, un classement. Les scores du week-end arrivent
 ainsi sans que personne ne publie rien, et une semaine sans match (vacances,
 intersaison), ou déjà à jour parce qu'un bénévole a publié depuis le
 week-end, ne coûte aucun crédit. Une poule injoignable ce matin-là n'est pas
-un changement : elle est comparée le lundi suivant. Pour l'activer :
+un changement : elle est comparée le lundi suivant. Elle s'abstient aussi
+quand le **garde-fou des crédits** (plus bas) dit que le mois est épuisé.
+Pour l'activer :
 
 1. Netlify, *Site configuration → Build & deploy → Build hooks → Add build
    hook*, nommé par exemple « Lundi FFVolley », branche `main`. Copier
@@ -978,8 +1026,9 @@ un changement : elle est comparée le lundi suivant. Pour l'activer :
    n'a suivi l'ajout de la variable.
 
 **Pourquoi pas tous les jours ?** Avec l'offre gratuite de Netlify, chaque
-publication coûte 15 crédits sur 300 par mois, soit une vingtaine de
-publications, modifications des bénévoles comprises. Une par semaine au plus
+publication coûte 15 crédits sur 300 par mois, soit une quinzaine de
+publications une fois la part des visites gardée de côté, celles des
+bénévoles comprises. Une par semaine au plus
 en consomme quatre ou cinq, souvent moins. Le prochain match, lui, avance tout seul dans le
 navigateur des visiteurs, sans publication. Si le club passe à une offre
 payante, il suffit de changer `schedule` dans le fichier (`"@daily"`).
@@ -992,7 +1041,7 @@ tout. Tarifs relus le 29 octobre 2026 dans la documentation de Netlify
 
 | Ce qui consomme | Coût | Pour ce site |
 |---|---|---|
-| Une publication du site | 15 crédits | chaque « Publier » de l'administration, chaque mise à jour du code, chaque lundi qui a du nouveau |
+| Une publication du site | 15 crédits | chaque « Publier le site » de l'administration, chaque mise à jour du code, chaque lundi qui a du nouveau |
 | Une copie d'essai (*Deploy Preview*, branche) | 0 crédit | une demande de fusion sur GitHub : le site entier à une adresse à part, pour vérifier avant de publier |
 | La bande passante | 20 crédits par Go | une page pèse 0,15 à 0,9 Mo (l'accueil, sur ordinateur), un album de galerie 1 à 2 Mo |
 | Les requêtes des visiteurs | 2 crédits pour 10 000 | une page en demande 8 à 50 (photos comprises) |
@@ -1005,19 +1054,59 @@ prend quatre ou cinq au plus en pleine saison, aucune les semaines sans
 nouveauté FFVolley. Il en reste une quinzaine pour les bénévoles et les
 évolutions du site.
 
-**Quand les crédits sont épuisés**, Netlify bloque les publications jusqu'au
-mois suivant, et peut mettre le site entier en pause. D'où quatre règles :
+**Quand les crédits sont épuisés**, Netlify met le site entier en pause :
+il est injoignable jusqu'au début du mois suivant (offre gratuite, sans achat
+de crédits possible). D'où le garde-fou ci-dessous, et ces règles :
 
-- **regrouper les modifications** avant de cliquer sur « Publier » (un album
-  complet, une vente complète, pas photo par photo) ;
+- **regrouper les modifications** : enregistrer tout ce qu'on veut, puis un
+  seul « Publier le site » ;
 - **ajouter les photos depuis le formulaire** du contenu (« Choisir une
-  image ») : elles partent avec lui, en une seule publication. Le bouton
-  « Media » de Decap, qui enregistrait chaque photo seule, a été retiré de la
+  image ») : elles partent avec lui. Le bouton « Media » de Decap, qui
+  enregistre une photo seule, sans contenu qui l'affiche, a été retiré de la
   barre du haut (`public/admin/index.html`) ;
-- **regarder la jauge** de temps en temps : Netlify, *Team → Usage & billing* ;
+- **regarder la jauge** de temps en temps : Netlify, *Team → Usage & billing*,
+  et reporter le chiffre sur la page « Publier le site » ;
 - **essayer les grosses modifications du code sur une copie d'essai**
   (demande de fusion sur GitHub), gratuite, plutôt qu'en publiant ;
 - **ne pas passer la mise à jour FFVolley à tous les jours.**
+
+### Le garde-fou des crédits
+
+Netlify ne donne pas le solde de crédits aux sites. Le site compte donc
+lui-même ses publications : Netlify prévient la fonction
+`netlify/functions/deploy-succeeded.mjs` après chaque mise en ligne réussie
+(appel signé, impossible à imiter de l'extérieur), qui la note dans Netlify
+Blobs (magasin « credits »). Chaque publication de production compte
+15 crédits, d'où qu'elle vienne : « Publier le site », lundi FFVolley, `push`
+du code, *Trigger deploy* sur Netlify. Les copies d'essai, gratuites, ne
+comptent pas.
+
+**La règle** (`netlify/lib/credits.mjs`, vérifiée par `npm test`) : une
+publication n'est permise que si, après elle, il reste encore les **crédits
+gardés pour les visites** (60 par défaut). Sinon le bouton « Publier le site »
+devient orange, la page explique pourquoi et jusqu'à quand, et **la mise à
+jour du lundi s'abstient aussi**. Les modifications restent enregistrées et
+partiront au début du cycle suivant. Le site, lui, reste en ligne.
+
+**Trois réglages**, sur la page « Publier le site » (rangés dans Netlify Blobs
+et non dans le dépôt, pour rester modifiables quand les publications sont
+bloquées) :
+
+- **le jour de remise à zéro** : Netlify, *Usage & billing*, le jour où
+  commence la période en cours. Tant qu'il n'est pas donné, le compte part du
+  1er du mois ;
+- **les crédits gardés pour les visites** : ce que les visites (bande passante,
+  requêtes, fonctions) ont coûté le mois précédent, *Usage & billing → Credit
+  usage breakdown*, plus une marge ;
+- **le relevé** (facultatif) : le chiffre que Netlify affiche ce jour-là,
+  visites comprises. Il remplace l'estimation jusqu'à la fin du cycle, et les
+  publications suivantes s'y ajoutent. C'est aussi ce qu'il faut faire à la
+  mise en service : le site ne connaît pas les publications d'avant.
+
+**Limite** : c'est une estimation. Les visites au-delà de la réserve (un pic
+de trafic) ne sont pas vues : un relevé de temps en temps la recale. Le
+garde-fou empêche le site de se mettre lui-même en pause par ses
+publications ; il ne protège pas d'un afflux de visiteurs.
 
 Si le budget devient trop juste : les matchs pourraient être lus en direct
 par le navigateur des visiteurs, sans aucune publication le lundi. C'est une

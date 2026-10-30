@@ -130,14 +130,16 @@ export function verifier(campagne, demande, restantes = {}, maintenant = Date.no
 
 export const store = () => getStore({ name: "commandes", consistency: "strong" });
 
-/** Un benevole connecte a l'administration : son jeton Netlify Identity,
- *  que l'on fait verifier par Netlify lui-meme. */
-export async function benevoleConnecte(req) {
+/** Le benevole connecte a l'administration (null sinon) : son jeton Netlify
+ *  Identity, que l'on fait verifier par Netlify lui-meme. */
+export async function benevole(req) {
   const qui = await fetch(`${new URL(req.url).origin}/.netlify/identity/user`, {
     headers: { authorization: req.headers.get("authorization") ?? "" },
   });
-  return qui.ok;
+  return qui.ok ? qui.json() : null;
 }
+
+export const benevoleConnecte = async (req) => (await benevole(req)) != null;
 
 /** Le catalogue tel que publie par le site (src/pages/boutique/catalogue.json.ts). */
 export async function catalogue(origine) {
