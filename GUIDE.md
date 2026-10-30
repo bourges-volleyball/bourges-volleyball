@@ -586,9 +586,6 @@ et les données structurées lues par Google (`src/layouts/Base.astro`).
   prudence. On sait désormais que le club a une section Ufolep M18 à part,
   avec sa propre adhésion : le loisir semble bien réservé aux adultes, mais
   cela demande confirmation.
-- [ ] **Netlify, *Project configuration → Environment variables → Site
-  policies*** : le réglage doit être sur **Require approval** (c'est le défaut).
-  Voir « Le dépôt GitHub est public » au chapitre 7.
 
 > **Le site ne contient plus aucun contenu inventé.** Les faux effectifs, les
 > événements aux dates provisoires et les partenaires sans nom ont été retirés
@@ -720,6 +717,8 @@ Netlify `HELLOASSO_API = https://api.helloasso-sandbox.com` avec ses clés.
   interrupteur dans *Réglages*, visiteurs renvoyés vers la page HelloAsso du
   club (helloasso.com/associations/bourges-volley, l'adresse des formulaires
   repris de l'ancien site)
+- [x] Dépôt GitHub public vérifié sans aucun secret, et copies d'essai des
+  inconnus bloquées chez Netlify (*Require approval*), le 30 octobre 2026
 
 ## 7. Sécurité : ce qui protège le site, et ce qui reste à surveiller
 
@@ -847,7 +846,8 @@ Netlify Forms.
   depuis une copie du dépôt) ne doit pas être approuvée chez Netlify : sa
   copie d'essai tournerait avec les clés HelloAsso. Netlify la bloque par
   défaut (*Project configuration → Environment variables → Site policies* :
-  **Require approval**), réglage à laisser tel quel.
+  **Require approval**, vérifié le 30 octobre 2026), réglage à laisser tel
+  quel. Si une telle copie apparaît « en attente » dans *Deploys* : **Reject**.
 - **Ce qui est visible en plus du site** : ce guide, et l'adresse mail des
   personnes qui ont enregistré des modifications.
 - **Une photo retirée du site reste dans l'historique.** Si une famille demande
