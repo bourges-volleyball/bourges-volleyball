@@ -1,0 +1,15 @@
+---
+nom: "M15 filles"
+ordre: 4
+ageMin: 13
+ageMax: 14
+niveau: "Championnat régional"
+creneaux:
+  - jour: "Jeudi"
+    horaire: "17h30 – 19h00"
+  - jour: "Samedi"
+    horaire: "13h30 – 15h00"
+gymnase: "Gymnase Léo Lagrange"
+tarif: 115
+photo: "../../images/equipes/equipe-2.jpg"
+---

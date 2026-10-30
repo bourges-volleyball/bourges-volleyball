@@ -1,6 +1,6 @@
 ---
 nom: "Seniors féminines"
-ordre: 5
+ordre: 8
 ageMin: 18
 ageMax: 99
 niveau: "Régionale"

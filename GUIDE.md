@@ -237,6 +237,16 @@ importants : ce sont eux qui font fonctionner le sélecteur d'âge de la page
 
 L'**ordre d'affichage** classe les équipes sur le site, du plus jeune au plus âgé.
 
+Le **nom de l'équipe** range aussi ses matchs : une fiche affiche les rencontres
+dont l'équipe porte exactement le même nom, qu'elles viennent de FFVolley
+(*Réglages > Matchs FFVolley*) ou de la rubrique Matchs. « M18 filles » sur la
+fiche et « M18 filles » dans les réglages : les matchs s'affichent ; « M18
+Filles » d'un côté seulement : la fiche reste sans matchs.
+
+Les jeunes ont une fiche par catégorie et par sexe depuis le 30 octobre 2026
+(M13, M15 et M18, garçons et filles). Des groupes qui s'entraînent ensemble
+gardent chacun leurs créneaux : le Planning les réunit sur une même ligne.
+
 La **photo d'équipe** sert deux fois. En tête de la fiche, elle s'affiche à
 côté du titre et des infos (entraînements, gymnase, tarif), sans être
 assombrie : une photo de groupe presque carrée est seulement recadrée en 4:3,
@@ -582,6 +592,12 @@ et les données structurées lues par Google (`src/layouts/Base.astro`).
   Instagram ne dit que « Séniors FFVB » le lundi et le mercredi, sans
   distinguer les masculins des féminines. Les deux fiches portent donc les
   mêmes créneaux. À corriger si les groupes sont séparés.
+- [ ] **Les fiches jeunes garçons et filles** (séparées le 30 octobre 2026)
+  reprennent les créneaux, la photo et le niveau de l'ancienne fiche
+  commune. Seul le niveau des M18 est sûr (poules FFVolley : prénationale
+  garçons, régionale filles). À corriger dans *Équipes* si les M13 ou les M15
+  ne jouent pas au niveau indiqué, ou si garçons et filles ne s'entraînent pas
+  aux mêmes heures.
 - [ ] **L'âge minimum de la section loisir Ufolep**, fixé à 18 ans par
   prudence. On sait désormais que le club a une section Ufolep M18 à part,
   avec sa propre adhésion : le loisir semble bien réservé aux adultes, mais

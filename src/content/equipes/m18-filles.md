@@ -1,9 +1,9 @@
 ---
-nom: "M18"
-ordre: 3
+nom: "M18 filles"
+ordre: 6
 ageMin: 15
 ageMax: 17
-niveau: "Championnat régional · filles et garçons"
+niveau: "Régionale"
 creneaux:
   - jour: "Jeudi"
     horaire: "19h00 – 20h30"

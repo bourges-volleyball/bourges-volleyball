@@ -1,6 +1,6 @@
 ---
 nom: "Ufolep"
-ordre: 6
+ordre: 9
 ageMin: 15
 ageMax: 99
 niveau: "Loisir mixte et M18 · départemental du Cher"

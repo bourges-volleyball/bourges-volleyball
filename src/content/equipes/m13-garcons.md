@@ -1,9 +1,9 @@
 ---
-nom: "M15"
-ordre: 2
-ageMin: 13
-ageMax: 14
-niveau: "Championnat régional · filles et garçons"
+nom: "M13 garçons"
+ordre: 1
+ageMin: 11
+ageMax: 12
+niveau: "Championnat départemental"
 creneaux:
   - jour: "Jeudi"
     horaire: "17h30 – 19h00"
@@ -11,5 +11,5 @@ creneaux:
     horaire: "13h30 – 15h00"
 gymnase: "Gymnase Léo Lagrange"
 tarif: 115
-photo: "../../images/equipes/equipe-2.jpg"
+photo: "../../images/equipes/equipe-3.jpg"
 ---
