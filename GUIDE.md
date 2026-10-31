@@ -6,6 +6,43 @@ Site statique construit avec **Astro**, administré par les bénévoles via
 Aucune base de données, aucun serveur à administrer, aucune mise à jour de
 sécurité à suivre. Le coût annuel se limite au nom de domaine.
 
+## La suite, dans l'ordre (point du 31 octobre 2026)
+
+Tout le travail d'octobre attend sur la branche `claude/keen-goldberg-y8wkw1`,
+dans la demande de fusion n° 1 sur GitHub (audit, équipes jeunes garçons et
+filles, enregistrer puis publier, garde-fou des crédits, icônes). Le site en
+ligne ne bouge pas tant qu'elle n'est pas fusionnée.
+
+1. **Domaine livré par OVH** : Netlify puis zone DNS OVH, et attendre le
+   HTTPS (« Brancher le nom de domaine », plus bas).
+2. **Publier le travail** : GitHub, *Pull requests* → n° 1 → **Merge pull
+   request** → **Confirm merge**. Une publication (15 crédits), qui prend la
+   nouvelle adresse. Toujours **après** l'étape 1.
+3. **HelloAsso** : *Mon URL de callback* =
+   `https://www.bourges-volleyball.fr/.netlify/functions/paiement`.
+4. **Administration** : `www.bourges-volleyball.fr/admin/`, se reconnecter.
+   La page se recharge une fois (création de la branche `preparation`).
+5. **Garde-fou** : bouton **Publier le site** → *Réglages du garde-fou* : le
+   jour de remise à zéro et le chiffre du jour (Netlify, *Usage & billing*),
+   les crédits gardés pour les visites (*Credit usage breakdown*).
+6. **Essai** : modifier une virgule, **Enregistrer**, vérifier que le site n'a
+   pas changé, **Publier le site**, revoir le site deux minutes plus tard.
+7. **Boutique** : *Réglages → Boutique ouverte*, enregistrer, publier ; un
+   vrai paiement de 1 € (sirop de la buvette), le rembourser sur HelloAsso,
+   puis fermer les anciens formulaires HelloAsso.
+8. **Fiches à vérifier** (*Équipes*) : niveau et horaires des M13 et M15
+   garçons et filles, seniors, âge minimum Ufolep ; photos d'origine du
+   diaporama ; l'Agenda.
+9. **Google**, seulement quand le contenu est définitif : section 7 du
+   chapitre 1 (deux fichiers à modifier sur GitHub, une publication).
+
+Ensuite, chaque saison : poules FFVolley en septembre (*Réglages*), messages
+de contact de plus d'un an à effacer, accès des bénévoles partis à retirer
+(*Identity*), inscription toujours sur *Invite only*.
+
+**Reprendre avec Claude** : nouvelle session sur ce dépôt, en lui demandant de
+lire d'abord `GUIDE.md`.
+
 ---
 
 ## 1. Mise en ligne (à faire une fois)
