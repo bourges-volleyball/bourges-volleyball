@@ -30,8 +30,8 @@ vous la montrez **depuis votre ordinateur** : `npm run admin` dans un terminal,
 `npm run dev` dans un autre, et vous ouvrez `localhost:4321/admin/index.html`.
 Pas de mot de passe, et les modifications sont réelles.
 
-> **Le site est actuellement invisible pour Google, volontairement.** Voir la
-> dernière étape du lancement, plus bas.
+> **Le site est ouvert à Google depuis le 20 novembre 2026.** Voir la
+> dernière étape du lancement, plus bas, pour la Search Console.
 
 
 
@@ -70,7 +70,7 @@ Pas de mot de passe, et les modifications sont réelles.
 6. Inviter les bénévoles : *Identity → Invite users*. Ils reçoivent un mail,
    choisissent un mot de passe, et arrivent sur l'administration.
 
-L'administration est ensuite accessible à l'adresse **www.bourges-volleyball.fr/admin/**.
+L'administration est ensuite accessible à l'adresse **www.bourges-volley.fr/admin/**.
 
 ### ⚠ Git Gateway est déprécié — à savoir dès maintenant
 
@@ -108,38 +108,42 @@ contenu.
 
 ### 7. Rendre le site visible sur Google — la dernière étape
 
-Tant que le contenu est provisoire, le site refuse les moteurs de recherche.
-C'est délibéré : sans cela, Google enregistrerait les photos d'illustration et
-les « Joueur 1 », et ces pages resteraient dans ses résultats bien après le
-lancement.
+**Fait le 20 novembre 2026** : la ligne `X-Robots-Tag: noindex` est retirée
+de `public/_headers`, et `public/robots.txt` accepte les moteurs (sauf
+`/admin/`) et donne le plan du site. Les pages de l'administration gardent
+leur propre balise `noindex`.
 
-**Le jour où le contenu est définitif**, deux gestes :
+Reste à signaler le site à Google, une fois le domaine en HTTPS :
 
-1. Dans `public/_headers`, supprimer la ligne `X-Robots-Tag`.
-2. Dans `public/robots.txt`, remplacer le contenu par les quatre lignes
-   conservées en commentaire dans le fichier.
+1. **search.google.com/search-console**, avec un compte Google du club :
+   *Ajouter une propriété → Domaine*, saisir `bourges-volley.fr`.
+2. Google donne une ligne **TXT** (`google-site-verification=…`) : l'ajouter
+   dans la zone DNS OVH (sous-domaine vide, type TXT), sans rien remplacer,
+   puis *Valider*.
+3. Menu *Sitemaps* : saisir `sitemap-index.xml`, envoyer.
 
-Sans ces deux gestes, **le site ne sortira jamais dans Google**.
+Compter de quelques jours à deux semaines avant d'apparaître dans les
+résultats.
 
 ### Brancher le nom de domaine
 
-Le domaine **bourges-volleyball.fr** a été commandé chez OVH le 28 octobre
-2026. Le site est déjà réglé dessus : `public/admin/config.yml` (ligne
+Le domaine **bourges-volley.fr** est livré chez OVH depuis le 20 novembre
+2026 (bourges-volleyball.fr, commandé le 28 octobre, n'a pas été retenu). Le site est déjà réglé dessus : `public/admin/config.yml` (ligne
 `site_url:`) et la ligne Sitemap gardée en commentaire dans
 `public/robots.txt`. `astro.config.mjs` (ligne `site:`), lui, prend l'adresse
 principale que Netlify donne à chaque construction : la bonne adresse, avant
 comme après le branchement, sans rien modifier. L'adresse principale est
-**www.bourges-volleyball.fr** ; la version sans www y renvoie. C'est le choix
+**www.bourges-volley.fr** ; la version sans www y renvoie. C'est le choix
 que conseille Netlify : l'adresse avec www passe par son réseau de serveurs,
 la version sans www par une seule adresse IP, qui peut changer.
 
 Une fois le domaine livré par OVH (après le paiement de la commande) :
 
 1. **Netlify** : *Domain management → Add a domain*, saisir
-   `www.bourges-volleyball.fr`. Netlify propose d'ajouter aussi
-   `bourges-volleyball.fr` : accepter. Vérifier que `www.bourges-volleyball.fr`
+   `www.bourges-volley.fr`. Netlify propose d'ajouter aussi
+   `bourges-volley.fr` : accepter. Vérifier que `www.bourges-volley.fr`
    porte la mention *Primary domain*, sinon *Options → Set as primary domain*.
-2. **OVH** : *Web Cloud → Noms de domaine → bourges-volleyball.fr*, onglet
+2. **OVH** : *Web Cloud → Noms de domaine → bourges-volley.fr*, onglet
    *Zone DNS* :
    - l'entrée **A** du domaine (sous-domaine vide) : cible `75.2.60.5` ;
    - supprimer les entrées **AAAA** du domaine et de www s'il y en a (Netlify
@@ -156,14 +160,14 @@ Une fois le domaine livré par OVH (après le paiement de la commande) :
    n'importe quelle publication depuis l'administration. Les liens de partage,
    l'adresse canonique des pages et le plan du site prennent la nouvelle
    adresse ; bourges-volleyball.netlify.app renvoie déjà toute seule vers
-   www.bourges-volleyball.fr. Les bénévoles se reconnectent une fois à
+   www.bourges-volley.fr. Les bénévoles se reconnectent une fois à
    l'administration, à la nouvelle adresse.
 
 ---
 
 ## 2. Pour les bénévoles : modifier le site
 
-Tout se passe sur **www.bourges-volleyball.fr/admin/**, que le bouton **Admin** du haut
+Tout se passe sur **www.bourges-volley.fr/admin/**, que le bouton **Admin** du haut
 du site ouvre directement (dans le menu sur téléphone). Se connecter avec le
 mail et le mot de passe reçus par invitation. Si l'administration affiche
 « Git Gateway Error: [object Object] », c'est une ancienne connexion restée
@@ -615,7 +619,8 @@ et les données structurées lues par Google (`src/layouts/Base.astro`).
 - [ ] Confirmer les dates du tournoi inter-entreprises, de l'AG et du stage
 - [ ] Vérifier les mentions légales et la page Confidentialité (adresse,
   durée de conservation des messages, fixée à un an)
-- [x] Prendre le nom de domaine : bourges-volleyball.fr, chez OVH
+- [x] Prendre le nom de domaine : bourges-volley.fr, chez OVH (livré le
+  20 novembre 2026)
 - [ ] Le brancher (section 1, « Brancher le nom de domaine »)
 
 ### Pistes
@@ -641,7 +646,7 @@ a été créée et donnée à Netlify le 29 octobre 2026) :
    *Deploys → Trigger deploy*.
 3. **Renseigner l'adresse de notification** — même page HelloAsso, champ
    *Mon URL de callback* :
-   `https://www.bourges-volleyball.fr/.netlify/functions/paiement`, avec www
+   `https://www.bourges-volley.fr/.netlify/functions/paiement`, avec www
    (tant que le domaine n'est pas branché :
    `https://bourges-volleyball.netlify.app/.netlify/functions/paiement`).
    C'est elle qui marque une commande payée même si l'acheteur ferme son
@@ -701,7 +706,7 @@ Netlify `HELLOASSO_API = https://api.helloasso-sandbox.com` avec ses clés.
 - [x] Administration et page Commandes aux couleurs du site, utilisables sur
   tablette et téléphone (colonne des collections entière, barre du haut sans
   débordement)
-- [x] Site prêt pour www.bourges-volleyball.fr (29 octobre 2026), à brancher
+- [x] Site prêt pour www.bourges-volley.fr (29 octobre 2026), à brancher
   dès que le domaine est livré
 - [x] Page Planning : toute la semaine d'entraînements, jour par jour, dans le
   menu après Équipes (menu complet au-delà de 1300 px de large)

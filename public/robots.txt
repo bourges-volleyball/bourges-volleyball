@@ -1,13 +1,5 @@
-# Tant que le site est provisoire, on n'accepte aucun moteur de recherche.
-# LE JOUR DE LA MISE EN LIGNE : remplacez tout ce fichier par les quatre
-# lignes en commentaire plus bas, et retirez la ligne X-Robots-Tag de
-# public/_headers. Sans ces deux gestes, le site restera invisible sur Google.
 User-agent: *
-Disallow: /
+Allow: /
+Disallow: /admin/
 
-# Version definitive, a retablir au lancement :
-# User-agent: *
-# Allow: /
-# Disallow: /admin/
-#
-# Sitemap: https://www.bourges-volleyball.fr/sitemap-index.xml
+Sitemap: https://www.bourges-volley.fr/sitemap-index.xml
