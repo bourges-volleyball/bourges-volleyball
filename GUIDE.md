@@ -621,7 +621,8 @@ et les données structurées lues par Google (`src/layouts/Base.astro`).
   durée de conservation des messages, fixée à un an)
 - [x] Prendre le nom de domaine : bourges-volley.fr, chez OVH (livré le
   20 novembre 2026)
-- [ ] Le brancher (section 1, « Brancher le nom de domaine »)
+- [x] Le brancher : en ligne sur www.bourges-volley.fr en HTTPS, ouvert à
+  Google, plan du site envoyé à la Search Console (20 novembre 2026)
 
 ### Pistes
 
