@@ -7,3 +7,12 @@
 
 # Les en-tetes de securite sont dans public/_headers, pour qu'ils
 # s'appliquent aussi a un dossier depose sur Netlify Drop.
+
+# Protection supplementaire : bloquer l'acces direct aux fichiers sensibles
+# en production, l'acces se fait via les fonctions serverless qui verifient l'auth
+[[headers]]
+  for = "/admin/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "no-referrer"
