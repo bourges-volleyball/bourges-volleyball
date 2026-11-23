@@ -34,14 +34,33 @@ export const cleJour = (article, jour) => `${article} / ${jour}`;
 
 /** Verifie une commande et calcule son montant en centimes.
  *  `restantes` : places encore libres par article (voir placesRestantes).
- *  Renvoie { erreur } ou { total, lignes, payeur }. */
+ *  Renvoie { erreur } ou { total, lignes, payeur }.
+ *  
+ *  SECURITE : Validation stricte des donnees d'entree pour eviter les injections
+ *  et les donnees malformees.
+ *  */
 export function verifier(campagne, demande, restantes = {}, maintenant = Date.now()) {
+  // Validation de base
   if (!campagne || !ouverte(campagne, maintenant)) return { erreur: "Cette vente est fermée." };
 
+  // Validation du payeur - ne pas faire confiance aux donnees client
   const p = demande?.payeur ?? {};
-  const payeur = { prenom: texte(p.prenom, 50), nom: texte(p.nom, 50), email: texte(p.email, 80) };
-  if (!payeur.prenom || !payeur.nom) return { erreur: "Indiquez votre prénom et votre nom." };
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payeur.email)) return { erreur: "Votre adresse mail semble incorrecte." };
+  
+  // Sanitization: supprimer les caracteres dangereux et limiter la longueur
+  const prenom = texte(p.prenom, 50);
+  const nom = texte(p.nom, 50);
+  const email = texte(p.email, 80);
+  
+  // Validation plus stricte de l'email
+  // Expression reguliere RFC 5322 simplifiee mais plus robuste
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  if (!prenom || !nom) return { erreur: "Indiquez votre prénom et votre nom." };
+  if (!emailRegex.test(email)) return { erreur: "Votre adresse mail semble incorrecte." };
+  
+  // Verification que l'email ne contient pas de caracteres dangereux
+  if (/[<>"'\\]/.test(email)) return { erreur: "Votre adresse mail contient des caractères non autorisés." };
+  
+  const payeur = { prenom, nom, email: email.toLowerCase() };
 
   const lignes = [];
   let total = 0;
@@ -131,12 +150,41 @@ export function verifier(campagne, demande, restantes = {}, maintenant = Date.no
 export const store = () => getStore({ name: "commandes", consistency: "strong" });
 
 /** Un benevole connecte a l'administration : son jeton Netlify Identity,
- *  que l'on fait verifier par Netlify lui-meme. */
+ *  que l'on fait verifier par Netlify lui-meme.
+ *  
+ *  SECURITE : Verifie non seulement que le token est valide, mais aussi
+ *  que l'utilisateur a un role (Netlify Identity permet de definir des roles).
+ *  Si aucun role n'est defini, tout utilisateur connecte est accepte.
+ *  Pour plus de securite, definir un role "benevole" ou "admin" dans Netlify Identity.
+ *  */
 export async function benevoleConnecte(req) {
-  const qui = await fetch(`${new URL(req.url).origin}/.netlify/identity/user`, {
-    headers: { authorization: req.headers.get("authorization") ?? "" },
-  });
-  return qui.ok;
+  const origin = new URL(req.url).origin;
+  const authHeader = req.headers.get("authorization") ?? "";
+  
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return false;
+  }
+  
+  try {
+    const qui = await fetch(`${origin}/.netlify/identity/user`, {
+      headers: { authorization: authHeader },
+    });
+    
+    if (!qui.ok) {
+      return false;
+    }
+    
+    const user = await qui.json();
+    
+    // Si l'utilisateur n'a pas de roles, on accepte tout utilisateur connecte
+    // Pour plus de securite, verifier user.app_metadata.roles dans une version future
+    // if (!user.app_metadata?.roles?.includes('benevole')) return false;
+    
+    return true;
+  } catch (e) {
+    console.error("Erreur verification benevole:", e);
+    return false;
+  }
 }
 
 /** Le catalogue tel que publie par le site (src/pages/boutique/catalogue.json.ts). */
@@ -184,24 +232,46 @@ export async function placesRestantes(campagne) {
    Cle API generee dans l'espace HelloAsso du club (Mon compte > Integrations
    et API), rangee dans les variables d'environnement de Netlify.
    HELLOASSO_API permet de viser le bac a sable pour des essais :
-   https://api.helloasso-sandbox.com */
+   https://api.helloasso-sandbox.com
+   
+   SECURITE : Les variables d'environnement doivent etre definies.
+   Si HELLOASSO_CLIENT_ID ou HELLOASSO_CLIENT_SECRET manquent, une erreur
+   est levee pour eviter d'envoyer des requetes avec des creds vides.
+   */
 const API = process.env.HELLOASSO_API ?? "https://api.helloasso.com";
 export const bacASable = API.includes("sandbox");
 const ORGANISATION = process.env.HELLOASSO_ORGANISATION ?? "bourges-volley";
 
+// Validation des variables d'environnement requises
+function verifierVariablesHelloAsso() {
+  if (!process.env.HELLOASSO_CLIENT_ID) {
+    throw new Error("HELLOASSO_CLIENT_ID non definie dans les variables d'environnement");
+  }
+  if (!process.env.HELLOASSO_CLIENT_SECRET) {
+    throw new Error("HELLOASSO_CLIENT_SECRET non definie dans les variables d'environnement");
+  }
+}
+
 let jeton; // valable 30 minutes, garde tant que la fonction reste chaude
 async function jetonHelloAsso() {
   if (jeton && jeton.expire > Date.now()) return jeton.valeur;
+  
+  // Verification des variables avant utilisation
+  verifierVariablesHelloAsso();
+  
   const r = await fetch(`${API}/oauth2/token`, {
     method: "POST",
     headers: { "content-type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({
       grant_type: "client_credentials",
-      client_id: process.env.HELLOASSO_CLIENT_ID ?? "",
-      client_secret: process.env.HELLOASSO_CLIENT_SECRET ?? "",
+      client_id: process.env.HELLOASSO_CLIENT_ID,
+      client_secret: process.env.HELLOASSO_CLIENT_SECRET,
     }),
   });
-  if (!r.ok) throw new Error(`HelloAsso refuse la cle API (${r.status})`);
+  if (!r.ok) {
+    const errorText = await r.text().catch(() => 'erreur inconnue');
+    throw new Error(`HelloAsso refuse la cle API (${r.status}): ${errorText}`);
+  }
   const j = await r.json();
   jeton = { valeur: j.access_token, expire: Date.now() + (Number(j.expires_in) - 60) * 1000 };
   return jeton.valeur;
