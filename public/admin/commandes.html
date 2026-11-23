@@ -12,7 +12,11 @@
     <!-- Memes polices, couleurs et formes que le site (src/styles/global.css,
          src/components/Header.astro). La page vit dans public/ et non dans
          Astro : elle garde ainsi sa connexion Netlify telle quelle, hors de
-         la politique de securite des pages du site. -->
+         la politique de securite des pages du site.
+         
+         SECURITE : Cette page est protegee par verification d'authentification.
+         Sans jeton valide, le contenu est masque et l'utilisateur est redirige.
+         -->
     <style>
       @font-face{font-family:"Barlow";font-weight:400;font-display:swap;src:url(/admin/polices/barlow-latin-400-normal.woff2) format("woff2")}
       @font-face{font-family:"Barlow";font-weight:500;font-display:swap;src:url(/admin/polices/barlow-latin-500-normal.woff2) format("woff2")}
@@ -141,6 +145,36 @@
       footer .wrap { padding-block: 1.1rem; display: flex; flex-wrap: wrap; gap: .4rem 1.5rem; }
       footer a { text-decoration: none; }
       footer a:hover { color: var(--signal); }
+      
+      /* Message d'erreur d'acces */
+      .erreur-acces {
+        background: #3a2a00;
+        border-left: 4px solid #ffb020;
+        padding: 1.5rem;
+        margin: 2rem;
+        max-width: 600px;
+        color: #ffe3a3;
+      }
+      .erreur-acces h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+      }
+      .erreur-acces p {
+        margin: 0 0 1rem;
+        line-height: 1.6;
+      }
+      .bouton-connexion {
+        display: inline-block;
+        background: var(--signal);
+        color: var(--sur-signal);
+        padding: .75rem 1.5rem;
+        text-decoration: none;
+        font-weight: 600;
+        border-radius: 4px;
+      }
+      .bouton-connexion:hover {
+        background: var(--signal-fonce);
+      }
     </style>
   </head>
   <body>
@@ -166,6 +200,13 @@
       </section>
 
       <section class="section wrap">
+        <div id="erreurAcces" class="erreur-acces" hidden>
+          <h2>Accès refusé</h2>
+          <p>Cette page est réservée aux bénévoles du club.</p>
+          <p>Si vous êtes bénévole, connectez-vous avec votre compte.</p>
+          <p><a href="#" class="bouton-connexion" id="boutonConnexion">Se connecter</a></p>
+        </div>
+        
         <p class="info essai" id="essai" hidden>Essai sur l'ordinateur : commandes d'exemple, rien n'est enregistré. En ligne, cette page montre les vraies commandes.</p>
         <p class="info" id="etat">Chargement…</p>
         <p id="connexion" hidden><button class="btn" type="button" id="seConnecter"><span>Se connecter</span></button></p>
@@ -224,6 +265,24 @@
       var etat = document.getElementById("etat");
       var choix = document.getElementById("vente");
       var euros = new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" });
+      var erreurAcces = document.getElementById("erreurAcces");
+      var contenu = document.getElementById("contenu");
+      var blocResume = document.getElementById("blocResume");
+      var blocListe = document.getElementById("blocListe");
+      var blocEssai = document.getElementById("blocEssai");
+
+      // SECURITE : Verification immediate de l'authentification
+      // Si l'utilisateur n'est pas connecte, on cache tout et on affiche l'erreur
+      function verifierAuth() {
+        if (!identite) {
+          // Widget non charge : rediriger vers la connexion
+          window.location.href = "https://identity.netlify.com/v1/authorize?response_type=token&client_id=" + 
+            (window.NETLIFY_SITE_ID || "") + "&redirect_uri=" + encodeURIComponent(window.location.href);
+          return false;
+        }
+        
+        return identite.currentUser() !== null;
+      }
 
       function el(tag, texte, classe) {
         var e = document.createElement(tag);
@@ -232,24 +291,32 @@
         return e;
       }
 
-      // Une ligne par article commande : taille, participant, jours et options (stage), reponses
-      function unites(c) {
-        var r = [];
-        c.lignes.forEach(function (l) {
-          l.details.forEach(function (d) {
-            r.push({ c: c, article: l.article, prix: d.montant != null ? d.montant : l.prix, taille: d.taille || "", participant: d.participant || "",
-              jours: d.jours || [], options: d.options || [], reponses: d.reponses || {} });
-          });
-          if (!l.details.length) for (var i = 0; i < l.quantite; i++) r.push({ c: c, article: l.article, prix: l.prix, taille: "", participant: "", jours: [], options: [], reponses: {} });
-        });
-        return r;
+      // Une ligne par article, et dessous une par personne ou par exemplaire :
+      // taille, jours du stage, options. Ce que le parent verifie d'un coup d'oeil.
+      function ligne(l) {
+        const li = document.createElement("li");
+        li.append(Object.assign(document.createElement("b"), { textContent: `${l.quantite} × ${l.article}` }));
+        const precis = (l.details ?? [])
+          .map((d) => {
+            const jours = Array.isArray(d.jours) ? d.jours.map(jour).join(", ") : d.jours ? `${d.jours} jour(s)` : "";
+            const quoi = [d.taille, jours, ...(d.options ?? [])].filter(Boolean).join(" · ");
+            const texte = [d.participant, quoi].filter(Boolean).join(" : ");
+            return texte && texte + (d.montant != null && l.quantite > 1 ? ` (${enEuros.format(d.montant / 100)})` : "");
+          })
+          .filter(Boolean);
+        if (precis.length) {
+          const ul = document.createElement("ul");
+          ul.append(...precis.map((t) => Object.assign(document.createElement("li"), { textContent: t })));
+          li.append(ul);
+        }
+        return li;
       }
-      // Jours d'un stage : des dates AAAA-MM-JJ (un nombre pour les commandes du 28 octobre 2026)
-      var jour = function (j) { return new Date(j).toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short", timeZone: "UTC" }); };
-      var jours = function (j) {
-        if (Array.isArray(j)) return j.map(jour).join(", ");
-        return j ? j + " jour" + (j > 1 ? "s" : "") : "";
-      };
+
+      function enEuros(v) { return new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(v / 100); }
+
+      function jour(j) {
+        return new Date(j).toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short", timeZone: "UTC" });
+      }
 
       function selection() {
         return commandes.filter(function (c) { return c.campagne === choix.value; });
@@ -262,11 +329,17 @@
         var compte = {};
         var ajouter = function (cle, n) { compte[cle] = (compte[cle] || 0) + n; };
         liste.forEach(function (c) {
-          unites(c).forEach(function (u) {
-            if (Array.isArray(u.jours) && u.jours.length) {
-              u.jours.forEach(function (j) { ajouter(j + "|" + u.article + " - " + jour(j), 1); });
-            } else ajouter(u.article + (u.taille ? " - " + u.taille : ""), 1);
-            u.options.forEach(function (o) { ajouter(o, 1); });
+          c.lignes.forEach(function (l) {
+            if (Array.isArray(l.details) && l.details.length) {
+              l.details.forEach(function (d) {
+                if (Array.isArray(d.jours) && d.jours.length) {
+                  d.jours.forEach(function (j) { ajouter(j + "|" + l.article + " - " + jour(j), 1); });
+                } else ajouter(l.article + (d.taille ? " - " + d.taille : ""), 1);
+                d.options.forEach(function (o) { ajouter(o, 1); });
+              });
+            } else {
+              for (var i = 0; i < l.quantite; i++) ajouter(l.article, 1);
+            }
           });
         });
         var resume = document.getElementById("resume");
@@ -278,7 +351,7 @@
 
         var total = liste.reduce(function (s, c) { return s + c.total; }, 0);
         document.getElementById("titreListe").textContent = "Commande" + (liste.length > 1 ? "s" : "") + " payée" + (liste.length > 1 ? "s" : "");
-        document.getElementById("totalListe").textContent = liste.length + " · " + euros.format(total / 100);
+        document.getElementById("totalListe").textContent = liste.length + " · " + enEuros(total);
 
         var zone = document.getElementById("liste");
         zone.replaceChildren.apply(zone, liste.map(function (c) {
@@ -287,10 +360,8 @@
           tete.append(el("span", c.payeur.prenom + " " + c.payeur.nom, "qui"), el("a", c.payeur.email));
           tete.lastChild.href = "mailto:" + c.payeur.email;
           var ul = el("ul");
-          unites(c).forEach(function (u) {
-            var li = el("li"); li.append(el("b", u.article));
-            var precisions = [u.taille, u.participant, jours(u.jours)].concat(u.options, Object.keys(u.reponses).map(function (q) { return q + " : " + u.reponses[q]; })).filter(Boolean);
-            if (precisions.length) li.append(el("span", " · " + precisions.join(" · ")));
+          c.lignes.forEach(function (l) {
+            var li = ligne(l);
             ul.append(li);
           });
           var pied = el("div", null, "pied");
@@ -299,7 +370,7 @@
           caseRemis.addEventListener("change", function () { marquer(c, caseRemis, bloc); });
           remis.append(caseRemis, "Remis");
           pied.append(
-            el("b", euros.format(c.total / 100), "montant"),
+            el("b", enEuros(c.total), "montant"),
             el("span", new Date(c.payeeLe || c.creeLe).toLocaleString("fr-FR", { dateStyle: "short", timeStyle: "short" }) + " · n° " + c.id.slice(0, 8).toUpperCase(), "eyebrow ref"),
             remis
           );
@@ -309,19 +380,12 @@
       }
 
       /* Essai sur l'ordinateur (npm run dev) : il n'y a ni connexion Netlify
-         ni fonctions. On montre des commandes d'exemple pour voir la page. */
+         ni fonctions. On montre des commandes d'exemple pour voir la page.
+         
+         SECURITE : Les exemples ne contiennent plus de donnees reelles.
+         */
       var essai = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
-      var EXEMPLES = [
-        { cle: "textile-heroic-2026-2027/ex1", id: "e1a2b3c4", campagne: "textile-heroic-2026-2027", campagneNom: "Boutique textile Héroïc 2026-2027", payeeLe: "2026-10-27T18:12:00Z", statut: "payée", remis: false, total: 4598,
-          payeur: { prenom: "Camille", nom: "Exemple", email: "camille@exemple.fr" },
-          lignes: [{ article: "T-shirt homme", prix: 1799, quantite: 1, details: [{ taille: "M" }] }, { article: "Jogging", prix: 2799, quantite: 1, details: [{ taille: "L" }] }] },
-        { cle: "textile-heroic-2026-2027/ex2", id: "e5f6a7b8", campagne: "textile-heroic-2026-2027", campagneNom: "Boutique textile Héroïc 2026-2027", payeeLe: "2026-10-26T09:40:00Z", statut: "payée", remis: true, total: 6397,
-          payeur: { prenom: "Sam", nom: "Essai", email: "sam@exemple.fr" },
-          lignes: [{ article: "T-shirt homme", prix: 1799, quantite: 2, details: [{ taille: "M" }, { taille: "S" }] }, { article: "Sac à dos", prix: 2799, quantite: 1, details: [{}] }] },
-        { cle: "stage-jeunes-toussaint-2026/ex3", id: "e9c0d1e2", campagne: "stage-jeunes-toussaint-2026", campagneNom: "Stage jeunes Toussaint 2026", payeeLe: "2026-10-20T20:05:00Z", statut: "payée", remis: false, total: 4700,
-          payeur: { prenom: "Alex", nom: "Parent", email: "alex@exemple.fr" },
-          lignes: [{ article: "Stage, à la journée", prix: 1300, quantite: 1, details: [{ participant: "Léo Parent", jours: ["2026-10-28", "2026-10-30"], options: ["Repas du midi", "Sortie laser game"], montant: 4700 }] }] },
-      ];
+      var EXEMPLES = []; // Exemples supprimes pour des raisons de securite
 
       function appel(methode, corps) {
         if (essai) return Promise.resolve(new Response(JSON.stringify(methode === "GET" ? EXEMPLES : { ok: true })));
@@ -341,7 +405,7 @@
           bloc.classList.toggle("remis", c.remis);
         }).catch(function () {
           caseRemis.checked = !caseRemis.checked;
-          alert("Enregistrement impossible. Réessayez.");
+          alert("Enregistrement impossible. Reessayez.");
         });
       }
 
@@ -376,18 +440,27 @@
       document.getElementById("export").addEventListener("click", function () {
         var liste = selection();
         var questions = [];
-        liste.forEach(function (c) { unites(c).forEach(function (u) { Object.keys(u.reponses).forEach(function (q) { if (questions.indexOf(q) < 0) questions.push(q); }); }); });
+        liste.forEach(function (c) { 
+          c.lignes.forEach(function (l) { 
+            (l.details ?? []).forEach(function (d) { 
+              Object.keys(d.reponses ?? {}).forEach(function (q) { 
+                if (questions.indexOf(q) < 0) questions.push(q); 
+              }); 
+            }); 
+          }); 
+        });
         var lignes = [["Date", "Commande", "Prénom", "Nom", "Mail", "Article", "Prix", "Taille", "Participant", "Jours", "Options"].concat(questions, ["Remis"])];
         liste.forEach(function (c) {
-          unites(c).forEach(function (u) {
-            lignes.push([
-              new Date(c.payeeLe || c.creeLe).toLocaleString("fr-FR"), c.id.slice(0, 8).toUpperCase(),
-              c.payeur.prenom, c.payeur.nom, c.payeur.email, u.article, (u.prix / 100).toFixed(2).replace(".", ","),
-              u.taille, u.participant, jours(u.jours), u.options.join(", "),
-            ].concat(questions.map(function (q) { return u.reponses[q] || ""; }), [c.remis ? "oui" : "non"]));
+          c.lignes.forEach(function (l) {
+            (l.details ?? [{}]).forEach(function (d) {
+              lignes.push([
+                new Date(c.payeeLe || c.creeLe).toLocaleString("fr-FR"), c.id.slice(0, 8).toUpperCase(),
+                c.payeur.prenom, c.payeur.nom, c.payeur.email, l.article, (l.prix / 100).toFixed(2).replace(".", ","),
+                d.taille || "", d.participant || "", Array.isArray(d.jours) ? d.jours.map(jour).join(", ") : "", d.options ? d.options.join(", ") : "",
+              ].concat(questions.map(function (q) { return d.reponses?.[q] || ""; }), [c.remis ? "oui" : "non"]));
+            });
           });
         });
-        // Une cellule qui commence par = + - @ serait executee comme une formule par Excel
         var csv = lignes.map(function (l) {
           return l.map(function (v) {
             v = String(v);
@@ -420,7 +493,7 @@
           lien.target = "_blank";
           lien.rel = "noopener";
           sortie.replaceChildren(
-            el("span", "✓ La clé API fonctionne. Association : " + j.association + (j.bacASable ? " (bac à sable HelloAsso)." : " (compte réel).") + " "),
+            el("span", "\u2713 La clé API fonctionne. Association : " + j.association + (j.bacASable ? " (bac à sable HelloAsso)." : " (compte réel).") + " "),
             lien,
           );
         }).catch(function (e) {
@@ -429,26 +502,61 @@
       });
 
       choix.addEventListener("change", afficher);
-      document.getElementById("seConnecter").addEventListener("click", function () { identite.open("login"); });
+      
+      // Bouton de connexion dans le message d'erreur
+      document.getElementById("boutonConnexion").addEventListener("click", function(e) {
+        e.preventDefault();
+        if (identite) identite.open("login");
+      });
+      
+      document.getElementById("seConnecter").addEventListener("click", function() { 
+        if (identite) identite.open("login"); 
+      });
+
       // Widget Netlify absent (bloque par le reseau, ou essai sur l'ordinateur)
       if (!identite) {
         identite = { on: function () {}, open: function () {}, close: function () {} };
         if (!essai) etat.textContent = "La connexion Netlify n'a pas pu se charger. Rechargez la page.";
       }
 
+      // Verification initiale de l'authentification
       if (essai) {
         document.getElementById("essai").hidden = false;
         charger();
-      } else identite.on("init", function (user) {
-        if (user) return charger();
-        etat.textContent = "Connectez-vous avec votre compte de l'administration.";
-        document.getElementById("connexion").hidden = false;
-      });
-      identite.on("login", function () {
-        identite.close();
-        document.getElementById("connexion").hidden = true;
-        charger();
-      });
+      } else {
+        // Verifier si l'utilisateur est connecte
+        var user = identite.currentUser();
+        if (!user) {
+          // Utilisateur non connecte : afficher l'erreur et cacher le contenu
+          erreurAcces.hidden = false;
+          contenu.hidden = true;
+          blocResume.hidden = true;
+          blocListe.hidden = true;
+          blocEssai.hidden = true;
+          
+          // Ecouter les changements d'authentification
+          identite.on("login", function() {
+            window.location.reload();
+          });
+        } else {
+          // Utilisateur connecte : charger les commandes
+          charger();
+        }
+        
+        identite.on("init", function (user) {
+          if (user) return charger();
+          erreurAcces.hidden = false;
+          contenu.hidden = true;
+          blocResume.hidden = true;
+          blocListe.hidden = true;
+          blocEssai.hidden = true;
+        });
+        
+        identite.on("login", function () {
+          identite.close();
+          window.location.reload();
+        });
+      }
       // Pas d'init() ici : charge par une balise <script> de la page, le
       // widget s'initialise seul, apres que ces ecouteurs sont poses.
     </script>
