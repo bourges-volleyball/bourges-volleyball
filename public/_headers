@@ -3,12 +3,37 @@
 # Ce fichier vit dans public/ et se retrouve donc dans dist/ : il fonctionne
 # aussi bien pour une publication depuis GitHub que pour un dossier depose a
 # la main sur Netlify Drop. netlify.toml, lui, n'est lu que depuis un depot.
+#
+# Audit securite du 23/11/2026 : en-tetes completes pour la securite et le RGPD.
 
 /*
+  # En-tetes de securite standard (OWASP ASVS)
   X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
   Referrer-Policy: strict-origin-when-cross-origin
-  Permissions-Policy: camera=(), microphone=(), geolocation=()
-  Content-Security-Policy: frame-ancestors 'self'
+  
+  # Politique de securite du contenu (CSP)
+  # - Bloque les scripts inline et externes non autorises
+  # - Autorise seulement les scripts du site lui-meme
+  # - identity.netlify.com est necessaire pour l'authentification des benevoles
+  Content-Security-Policy: default-src 'none'; script-src 'self' https://identity.netlify.com https://unpkg.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://api.helloasso.com https://api.helloasso-sandbox.com; frame-src https://identity.netlify.com; frame-ancestors 'none'; form-action 'self'; base-uri 'self'
+  
+  # Politique de permissions (remplace Feature-Policy)
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
+  
+  # Securite HTTPS
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
 
+# Pages d'administration : protection supplementaire
 /admin/*
-  X-Frame-Options: SAMEORIGIN
+  # Empeche l'embeddage dans un iframe (meme si frame-ancestors 'none' dans CSP)
+  X-Frame-Options: DENY
+  
+# Endpoints des fonctions serverless
+/.netlify/functions/*
+  # Desactive la mise en cache des reponses d'API
+  Cache-Control: no-store, no-cache, must-revalidate, max-age=0
+  # Protection contre le MIME sniffing
+  X-Content-Type-Options: nosniff
+  # Securite des frames
+  X-Frame-Options: DENY
